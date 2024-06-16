@@ -1,19 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import logo from '../../assets/img/logo.png';
-import LogoContainer from '../../components/styled/LogoContainer';
+import React from "react";
+import styled from "styled-components";
+import logo from "../../assets/img/logo.png";
+import Header from "../../components/common/header/Header";
 
 // 주문 상세 페이지
 const OrderDetail = () => {
-  const orderText = [
-    '주문번호',
-    '주문 일시',
-    '픽업 가능 시각',
-    '발송지점',
-    '픽업 현황',
-  ];
+  const orderText = ["주문번호", "주문 일시", "픽업 가능 시각", "발송지점", "픽업 현황"];
 
-  const productText = ['상품명', '상품ID', '수량', '총 결제 금액'];
+  const productText = ["상품명", "상품ID", "수량", "총 결제 금액"];
 
   // TODO: 버튼 비활성화 처리 고려하기
   const receiveBtnClick = () => {};
@@ -22,9 +16,8 @@ const OrderDetail = () => {
 
   return (
     <ContentWrapper>
-      <LogoContainer>
-        <img src={logo} alt='logo' width={145} height={39} />
-      </LogoContainer>
+      <Header />
+
       <TitleText>주문 상세 내역</TitleText>
 
       <OrderInfo>
@@ -41,8 +34,8 @@ const OrderDetail = () => {
       </ButtonWrapper>
 
       <ProductInfo>
-        <div style={{ border: '2px solid black' }}>
-          <img src={logo} alt='logo' width={166} height={179} />
+        <div style={{ border: "2px solid black" }}>
+          <img src={logo} alt="logo" width={166} height={179} />
         </div>
         <RightColumn>
           {productText.map((text) => (
