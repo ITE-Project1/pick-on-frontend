@@ -5,11 +5,12 @@ import { ReactComponent as SearchSvg } from "../../assets/img/search.svg";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 function Products() {
-  const [products, setProducts] = useState([]);
+  let [products, setProducts] = useState([]);
   const [sort, setSort] = useState('');
   const [keyword, setKeyword] = useState('');
   const [storeId, setStoreId] = useState('1');
   const [pageNum, setPageNum] = useState('0');
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,7 +18,8 @@ function Products() {
         const response = await axios.get(
           `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
         );
-        setProducts(response.data);
+        setProducts(prevProducts => [...prevProducts, ...response.data]);
+        setHasMoreProducts(response.data.length === 10); // 10개씩 가져오는 것으로 가정
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -28,21 +30,28 @@ function Products() {
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
+    updateProducts();
   };
 
   const handleStoreChange = (e) => {
     setPageNum(0);
     setStoreId(e.target.value);
+    updateProducts();
   };
 
   const handleSortChange = (sortKeyword) => {
     setPageNum(0);
     setSort(sortKeyword);
+    updateProducts();
   };
 
   const handlePageChange = () => {
     setPageNum(pageNum + 1);
   }
+
+  const updateProducts = () => {
+    setProducts([]);
+  };
 
   return (
     <Container>
@@ -84,9 +93,11 @@ function Products() {
         ))}
       </ProductList>
       <ButtonWrapper>
-        <PlusButton onClick={handlePageChange}>
-          <PlusBtnSvg></PlusBtnSvg>
-        </PlusButton>
+        {hasMoreProducts && (
+          <PlusButton onClick={handlePageChange}>
+            <PlusBtnSvg></PlusBtnSvg>
+          </PlusButton>
+        )}
       </ButtonWrapper>
     </Container>
   );
