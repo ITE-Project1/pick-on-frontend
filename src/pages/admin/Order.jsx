@@ -3,33 +3,53 @@ import axios from "axios";
 import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
+import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [storeId, setStoreId] = useState(1);
+  const [pageNum, setPageNum] = useState("1");
+  const [hasMoreOrders, setHasMoreOrders] = useState(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/admin/orders?storeId=${storeId}&page=1&keyword=${keyword}`
-        );
-        setOrders(response.data);
+        axios
+          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`)
+          .then((response) => {
+            if (pageNum > 0) {
+              setOrders((prevOrders) => [...prevOrders, ...response.data]);
+            } else {
+              setOrders(response.data);
+            }
+            setHasMoreOrders(response.data.length === 10);
+          });
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
 
     fetchOrders();
-  }, [keyword, storeId]);
+  }, [keyword, storeId, pageNum]);
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
+    updateOrders();
   };
 
   const handleStoreChange = (e) => {
     setStoreId(e.target.value);
+    updateOrders();
+  };
+
+  const handlePageChange = () => {
+    setPageNum(pageNum + 1);
+  }
+
+  const updateOrders = () => {
+    setOrders([]);
+    setPageNum(0);
   };
 
   return (
@@ -62,6 +82,13 @@ const Order = () => {
           ))}
         </OrderTableBody>
       </OrderTableWrapper>
+      <ButtonWrapper>
+        {hasMoreOrders && (
+          <PlusButton onClick={handlePageChange}>
+            <PlusBtnSvg></PlusBtnSvg>
+          </PlusButton>
+        )}
+      </ButtonWrapper>
     </Container>
   );
 };
@@ -133,3 +160,43 @@ const OrderTableBody = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%;
+  margin-top: 20px;
+`;
+
+const PlusButton = styled.button`
+  width: 100px;
+  height: 50px;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+
+  svg {
+    width: 100px; /* SVG의 너비 설정 */
+    height: 40px; /* SVG의 높이 설정 */
+    fill: #828282;
+    transition: fill 0.3s;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
