@@ -1,9 +1,15 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const OrderItem = ({ order }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/admin/order/${order.orderId}`);
+  };
+
   return (
-    <TableRow>
+    <TableRow onClick={handleClick}>
       <TableData width="1%">{order.pickupStatus === "배송중" && <input type="checkbox" />}</TableData>
       <TableData width="40%">{order.orderId}</TableData>
       <TableData width="9%">{order.quantity}</TableData>
