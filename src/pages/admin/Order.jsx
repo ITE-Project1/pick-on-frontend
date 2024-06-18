@@ -77,7 +77,6 @@ export default Order;
 
 const Container = styled.div`
   padding: 20px;
-  // font-family: "Arial, sans-serif";
 `;
 
 const Header = styled.div`

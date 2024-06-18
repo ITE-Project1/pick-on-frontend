@@ -106,6 +106,7 @@ const FooterWrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   background-color: #000000;
+  z-index: 10;
 `;
 
 const IconWrapper = styled.div`
