@@ -15,11 +15,16 @@ function Products() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
+        axios.get(
           `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
-        );
-        setProducts(prevProducts => [...prevProducts, ...response.data]);
-        setHasMoreProducts(response.data.length === 10); // 10개씩 가져오는 것으로 가정
+        ).then(response => {
+          if(pageNum > 0) {
+            setProducts(prevProducts => [...prevProducts, ...response.data]);
+          } else {
+            setProducts(response.data);
+          }
+          setHasMoreProducts(response.data.length === 10); // 10개씩 가져오는 것으로 가정
+        })
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -29,7 +34,9 @@ function Products() {
   }, [storeId, pageNum, sort, keyword]);
 
   const handleSearchChange = (e) => {
+    console.log(e);
     setKeyword(e.target.value);
+    setPageNum(0);
     updateProducts();
   };
 
