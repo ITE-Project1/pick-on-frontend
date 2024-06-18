@@ -23,6 +23,7 @@ export default OrderItem;
 
 const TableRow = styled.div`
   display: flex;
+  align-items: center;
   border-bottom: 1px solid #ddd;
   padding: 20px 2px;
   font-size: 12px;
