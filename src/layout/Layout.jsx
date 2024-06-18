@@ -17,7 +17,7 @@ const Layout = () => {
         </LogoContainer>
       )}
       <Outlet />
-      <Footer />
+      {/*<Footer />*/}
     </InnerWidth>
   );
 };

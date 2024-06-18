@@ -1,225 +1,176 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import styled from 'styled-components';
-import { useLocation } from "react-router-dom";
-import searchIcon from '../../assets/img/searchIcon.svg'
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { ReactComponent as SearchSvg } from "../../assets/img/search.svg";
+import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [sortField, setSortField] = useState('');
+  const [sort, setSort] = useState('');
   const [keyword, setKeyword] = useState('');
   const [storeId, setStoreId] = useState('1');
-  const [isOpen, setIsOpen] = useState(false);
-  const [localKeyword, setLocalKeyword] = useState(''); // 로컬 상태 추가
-
-  const query = useQuery();
+  const [pageNum, setPageNum] = useState('0');
 
   useEffect(() => {
-    const page = parseInt(query.get('page')) || 0;
-    const sort = query.get('sort') || '';
-    const keyword = query.get('keyword') || '';
-    const storeId = query.get('storeId') || '1';
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
+        );
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
-    setCurrentPage(page);
-    setSortField(sort);
-    setKeyword(keyword);
-    setStoreId(storeId);
+    fetchProducts();
+  }, [storeId, pageNum, sort, keyword]);
 
-    fetchProductList(currentPage, sortField, keyword, storeId);
-  }, []);
-
-  const fetchProductList = async(page, sort, keyword, storeId) => {
-    try {
-      const response = await axios.get('http://localhost:8080/admin/products', {
-        params: {
-          storeId: storeId,
-          page: page,
-          sort: sort,
-          keyword: keyword
-        }
-      });
-
-      setProducts(response.data);
-      setTotalPages(response.data.length);
-    } catch (error) {
-      console.log("Error Fetching product list:", error);
-    }
+  const handleSearchChange = (e) => {
+    setKeyword(e.target.value);
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleStoreChange = (e) => {
+    setPageNum(0);
+    setStoreId(e.target.value);
   };
 
-  const handleSortChange = (field) => {
-    console.log(field);
-    setSortField(field);
+  const handleSortChange = (sortKeyword) => {
+    setPageNum(0);
+    setSort(sortKeyword);
   };
 
-
-  const handleKeywordChange = (event) => {
-    setLocalKeyword(event.target.value); // 로컬 상태 업데이트
-  };
-
-  const handleStoreChange = (id) => {
-    console.log(id);
-    setStoreId(id);
-  };
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleSearch = () => {
-    setKeyword(localKeyword); // 검색 버튼 클릭 시 상태 업데이트
-  };
+  const handlePageChange = () => {
+    setPageNum(pageNum + 1);
+  }
 
   return (
-    <ContentWrapper>
-      <SearchWrapper>
-        <InputWrapper>
-          <Button onClick={handleSearch}></Button>
-          <Input type="text" placeholder="Search" value={localKeyword} onChange={handleKeywordChange}/>
-        </InputWrapper>
-      </SearchWrapper>
-      <StoreFilter>
-        <DropdownToggle onClick={toggleDropdown}>압구정본점</DropdownToggle>
-        <DropdownContent isOpen={isOpen}>
-          <DropDownStore onClick={() => handleStoreChange(1)}>천호점</DropDownStore>
-          <DropDownStore onClick={() => handleStoreChange(2)}>목동점</DropDownStore>
-          <DropDownStore onClick={() => handleStoreChange(3)}>무역센터점</DropDownStore>
-          <DropDownStore onClick={() => handleStoreChange(4)}>더현대서울점</DropDownStore>
-          <DropDownStore onClick={() => handleStoreChange(5)}>압구정본점</DropDownStore>
-        </DropdownContent>
-      </StoreFilter>
-      <SortWrapper>
-        <SortKeywords onClick={() => handleSortChange("")}>최신순</SortKeywords>
-        <SortKeywords onClick={() => handleSortChange("priceLow")}>낮은 가격순</SortKeywords>
-        <SortKeywords onClick={() => handleSortChange("priceHigh")}>높은 가격순</SortKeywords>
-      </SortWrapper>
+    <Container>
+      <Header>
+        <SearchWrapper>
+          <SearchIcon>
+            <SearchSvg />
+          </SearchIcon>
+          <SearchInput type="text" placeholder="Search" value={keyword} onChange={handleSearchChange} />
+        </SearchWrapper>
+        <Controls>
+          <Select onChange={handleStoreChange} value={storeId}>
+            <option value={1}>천호점</option>
+            <option value={2}>목동점</option>
+            <option value={3}>무역센터점</option>
+            <option value={4}>더현대서울점</option>
+            <option value={5}>압구정본점</option>
+          </Select>
+        </Controls>
+        <SortWrapper>
+          <SortKeywords onClick={() => handleSortChange("")}>최신순</SortKeywords>
+          <SortKeywords onClick={() => handleSortChange("priceLow")}>낮은 가격순</SortKeywords>
+          <SortKeywords onClick={() => handleSortChange("priceHigh")}>높은 가격순</SortKeywords>
+        </SortWrapper>
+      </Header>
       <ProductList>
         {products.map((product) => (
           <ProductContainer key={product.id}>
-            <Image alt="Product Image" src={product.image} />
+            <Image alt="Product Image" src={product.imageUrl} />
             <ProductContent>
                 <ProductCode>{product.id}</ProductCode>
                 <ProductTitle className="text-wrapper-7">{product.name}</ProductTitle>
             </ProductContent>
             <ProductContent>
-              <Quantity>{product.quantity}</Quantity>
-              <Price>{product.price}</Price>
+              <Quantity>{product.quantity}개</Quantity>
+              <Price>{product.price}원</Price>
             </ProductContent>
           </ProductContainer>
         ))}
       </ProductList>
-    </ContentWrapper>
+      <ButtonWrapper>
+        <PlusButton onClick={handlePageChange}>
+          <PlusBtnSvg></PlusBtnSvg>
+        </PlusButton>
+      </ButtonWrapper>
+    </Container>
   );
 }
 
 export default Products;
 
-const ContentWrapper = styled.div`
-  width: 100%;
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const Header = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px 0px 20px;
+  margin-bottom: 10px;
 `;
 
 const SearchWrapper = styled.div`
-  background-color: #f5f5f5;
-  border-radius: 100px;
-  height: 40px;
-  width: 380px;
-  top: 100px;
-  display: flex;
-  align-items: center;
-  margin: 0 auto; /* 수평 중앙 정렬 */
-`;
-
-const InputWrapper = styled.div`
-  display: flex;
-  align-items: center;
+  position: relative;
   width: 100%;
+  margin-bottom: 20px;
 `;
 
-const Button = styled.button`
-  background: url(${searchIcon}) no-repeat center; /* import한 이미지 사용 */
-  background-size: cover; /* 이미지를 버튼 크기에 맞게 설정 */
-  border: none;
-  width: 24px; /* 버튼 너비 조정 */
-  height: 24px; /* 버튼 높이 조정 */
-  cursor: pointer;
-  margin-right: 10px; /* 버튼과 입력 필드 사이의 간격 */
-  margin-left: 5px;
+const SearchIcon = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #ccc;
 `;
 
-const Input = styled.input`
-  background: none;
-  border: none;
-  color: #828282;
-  font-size: 12px;
-  font-weight: 400;
-  height: 100%;
-  letter-spacing: 0;
-  line-height: 18px;
-  width: calc(100% - 50px); /* 버튼 너비를 고려하여 조정 */
-  outline: none; /* 입력창 포커스 시 발생하는 외곽선 제거 */
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 10px 20px 10px 40px;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  font-size: 16px;
 `;
 
-const StoreFilter = styled.div`
-  text-align: right;
-  margin-right: 34px; /* 원하는 간격 설정 */
+const Controls = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 600px;
 `;
 
-const DropdownContent = styled.div`
-  display: ${props => (props.isOpen ? 'block' : 'none')};
-  background-color: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0px 0px 0px 1px #cccccc;
-  padding: 8px;
-  top: calc(100% + 5px);
-  right: 0; /* 오른쪽 정렬 추가 */
-  z-index: 10;
-`;
-
-const DropdownToggle = styled.button`
-  background: none;
-  border: none;
-  color: #8d8d8d;
-  cursor: pointer;
-  padding: 8px;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  white-space: nowrap;
-  width: fit-content;
-  z-index: 1;
-`;
-
-const DropDownStore = styled.div`
-  color: #8d8d8d;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 24px;
-  white-space: nowrap;
+const Select = styled.select`
+  padding: 5px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 `;
 
 const SortWrapper = styled.div`
+  margin-top: 10px;
+  margin-bottom: 10px;
   display: flex;
 `;
 
-const SortKeywords = styled.div`
+const SortKeywords = styled.button`
   justify-content: space-between;
   color: #828282;
   font-size: 12px;
   font-weight: 400;
   margin-left: 20px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s, font-weight 0.3s; /* 부드러운 전환 효과 추가 */
+
+  &:hover {
+    color: #333; /* 호버 시 글자 색상 변경 */
+    font-weight: 700; /* 호버 시 글자 굵기 변경 */
+  }
+
+  &:focus {
+    outline: none; /* 포커스 시 테두리 제거 */
+  }
+
+  &:active {
+    color: #555; /* 클릭 시 글자 색상 변경 */
+  }
 `;
 
 const ProductList = styled.div`
@@ -281,77 +232,42 @@ const Quantity = styled.div`
   margin-bottom: 40px;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%;
+  margin-top: 20px;
+`;
 
+const PlusButton = styled.button`
+  width: 100px;
+  height: 50px;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, transform 0.3s;
 
-// const productList = [
-//   {
-//     id: "QUKEJHREF",
-//     name: "리브드 슬리브리스 탑",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-4@2x.png",
-//     price: "21,000원",
-//     quantity: "30개"
-//   },
-//   {
-//     id: "EDLFKJWSA",
-//     name: "쿨 워셔블 헨리넥 하프 니트(5color)",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-5@2x.png",
-//     price: "31,430원",
-//     quantity: "57개"
-//   },
-//   {
-//     id: "LWEIUEWFSD",
-//     name: "티메이커",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-6@2x.png",
-//     price: "29,990원",
-//     quantity: "1개"
-//   },
-//   {
-//     id: "PWEOIDSAB",
-//     name: "링클 프리 반팔 크롭 셔츠_WHITE",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-7@2x.png",
-//     price: "19,376원",
-//     quantity: "110개"
-//   },
-//   {
-//     id: "LIEHVBDJQS",
-//     name: "라운드 데님 셔츠 드레스",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-8@2x.png",
-//     price: "70,500원",
-//     quantity: "20개"
-//   },
-//   {
-//     id: "IRUEWJSHD",
-//     name: "개더드 애시메트릭 미디 드레스",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-10@2x.png",
-//     price: "31,430원",
-//     quantity: "3개"
-//   },
-//   {
-//     id: "LKEIHAQWE",
-//     name: "칼라리스 미니 셔츠 드레스",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-9@2x.png",
-//     price: "75,000원",
-//     quantity: "237개"
-//   },
-//   {
-//     id: "ASDPOFIEL",
-//     name: "엠브로이더리 울 셔츠 드레스",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-11@2x.png",
-//     price: "90,000원",
-//     quantity: "87개"
-//   },
-//   {
-//     id: "LDJEIVOQE",
-//     name: "비즈 박스 체인 네크리스",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-13@2x.png",
-//     price: "44,500원",
-//     quantity: "2개"
-//   },
-//   {
-//     id: "MNDBCUYTR",
-//     name: "미스매치드 비즈 드롭 이어링",
-//     image: "https://c.animaapp.com/ex34MmYX/img/image-12@2x.png",
-//     price: "27,600원",
-//     quantity: "1개"
-//   }
-// ];
+  svg {
+    width: 100px; /* SVG의 너비 설정 */
+    height: 40px; /* SVG의 높이 설정 */
+    fill: #828282;
+    transition: fill 0.3s;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
