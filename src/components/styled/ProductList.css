@@ -144,13 +144,24 @@
   width: 108px;
 }
 
-.div-wrapper {
-  height: 18px;
-  position: relative;
-  width: 330px;
+/* 정렬 - 최신순, 낮은가격순, 높은가격순 */
+.sort-by {
+  display: flex;
+  justify-content: center;
+  margin-left: -150px;
 }
 
-.div-wrapper .div {
+.sort-option {
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.sort-option:hover {
+  text-decoration: underline;
+  color: #46675C
+}
+
+.sort-by .div {
   color: transparent;
   font-family: "Apple SD Gothic Neo-Bold", Helvetica;
   font-size: 12px;
@@ -165,13 +176,13 @@
   width: 330px;
 }
 
-.div-wrapper .text-wrapper {
+.sort-by .text-wrapper {
   color: #46675c;
   font-weight: 700;
   text-decoration: underline;
 }
 
-.div-wrapper .span {
+.sort-by .span {
   color: #828282;
   font-family: "Apple SD Gothic Neo-Regular", Helvetica;
 }
