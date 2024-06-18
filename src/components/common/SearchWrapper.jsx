@@ -23,7 +23,6 @@ export default SearchWrapper;
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
 `;
 
 const SearchIcon = styled.span`
