@@ -47,7 +47,7 @@ const Footer = () => {
         onClick={stockClick}
         isClicked={clickedIcon === "stock"}
       >
-        <img src={clickedIcon === "stock" ? stock_white : stock} alt="stock" width={40} height={37} />
+        <img src={clickedIcon === "stock" ? stock_white : stock} alt="stock" width={36} height={34} />
         <IconText>재고목록</IconText>
       </IconWrapper>
 
@@ -60,8 +60,8 @@ const Footer = () => {
         <img
           src={clickedIcon === "list" ? list_white : list}
           alt="list"
-          width={45}
-          height={24}
+          width={40}
+          height={22}
           style={{ marginTop: "7px" }}
         />
         <IconText>주문내역</IconText>
@@ -73,7 +73,7 @@ const Footer = () => {
         onClick={usersClick}
         isClicked={clickedIcon === "users"}
       >
-        <img src={clickedIcon === "users" ? users_white : users} alt="users" width={46} height={42} />
+        <img src={clickedIcon === "users" ? users_white : users} alt="users" width={42} height={37} />
         <IconText>유저관리</IconText>
       </IconWrapper>
 
@@ -84,7 +84,7 @@ const Footer = () => {
         isClicked={clickedIcon === "my"}
       >
         {/* TODO: my_logo black과 white 크기가 다름. 이미지 교환 필요함 */}
-        <img src={clickedIcon === "my" ? my_white : my} alt="my" width={44} height={38} />
+        <img src={clickedIcon === "my" ? my_white : my} alt="my" width={36} height={36} />
         <IconText>마이</IconText>
       </IconWrapper>
     </FooterWrapper>
