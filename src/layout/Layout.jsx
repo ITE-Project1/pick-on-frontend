@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Footer from "../components/common/footer/Footer";
-import Header from "../components/common/header/Header";
 import styled from "styled-components";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
 const Layout = () => {
   const location = useLocation();
@@ -33,7 +33,6 @@ const InnerWidth = styled.div`
 
 const Content = styled.div`
   flex: 1;
-  overflow-y: auto;
   padding-bottom: 87px; /* 푸터의 높이 */
   height: calc(100vh - 174px); /* 헤더와 푸터를 제외한 높이 */
 `;
