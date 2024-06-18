@@ -78,7 +78,7 @@ const OrderDetail = () => {
 
       <TitleText>주문 상품 정보</TitleText>
       <ProductInfo>
-        <div style={{ border: "1px solid #cccccc" }}>
+        <div style={{ border: "1px solid #f0f0f0" }}>
           <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
         </div>
         <RightColumn>
