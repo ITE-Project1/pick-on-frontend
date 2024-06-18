@@ -9,6 +9,7 @@ import Order from './pages/admin/Order';
 import Users from './pages/admin/Users';
 import My from './pages/admin/My';
 import Products from "./pages/admin/Products";
+import ProductList from './pages/user/ProductList';
 
 // TODO: 특정 조건을 만족하지 않는 유저의 Route 접근 제한 처리
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path='/admin/users' element={<Users />} />
             <Route path='/admin/my' element={<My />} />
             <Route path='/admin/products' element={<Products />} />
+            <Route path='/user/productlist' element={<ProductList/>} />
           </Route>
         </Routes>
       </Router>

@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../components/common/footer/Footer";
 import Header from "../components/common/header/Header";
-import LogoContainer from "../components/styled/LogoContainer";
 import styled from "styled-components";
 
 const Layout = () => {
@@ -11,11 +10,7 @@ const Layout = () => {
 
   return (
     <InnerWidth>
-      {showHeader && (
-        <LogoContainer>
-          <Header />
-        </LogoContainer>
-      )}
+      {showHeader && <Header />}
       <Outlet />
       <Footer />
     </InnerWidth>
