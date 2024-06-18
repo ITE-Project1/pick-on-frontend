@@ -1,61 +1,108 @@
-import React from 'react';
-import styled from 'styled-components';
-import logo from '../../assets/img/logo.png';
-import LogoContainer from '../../components/styled/LogoContainer';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styled, { css } from "styled-components";
+import axios from "axios";
 
 // 주문 상세 페이지
 const OrderDetail = () => {
-  const orderText = [
-    '주문번호',
-    '주문 일시',
-    '픽업 가능 시각',
-    '발송지점',
-    '픽업 현황',
-  ];
+  const { orderId } = useParams();
+  const [orderDetails, setOrderDetails] = useState(null);
+  // const [buttonStatus, setButtonStatus] = useState("before");
 
-  const productText = ['상품명', '상품ID', '수량', '총 결제 금액'];
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        console.log("Fetching order details...");
+        const response = await axios.get(`http://localhost:8080/admin/orders/${orderId}`);
+        console.log("Order details fetched:", response.data);
+        setOrderDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      }
+    };
 
-  // TODO: 버튼 비활성화 처리 고려하기
-  const receiveBtnClick = () => {};
+    fetchOrderDetails();
+  }, [orderId]);
 
-  // TODO: API 연동하기
+  const receiveBtnClick = async () => {
+    try {
+      console.log("Updating order status...");
+      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`);
+      console.log("Order status updated");
+      // setButtonStatus("after");
+      setOrderDetails((prevDetails) => ({
+        ...prevDetails,
+        pickupStatus: "픽업완료",
+      }));
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
+  if (!orderDetails) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <ContentWrapper>
-      <LogoContainer>
-        <img src={logo} alt='logo' width={145} height={39} />
-      </LogoContainer>
       <TitleText>주문 상세 내역</TitleText>
 
       <OrderInfo>
-        {orderText.map((text) => (
-          <TextWrapper>
-            <div>{text}</div>
-            <div>dfdfd</div>
-          </TextWrapper>
-        ))}
+        <TextWrapper>
+          <div>주문번호</div>
+          <div>{orderDetails.orderId}</div>
+        </TextWrapper>
+        <TextWrapper>
+          <div>주문일시</div>
+          <div>{orderDetails.orderDate}</div>
+        </TextWrapper>
+        <TextWrapper>
+          <div>픽업 가능 예상 시각</div>
+          <div>{orderDetails.pickupDate}</div>
+        </TextWrapper>
+        <TextWrapper>
+          <div>발송지점</div>
+          <div>{orderDetails.fromStore}</div>
+        </TextWrapper>
+        <TextWrapper>
+          <div>픽업 현황</div>
+          <div>{orderDetails.pickupStatus}</div>
+        </TextWrapper>
       </OrderInfo>
 
-      <ButtonWrapper>
-        <ReceiveButton onClick={receiveBtnClick}>고객 수령 완료</ReceiveButton>
-      </ButtonWrapper>
+      {orderDetails.pickupStatus === "픽업가능" && (
+        <ButtonWrapper>
+          <ReceiveButton onClick={receiveBtnClick}>고객 수령 완료</ReceiveButton>
+        </ButtonWrapper>
+      )}
 
+      <TitleText>주문 상품 정보</TitleText>
       <ProductInfo>
-        <div style={{ border: '2px solid black' }}>
-          <img src={logo} alt='logo' width={166} height={179} />
+        <div style={{ border: "1px solid #cccccc" }}>
+          <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
         </div>
         <RightColumn>
-          {productText.map((text) => (
-            <TextWrapper>
-              <ProductText>{text}</ProductText>
-              <ProductText>dfdfd</ProductText>
-            </TextWrapper>
-          ))}
+          <TextWrapper>
+            <ProductText>{orderDetails.productName}</ProductText>
+          </TextWrapper>
+          <TextWrapper>
+            <ProductText>상품코드</ProductText>
+            <ProductText>{orderDetails.productId}</ProductText>
+          </TextWrapper>
+          <TextWrapper>
+            <ProductText>수량</ProductText>
+            <ProductText>{orderDetails.quantity}개</ProductText>
+          </TextWrapper>
+          <TextWrapper>
+            <ProductText>총 결제금액</ProductText>
+            <ProductText>{orderDetails.totalPrice}원</ProductText>
+          </TextWrapper>
         </RightColumn>
       </ProductInfo>
     </ContentWrapper>
   );
 };
+
 export default OrderDetail;
 
 const ContentWrapper = styled.div`
@@ -63,13 +110,13 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 10px 10px 20px;
+  padding: 20px 20px 10px 20px;
 `;
 
 const TitleText = styled.div`
-  font-size: 30px;
-  color: #828282;
-  padding: 20px 0px 80px 0px;
+  font-size: 23px;
+  color: #000000;
+  padding: 30px 0px 40px 0px;
 `;
 
 const TextWrapper = styled.div`
@@ -90,7 +137,6 @@ const ProductInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 100px;
 `;
 
 const RightColumn = styled.div`
@@ -102,7 +148,7 @@ const RightColumn = styled.div`
 `;
 
 const ProductText = styled.span`
-  font-size: 20px;
+  // font-size: 20px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -111,6 +157,7 @@ const ButtonWrapper = styled.div`
   justify-content: flex-end;
   cursor: pointer;
   margin-top: 25px;
+  margin-bottom: 30px;
 `;
 
 const ReceiveButton = styled.div`
@@ -121,4 +168,11 @@ const ReceiveButton = styled.div`
   &:hover {
     background-color: #f0f0f0;
   }
+
+  ${(props) =>
+    props.isClicked &&
+    css`
+      background-color: #d3d3d3;
+      cursor: not-allowed;
+    `}
 `;
