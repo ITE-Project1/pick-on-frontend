@@ -5,6 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
+import SearchWrapper from "../../components/common/SearchWrapper";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -37,12 +38,7 @@ const Order = () => {
   return (
     <Container>
       <Header>
-        <SearchWrapper>
-          <SearchIcon>
-            <SearchSvg />
-          </SearchIcon>
-          <SearchInput type="text" placeholder="Search" value={keyword} onChange={handleSearchChange} />
-        </SearchWrapper>
+        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
         <Controls>
           <Button>지점 수령 완료</Button>
           <Select onChange={handleStoreChange} value={storeId}>
@@ -84,30 +80,6 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
-`;
-
-const SearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-const SearchIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #ccc;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px 20px 10px 40px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 16px;
 `;
 
 const Controls = styled.div`
