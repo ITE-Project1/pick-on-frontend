@@ -1,10 +1,8 @@
-// 주문내역 페이지
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import OrderItem from "./OrderItem";
-import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
+import SearchWrapper from "../../components/common/SearchWrapper";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -37,12 +35,8 @@ const Order = () => {
   return (
     <Container>
       <Header>
-        <SearchWrapper>
-          <SearchIcon>
-            <SearchSvg />
-          </SearchIcon>
-          <SearchInput type="text" placeholder="Search" value={keyword} onChange={handleSearchChange} />
-        </SearchWrapper>
+        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
+
         <Controls>
           <Button>지점 수령 완료</Button>
           <Select onChange={handleStoreChange} value={storeId}>
@@ -54,30 +48,29 @@ const Order = () => {
           </Select>
         </Controls>
       </Header>
-      <OrderTable>
-        <thead>
-          <tr>
-            <th></th>
-            <th>주문코드</th>
-            <th>수량</th>
-            <th>발송 지점</th>
-            <th>픽업 현황</th>
-          </tr>
-        </thead>
-        <tbody>
+      <OrderTableWrapper>
+        <OrderTableHeader>
+          <HeaderItem width="1%"></HeaderItem>
+          <HeaderItem width="40%">주문코드</HeaderItem>
+          <HeaderItem width="9%">수량</HeaderItem>
+          <HeaderItem width="25%">발송 지점</HeaderItem>
+          <HeaderItem width="25%">픽업 현황</HeaderItem>
+        </OrderTableHeader>
+        <OrderTableBody>
           {orders.map((order) => (
             <OrderItem key={order.id} order={order} />
           ))}
-        </tbody>
-      </OrderTable>
+        </OrderTableBody>
+      </OrderTableWrapper>
     </Container>
   );
 };
 export default Order;
 
 const Container = styled.div`
-  padding: 20px;
-  // font-family: "Arial, sans-serif";
+  padding-left: 20px;
+  padding-right: 20px;
+  height: calc(100vh - 189px); /* Header와 Footer를 제외한 높이 */
 `;
 
 const Header = styled.div`
@@ -85,30 +78,6 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
-`;
-
-const SearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-const SearchIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #ccc;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px 20px 10px 40px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 16px;
 `;
 
 const Controls = styled.div`
@@ -136,35 +105,31 @@ const Select = styled.select`
   border-radius: 8px;
 `;
 
-const OrderTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
+const OrderTableWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 
-  th,
-  td {
-    padding: 20px 2px;
-    text-align: center;
-  }
+const OrderTableHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #ddd;
+  padding: 20px 2px;
+  font-size: 12px;
+  font-weight: bold;
+`;
 
-  th {
-    font-size: 12px;
-  }
+const HeaderItem = styled.div`
+  flex: ${(props) => props.width};
+  text-align: center;
+`;
 
-  tr {
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-    font-size: 12px;
-  }
-
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-
-  td {
-    vertical-align: middle;
-  }
-
-  thead tr {
-    border-bottom: 2px solid #ddd;
+const OrderTableBody = styled.div`
+  overflow-y: auto;
+  height: calc(100vh - 325px);
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
+

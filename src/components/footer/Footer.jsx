@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import stock from "../../../assets/img/stock.png";
-import stock_white from "../../../assets/img/stock_white.png";
-import list from "../../../assets/img/list.png";
-import list_white from "../../../assets/img/list_white.png";
-import users from "../../../assets/img/users.png";
-import users_white from "../../../assets/img/users_white.png";
-import my from "../../../assets/img/my.png";
-import my_white from "../../../assets/img/my_white.png";
+import stock from "../../assets/img/stock.png";
+import stock_white from "../../assets/img/stock_white.png";
+import list from "../../assets/img/list.png";
+import list_white from "../../assets/img/list_white.png";
+import users from "../../assets/img/users.png";
+import users_white from "../../assets/img/users_white.png";
+import my from "../../assets/img/my.png";
+import my_white from "../../assets/img/my_white.png";
 import { useNavigate } from "react-router-dom";
 
 // TODO: 유저용 푸터 (홈, 마이) (로그인 상태에 따른 처리)
@@ -106,6 +106,7 @@ const FooterWrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   background-color: #000000;
+  z-index: 10;
 `;
 
 const IconWrapper = styled.div`
