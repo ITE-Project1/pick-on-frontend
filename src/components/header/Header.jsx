@@ -1,6 +1,6 @@
 // 헤더 로고
 import styled from "styled-components";
-import logo from "../../../assets/img/logo.png";
+import logo from "../../assets/img/logo.png";
 
 const Header = () => {
   return (
@@ -30,7 +30,7 @@ const HeaderWrapper = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  margin: 40px 0px 0px 0px;
+  padding: 30px 0px 20px 0px;
   display: flex;
   justify-content: center;
   align-items: center;
