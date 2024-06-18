@@ -3,33 +3,40 @@ import "../../components/styled/ProductList.css";
 import axios from "axios";
 import styled from "styled-components";
 import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
+import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 
 // 정렬 옵션 컴포넌트
-function Sortby({ setSort, selectedSort }) {
+function Sortby({ setSort, selectedSort, setPageNum }) {
+  const handleSortChange = (sortType) => {
+    setSort(sortType);
+    setPageNum(1);  // 페이지 번호를 1로 초기화
+  };
+
   return (
     <div className="sort-by">
       <SortOption 
         isSelected={selectedSort === 'created_at'} 
-        onClick={() => setSort('created_at')}
+        onClick={() => handleSortChange('created_at')}
       >
         최신순
       </SortOption>
       <SortOption 
         isSelected={selectedSort === 'priceLow'} 
-        onClick={() => setSort('priceLow')}
+        onClick={() => handleSortChange('priceLow')}
       >
         낮은 가격순
       </SortOption>
       <SortOption 
         isSelected={selectedSort === 'priceHigh'} 
-        onClick={() => setSort('priceHigh')}
+        onClick={() => handleSortChange('priceHigh')}
       >
         높은 가격순
       </SortOption>
     </div>
   );
 }
+
 
 
 // 상품 카드 컴포넌트
@@ -50,18 +57,27 @@ export const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState('created_at');
+  const [pageNum, setPageNum] = useState(1);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
 
-  useEffect(() => {
+  useEffect(() => { //state 변경시 다시 실행된다
     fetchProducts();
-  }, [sort, keyword]);
+  }, [pageNum, sort, keyword]);
 
   const fetchProducts = async () => {
-    const url = `http://localhost:8080/products/list?page=1&sort=${sort}&keyword=${keyword}`;
+    console.log("pageNum:",pageNum);
+    const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${keyword}`;
     console.log("생성된 URL:", url);
     try {
       const response = await axios.get(url);
       console.log("Response data:", JSON.stringify(response.data, null, 2));
-      setProducts(response.data);
+      if(pageNum > 1) {
+        setProducts(prevProducts => [...prevProducts, ...response.data]);
+      } else {
+        setProducts(response.data);
+      }
+      setHasMoreProducts(response.data.length === 10); // 10개씩 가져오는 것으로 가정
+    
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -70,6 +86,10 @@ export const ProductList = () => {
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
   };
+
+  const handlePageChange = () => {
+    setPageNum(pageNum + 1);
+  }
 
   return (
     <Container>
@@ -88,7 +108,7 @@ export const ProductList = () => {
       </Header>
 
       <SortbyWrapper>
-      <Sortby setSort={setSort} selectedSort={sort} />
+      <Sortby setSort={setSort} selectedSort={sort} setPageNum={setPageNum}/>
       </SortbyWrapper>
 
       <ProductGrid>
@@ -96,6 +116,15 @@ export const ProductList = () => {
           <ProductCard key={product.productId} product={product} />
         ))}
       </ProductGrid>
+
+      <ButtonWrapper>
+        {hasMoreProducts && (
+          <PlusButton onClick={handlePageChange}>
+            <PlusBtnSvg></PlusBtnSvg>
+          </PlusButton>
+        )}
+      </ButtonWrapper>
+
     </Container>
   );
 };
@@ -123,8 +152,12 @@ const SortbyWrapper = styled.div`
 `;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
 `;
+
 
 const Header = styled.div`
   display: flex;
@@ -157,17 +190,20 @@ const SearchInput = styled.input`
   font-size: 16px;
 `;
 
+
 const ProductGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  gap: 20px; //세로 gap
+  justify-content: start; //card 사이에 space 넣기
+  width: 100%;  /* 중앙 정렬을 위해 부모 요소의 너비를 채움 */
+
 `;
 
+
 const Card = styled.div`
-  flex: 1 1 calc(50% - 20px); /* 2개씩 가로로 배치 */
+  flex: 1 1 calc(90% - 20px);
   box-sizing: border-box;
-  padding: 10px;
   text-align: center;
 
   border-radius: 10px;
@@ -223,4 +259,46 @@ const ProductPrice = styled.div`
   font-weight: bold;
   color: black;
   text-align: right;
+`;
+
+
+
+//더보기 버튼
+const PlusButton = styled.button`
+  width: 100px;
+  height: 50px;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, transform 0.3s;
+
+  svg {
+    width: 100px; /* SVG의 너비 설정 */
+    height: 40px; /* SVG의 높이 설정 */
+    fill: #828282;
+    transition: fill 0.3s;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%;
+  margin-top: 20px;
 `;
