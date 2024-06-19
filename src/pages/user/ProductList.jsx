@@ -100,9 +100,6 @@ export const ProductList = () => {
           <Sortby setSort={setSort} selectedSort={sort} setPageNum={setPageNum}/>
         </SortbyWrapper>
       </Header>
-
-      
-
       <ProductWrapper>
         <ProductBody>
           <ProductGrid>
