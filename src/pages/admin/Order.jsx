@@ -9,8 +9,9 @@ const Order = () => {
   const [orders, setOrders] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [storeId, setStoreId] = useState(1);
-  const [pageNum, setPageNum] = useState("1");
+  const [pageNum, setPageNum] = useState(1);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
+  const [selectedOrders, setSelectedOrders] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -18,7 +19,7 @@ const Order = () => {
         axios
           .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`)
           .then((response) => {
-            if (pageNum > 0) {
+            if (pageNum > 1) {
               setOrders((prevOrders) => [...prevOrders, ...response.data]);
             } else {
               setOrders(response.data);
@@ -45,20 +46,36 @@ const Order = () => {
 
   const handlePageChange = () => {
     setPageNum(pageNum + 1);
-  }
+  };
 
   const updateOrders = () => {
     setOrders([]);
-    setPageNum(0);
+    setPageNum(1);
+  };
+
+  const handleSelectOrder = (orderId, isSelected) => {
+    setSelectedOrders((prevSelected) =>
+      isSelected ? [...prevSelected, orderId] : prevSelected.filter((id) => id !== orderId)
+    );
+  };
+
+  const handleCompleteDelivery = async () => {
+    try {
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
+      alert("지점 수령 완료 상태로 변경되었습니다.");
+      updateOrders();
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
     <Container>
       <Header>
         <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
-
         <Controls>
-          <Button>지점 수령 완료</Button>
+          <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
           <Select onChange={handleStoreChange} value={storeId}>
             <option value={1}>천호점</option>
             <option value={2}>목동점</option>
@@ -70,25 +87,25 @@ const Order = () => {
       </Header>
       <OrderTableWrapper>
         <OrderTableHeader>
-          <HeaderItem width="1%"></HeaderItem>
+          <HeaderItem width="5%"></HeaderItem>
           <HeaderItem width="40%">주문코드</HeaderItem>
-          <HeaderItem width="9%">수량</HeaderItem>
+          <HeaderItem width="10%">수량</HeaderItem>
           <HeaderItem width="25%">발송 지점</HeaderItem>
-          <HeaderItem width="25%">픽업 현황</HeaderItem>
+          <HeaderItem width="20%">픽업 현황</HeaderItem>
         </OrderTableHeader>
         <OrderTableBody>
           {orders.map((order) => (
-            <OrderItem key={order.id} order={order} />
+            <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
           ))}
+          <ButtonWrapper>
+            {hasMoreOrders && (
+              <PlusButton onClick={handlePageChange}>
+                <PlusBtnSvg></PlusBtnSvg>
+              </PlusButton>
+            )}
+          </ButtonWrapper>
         </OrderTableBody>
       </OrderTableWrapper>
-      <ButtonWrapper>
-        {hasMoreOrders && (
-          <PlusButton onClick={handlePageChange}>
-            <PlusBtnSvg></PlusBtnSvg>
-          </PlusButton>
-        )}
-      </ButtonWrapper>
     </Container>
   );
 };
@@ -97,14 +114,13 @@ export default Order;
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
-  height: calc(100vh - 189px); /* Header와 Footer를 제외한 높이 */
+  // height: calc(100vh - 173px); /* Header와 Footer를 제외한 높이 */
 `;
 
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
 const Controls = styled.div`
@@ -112,6 +128,7 @@ const Controls = styled.div`
   justify-content: space-between;
   width: 100%;
   max-width: 600px;
+  padding-top: 15px;
 `;
 
 const Button = styled.button`
@@ -135,7 +152,7 @@ const Select = styled.select`
 const OrderTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 242px); /* Header와 Footer, Button을 제외한 높이 */
 `;
 
 const OrderTableHeader = styled.div`
@@ -148,13 +165,13 @@ const OrderTableHeader = styled.div`
 `;
 
 const HeaderItem = styled.div`
-  flex: ${(props) => props.width};
+  width: ${(props) => props.width};
   text-align: center;
 `;
 
 const OrderTableBody = styled.div`
   overflow-y: auto;
-  height: calc(100vh - 325px);
+  flex-grow: 1; /* flex-grow 속성을 사용하여 나머지 공간을 채우도록 설정 */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -162,9 +179,11 @@ const OrderTableBody = styled.div`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: center; /* 버튼을 중앙에 배치 */
+  justify-content: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  position: relative;
 `;
 
 const PlusButton = styled.button`
@@ -172,7 +191,7 @@ const PlusButton = styled.button`
   height: 50px;
   background-color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 10%;
   cursor: pointer;
   display: flex;
   justify-content: center;

@@ -47,7 +47,7 @@ const Footer = () => {
         onClick={stockClick}
         isClicked={clickedIcon === "stock"}
       >
-        <img src={clickedIcon === "stock" ? stock_white : stock} alt="stock" width={36} height={34} />
+        <img src={clickedIcon === "stock" ? stock_white : stock} alt="stock" width={31} height={29} />
         <IconText>재고목록</IconText>
       </IconWrapper>
 
@@ -60,8 +60,8 @@ const Footer = () => {
         <img
           src={clickedIcon === "list" ? list_white : list}
           alt="list"
-          width={40}
-          height={22}
+          width={35}
+          height={19}
           style={{ marginTop: "7px" }}
         />
         <IconText>주문내역</IconText>
@@ -73,7 +73,7 @@ const Footer = () => {
         onClick={usersClick}
         isClicked={clickedIcon === "users"}
       >
-        <img src={clickedIcon === "users" ? users_white : users} alt="users" width={42} height={37} />
+        <img src={clickedIcon === "users" ? users_white : users} alt="users" width={36} height={32} />
         <IconText>유저관리</IconText>
       </IconWrapper>
 
@@ -83,8 +83,7 @@ const Footer = () => {
         onClick={myClick}
         isClicked={clickedIcon === "my"}
       >
-        {/* TODO: my_logo black과 white 크기가 다름. 이미지 교환 필요함 */}
-        <img src={clickedIcon === "my" ? my_white : my} alt="my" width={36} height={36} />
+        <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
         <IconText>마이</IconText>
       </IconWrapper>
     </FooterWrapper>
@@ -94,7 +93,7 @@ export default Footer;
 
 const FooterWrapper = styled.div`
   width: inherit;
-  height: 87px;
+  height: 67px;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -113,7 +112,7 @@ const IconWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 64px;
+  height: 48px;
   justify-content: space-between;
   cursor: pointer;
   color: #828282;
@@ -125,5 +124,5 @@ const IconWrapper = styled.div`
 `;
 
 const IconText = styled.span`
-  font-size: 15px;
+  font-size: 13px;
 `;

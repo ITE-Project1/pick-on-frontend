@@ -33,6 +33,6 @@ const InnerWidth = styled.div`
 
 const Content = styled.div`
   flex: 1;
-  padding-bottom: 87px; /* 푸터의 높이 */
-  height: calc(100vh - 174px); /* 헤더와 푸터를 제외한 높이 */
+  padding-bottom: 67px; /* 푸터의 높이 */
+  height: calc(100vh - 154px); /* 헤더와 푸터를 제외한 높이 */
 `;

@@ -5,9 +5,7 @@ import logo from "../../assets/img/logo.png";
 const Header = () => {
   return (
     <HeaderWrapper>
-      <LogoContainer>
-        <img src={logo} height={39} width={145} alt="logo" />
-      </LogoContainer>
+      <img src={logo} height={39} width={145} alt="logo" />
     </HeaderWrapper>
   );
 };
@@ -27,10 +25,7 @@ const HeaderWrapper = styled.div`
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   z-index: 10;
-`;
 
-const LogoContainer = styled.div`
-  padding: 30px 0px 20px 0px;
   display: flex;
   justify-content: center;
   align-items: center;
