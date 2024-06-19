@@ -8,6 +8,7 @@ import users from "../../../assets/img/users.png";
 import users_white from "../../../assets/img/users_white.png";
 import my from "../../../assets/img/my.png";
 import my_white from "../../../assets/img/my_white.png";
+import {ReactComponent as home} from "../../../assets/svg/home.svg";
 import { useNavigate } from "react-router-dom";
 
 // TODO: 유저용 푸터 (홈, 마이) (로그인 상태에 따른 처리)
