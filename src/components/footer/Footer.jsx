@@ -8,87 +8,104 @@ import users from "../../assets/img/users.png";
 import users_white from "../../assets/img/users_white.png";
 import my from "../../assets/img/my.png";
 import my_white from "../../assets/img/my_white.png";
-import { useNavigate } from "react-router-dom";
+import { ReactComponent as HomeIcon } from "../../../assets/svg/home.svg";
+import { ReactComponent as HomeIconWhite } from "../../../assets/svg/home_white.svg";
+import { useNavigate , useLocation} from "react-router-dom";
 
-// TODO: 유저용 푸터 (홈, 마이) (로그인 상태에 따른 처리)
-// TODO: /admin이면 디폴트로 재고목록으로 설정, 그 외에는 디폴트로 홈으로 설정 (useLocation 이용)
-// TODO: 글자 호버처리시 색깔변경 빼버리고 클릭시 색깔변경으로 하기
 const Footer = () => {
-  // const [isStockClicked, setIsStockClicked] = useState(false);
-  // const [isListClicked, setIsListClicked] = useState(false);
-  // const [isUserClicked, setIsUserClicked] = useState(false);
-  // const [isMyClicked, setIsMyClicked] = useState(false);
-  const [clickedIcon, setClickedIcon] = useState("stock");
-
+  const [clickedIcon, setClickedIcon] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const stockClick = () => {
-    setClickedIcon("stock");
-    navigate("/admin/products");
-  };
-  const listClick = () => {
-    setClickedIcon("list");
-    navigate("/admin/order");
-  };
-  const usersClick = () => {
-    setClickedIcon("users");
-    navigate("/admin/users");
-  };
-  const myClick = () => {
-    setClickedIcon("my");
-    navigate("/admin/my");
+  useEffect(() => {
+    if (location.pathname.startsWith("/admin")) {
+      setClickedIcon("stock");
+    } else {
+      setClickedIcon("home");
+    }
+  }, [location.pathname]);
+
+  const handleIconClick = (iconName, path) => {
+    setClickedIcon(iconName);
+    navigate(path);
   };
 
   return (
     <FooterWrapper>
-      <IconWrapper
-        // onMouseOver={() => setIsStockClicked(true)}
-        // onMouseOut={() => setIsStockClicked(false)}
-        onClick={stockClick}
-        isClicked={clickedIcon === "stock"}
-      >
-        <img src={clickedIcon === "stock" ? stock_white : stock} alt="stock" width={31} height={29} />
-        <IconText>재고목록</IconText>
-      </IconWrapper>
+      {location.pathname.startsWith("/admin") ? (
+        <>
+          <IconWrapper
+            onClick={() => handleIconClick("stock", "/admin/stock")}
+            isClicked={clickedIcon === "stock"}
+          >
+            <img
+              src={clickedIcon === "stock" ? stock_white : stock}
+              alt="stock"
+              width={31}
+              height={29}
+            />
+            <IconText>재고목록</IconText>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => handleIconClick("list", "/admin/order")}
+            isClicked={clickedIcon === "list"}
+          >
+            <img
+              src={clickedIcon === "list" ? list_white : list}
+              alt="list"
+              width={35}
+              height={19}
+              style={{ marginTop: "7px" }}
+            />
+            <IconText>주문내역</IconText>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => handleIconClick("users", "/admin/users")}
+            isClicked={clickedIcon === "users"}
+          >
+            <img
+              src={clickedIcon === "users" ? users_white : users}
+              alt="users"
+              width={36}
+              height={32}
+            />
+            <IconText>유저관리</IconText>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => handleIconClick("my", "/admin/my")}
+            isClicked={clickedIcon === "my"}
+          >
+            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
+            <IconText>마이</IconText>
+          </IconWrapper>
+        </>
+      ) : (
+        <>
+          <IconWrapper
+            onClick={() => handleIconClick("home", "/user/productlist")}
+            isClicked={clickedIcon === "home"}
+          >
+            {clickedIcon === "home" ? (
+              <HomeIconWhite width={40} height={40} />
+            ) : (
+              <HomeIcon width={40} height={40} />
+            )}
+            <IconText>홈</IconText>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => handleIconClick("my", "/user/my")}
+            isClicked={clickedIcon === "my"}
+          >
+            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
+            <IconText>마이</IconText>
+          </IconWrapper>
+        </>
+      )}
 
-      <IconWrapper
-        // onMouseOver={() => setIsListClicked(true)}
-        // onMouseOut={() => setIsListClicked(false)}
-        onClick={listClick}
-        isClicked={clickedIcon === "list"}
-      >
-        <img
-          src={clickedIcon === "list" ? list_white : list}
-          alt="list"
-          width={35}
-          height={19}
-          style={{ marginTop: "7px" }}
-        />
-        <IconText>주문내역</IconText>
-      </IconWrapper>
-
-      <IconWrapper
-        // onMouseOver={() => setIsUserClicked(true)}
-        // onMouseOut={() => setIsUserClicked(false)}
-        onClick={usersClick}
-        isClicked={clickedIcon === "users"}
-      >
-        <img src={clickedIcon === "users" ? users_white : users} alt="users" width={36} height={32} />
-        <IconText>유저관리</IconText>
-      </IconWrapper>
-
-      <IconWrapper
-        // onMouseOver={() => setIsMyClicked(true)}
-        // onMouseOut={() => setIsMyClicked(false)}
-        onClick={myClick}
-        isClicked={clickedIcon === "my"}
-      >
-        <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
-        <IconText>마이</IconText>
-      </IconWrapper>
     </FooterWrapper>
   );
 };
+
 export default Footer;
 
 const FooterWrapper = styled.div`
@@ -100,7 +117,6 @@ const FooterWrapper = styled.div`
   right: 0;
   max-width: 425px;
   margin: 0 auto;
-
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -115,11 +131,6 @@ const IconWrapper = styled.div`
   height: 48px;
   justify-content: space-between;
   cursor: pointer;
-  color: #828282;
-
-  // &:hover {
-  //   color: #f0f0f0;
-  // }
   color: ${(props) => (props.isClicked ? "#ffffff" : "#828282")};
 `;
 
