@@ -8,34 +8,48 @@ import users from "../../assets/img/users.png";
 import users_white from "../../assets/img/users_white.png";
 import my from "../../assets/img/my.png";
 import my_white from "../../assets/img/my_white.png";
-import { ReactComponent as HomeIcon } from "../../../assets/svg/home.svg";
-import { ReactComponent as HomeIconWhite } from "../../../assets/svg/home_white.svg";
+import { ReactComponent as HomeIcon } from ".//../../assets/svg/home.svg";
+import { ReactComponent as HomeIconWhite } from ".//../../assets/svg/home_white.svg";
 import { useNavigate , useLocation} from "react-router-dom";
 
 const Footer = () => {
-  const [clickedIcon, setClickedIcon] = useState("");
+  const [clickedIcon, setClickedIcon] = useState("HomeIcon");
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.pathname.startsWith("/admin")) {
-      setClickedIcon("stock");
-    } else {
-      setClickedIcon("home");
-    }
-  }, [location.pathname]);
-
-  const handleIconClick = (iconName, path) => {
-    setClickedIcon(iconName);
-    navigate(path);
+  const stockClick = () => {
+    setClickedIcon("stock");
+    navigate("/admin/products");
   };
+  const listClick = () => {
+    setClickedIcon("list");
+    navigate("/admin/order");
+  };
+  const usersClick = () => {
+    setClickedIcon("users");
+    navigate("/admin/users");
+  };
+  const myClick = () => {
+    setClickedIcon("my");
+    if (location.pathname.startsWith("/admin")) {
+      navigate("/admin/my");
+    } else {
+      navigate("/user/my");
+    }
+  };
+  const homeClick = () => {
+    setClickedIcon("home");
+    navigate("/user/productlist");
+  };
+
+
 
   return (
     <FooterWrapper>
       {location.pathname.startsWith("/admin") ? (
         <>
           <IconWrapper
-            onClick={() => handleIconClick("stock", "/admin/stock")}
+            onClick={stockClick}
             isClicked={clickedIcon === "stock"}
           >
             <img
@@ -47,7 +61,7 @@ const Footer = () => {
             <IconText>재고목록</IconText>
           </IconWrapper>
           <IconWrapper
-            onClick={() => handleIconClick("list", "/admin/order")}
+            onClick={listClick}
             isClicked={clickedIcon === "list"}
           >
             <img
@@ -60,7 +74,7 @@ const Footer = () => {
             <IconText>주문내역</IconText>
           </IconWrapper>
           <IconWrapper
-            onClick={() => handleIconClick("users", "/admin/users")}
+            onClick={usersClick}
             isClicked={clickedIcon === "users"}
           >
             <img
@@ -72,7 +86,7 @@ const Footer = () => {
             <IconText>유저관리</IconText>
           </IconWrapper>
           <IconWrapper
-            onClick={() => handleIconClick("my", "/admin/my")}
+            onClick={myClick}
             isClicked={clickedIcon === "my"}
           >
             <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
@@ -82,18 +96,18 @@ const Footer = () => {
       ) : (
         <>
           <IconWrapper
-            onClick={() => handleIconClick("home", "/user/productlist")}
+            onClick={homeClick}
             isClicked={clickedIcon === "home"}
           >
             {clickedIcon === "home" ? (
-              <HomeIconWhite width={40} height={40} />
+              <HomeIconWhite width={30} height={30} />
             ) : (
-              <HomeIcon width={40} height={40} />
+              <HomeIcon width={30} height={30} />
             )}
             <IconText>홈</IconText>
           </IconWrapper>
           <IconWrapper
-            onClick={() => handleIconClick("my", "/user/my")}
+            onClick={myClick}
             isClicked={clickedIcon === "my"}
           >
             <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
