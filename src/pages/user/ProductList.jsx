@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../components/styled/ProductList.css";
 import axios from "axios";
 import styled from "styled-components";
+import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
@@ -94,37 +95,28 @@ export const ProductList = () => {
   return (
     <Container>
       <Header>
-        <SearchWrapper>
-          <SearchIcon>
-            <SearchSvg />
-          </SearchIcon>
-          <SearchInput 
-            type="text" 
-            placeholder="Search" 
-            value={keyword} 
-            onChange={handleSearchChange} 
-          />
-        </SearchWrapper>
+        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
+        <SortbyWrapper>
+          <Sortby setSort={setSort} selectedSort={sort} setPageNum={setPageNum}/>
+        </SortbyWrapper>
       </Header>
 
-      <SortbyWrapper>
-      <Sortby setSort={setSort} selectedSort={sort} setPageNum={setPageNum}/>
-      </SortbyWrapper>
-
-      <ProductGrid>
-        {products.map(product => (
-          <ProductCard key={product.productId} product={product} />
-        ))}
-      </ProductGrid>
-
-      <ButtonWrapper>
-        {hasMoreProducts && (
-          <PlusButton onClick={handlePageChange}>
-            <PlusBtnSvg></PlusBtnSvg>
-          </PlusButton>
-        )}
-      </ButtonWrapper>
-
+      <ProductWrapper>
+        <ProductBody>
+          <ProductGrid>
+            {products.map(product => (
+              <ProductCard key={product.productId} product={product} />
+            ))}
+          </ProductGrid>
+          <ButtonWrapper>
+            {hasMoreProducts && (
+              <PlusButton onClick={handlePageChange}>
+                <PlusBtnSvg></PlusBtnSvg>
+              </PlusButton>
+            )}
+          </ButtonWrapper>
+        </ProductBody>
+      </ProductWrapper>
     </Container>
   );
 };
@@ -147,29 +139,39 @@ const SortOption = styled.span`
 `;
 const SortbyWrapper = styled.div`
   // align-self: flex-end;
-  margin-left: 50px;
-  margin-bottom: 20px;
+  margin-top : 20px;
+  margin-left: 30px;
+  margin-bottom: 10px;
 `;
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
+
+// const Header = styled.div`
+//   border : 2px solid green;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   margin-bottom: 10px;
+// `;
 
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
-const SearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px;
+
+const SearchInput = styled.input`
+  width: 100%;  /* 부모 요소의 너비를 100%로 설정 */
+  padding: 10px 20px 10px 40px;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  font-size: 16px;
 `;
 
 const SearchIcon = styled.span`
@@ -181,33 +183,34 @@ const SearchIcon = styled.span`
   color: #ccc;
 `;
 
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px 20px 10px 40px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 16px;
-`;
-
-
+const ProductWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 246px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
+`
+const ProductBody = styled.div`
+  overflow-y: auto;
+  flex-grow: 1;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
 const ProductGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px; //세로 gap
-  justify-content: start; //card 사이에 space 넣기
+  justify-content: space-between; //card 사이에 space 넣기
   width: 100%;  /* 중앙 정렬을 위해 부모 요소의 너비를 채움 */
 
 `;
 
-
 const Card = styled.div`
-  flex: 1 1 calc(90% - 20px);
+  flex: 1 1 calc(200% - 20px);
   box-sizing: border-box;
   text-align: center;
 
   border-radius: 10px;
-  max-width: calc(50% - 20px); /* 2개씩 가로로 배치 */
+  max-width: calc(47% ); /* 2개씩 가로로 배치, 부피조정  */ 
 `;
 
 const ImageWrapper = styled.div`
@@ -226,18 +229,7 @@ const Image = styled.img`
   object-fit: contain; 
 
 `;
-// const ProductName = styled.div`
-//   margin-top: 10px;
-//   font-size: 14px;
-//   color: #828282;
-//   text-align: left;
-//   white-space: pre-line; /* allow for line breaks */
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   display: -webkit-box;
-//   -webkit-line-clamp: 2; /* 두 줄 허용 */
-//   -webkit-box-orient: vertical;
-// `;
+
 const ProductName = styled.div`
   margin-top: 10px;
   font-size: 14px;
@@ -302,3 +294,4 @@ const ButtonWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
 `;
+
