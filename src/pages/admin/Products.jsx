@@ -11,22 +11,27 @@ function Products() {
   const [storeId, setStoreId] = useState('1');
   const [pageNum, setPageNum] = useState('0');
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        axios.get(
+        const response = await axios.get(
           `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
-        ).then(response => {
-          if(pageNum > 0) {
-            setProducts(prevProducts => [...prevProducts, ...response.data.list]);
-          } else {
-            setProducts(response.data.list);
-          }
+        );
+        if(pageNum > 0) {
+          setProducts(prevProducts => [...prevProducts, ...response.data.list]);
+        } else {
+          setProducts(response.data.list);
+        }
 
-          setHasMoreProducts(pageNum < response.data.totalPage - 1);
-        })
+        setHasMoreProducts(pageNum < response.data.totalPage - 1);
       } catch (error) {
+        if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
+          setErrorMessage("원하는 상품 목록을 불러올 수 없습니다.");
+        } else {
+          setErrorMessage("상품 목록을 불러오는 중 오류가 발생했습니다.");
+        }
         console.error("Error fetching products:", error);
       }
     };
@@ -65,6 +70,10 @@ function Products() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const updateErrorMessage = () => {
+    setErrorMessage('');
+  }
+
   return (
     <Container>
       <Header>
@@ -85,6 +94,7 @@ function Products() {
         </SortWrapper>
       </Header>
       <ProductListWrapper>
+        {products.length < 1 && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <ProductList>
           {products.map((product) => (
             <ProductContainer key={product.id}>
@@ -292,3 +302,8 @@ const PlusButton = styled.button`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  margin: 20px 0;
+`;
