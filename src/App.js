@@ -3,14 +3,15 @@ import { Reset } from 'styled-reset';
 import GlobalStyles from './GlobalStyle';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Stock from './pages/admin/Stock';
 import OrderDetail from './pages/admin/OrderDetail';
 import Order from './pages/admin/Order';
 import Users from './pages/admin/Users';
 import My from './pages/admin/My';
 import Products from "./pages/admin/Products";
 import ProductList from './pages/user/ProductList';
+import Login from './pages/common/Login';
 import ProductDetail from './pages/user/ProductDetail';
+
 
 // TODO: 특정 조건을 만족하지 않는 유저의 Route 접근 제한 처리
 function App() {
@@ -21,14 +22,16 @@ function App() {
       <Router>
         <Routes>
           <Route path='/' element={<Layout />}>
-            <Route path='/admin' element={<Stock />} />
+            <Route path='/login' element={<Login />} />
             <Route path='/admin/order' element={<Order />} />
             <Route path='admin/order/:orderId' element={<OrderDetail />} />
             <Route path='/admin/users' element={<Users />} />
             <Route path='/admin/my' element={<My />} />
+            <Route path='/user/my' element={<My />} />
             <Route path='/admin/products' element={<Products />} />
-            <Route path='/user/productlist' element={<ProductList/>} />
+            <Route path='/user/productList' element={<ProductList/>} />
             <Route path='/user/productDetail/:productId' element={<ProductDetail/>} />
+              
           </Route>
         </Routes>
       </Router>

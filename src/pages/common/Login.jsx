@@ -82,7 +82,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: 70vh;
   background-color: #ffffff;
 `;
 
@@ -92,7 +92,7 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 10rem; /* 로그인 폼을 조금 아래로 이동시키기 위해 추가 */
+  margin-top: 0rem; /* 로그인 폼을 조금 아래로 이동시키기 위해 추가 */
 `;
 
 const Title = styled.h1`
