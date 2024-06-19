@@ -22,6 +22,7 @@ const Users = () => {
       } else {
         setUsers(response.data);
       }
+      setHasMoreUsers(response.data.length === 10); // 10개씩 가져오는 것으로 가정
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -51,6 +52,7 @@ const Users = () => {
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
+    setPageNum(0);
     updateUsers();
   };
 
@@ -84,15 +86,15 @@ const Users = () => {
                       handleUserSelection={handleUserSelection}
                       isSelected={selectedUsers.includes(user)}/>
           ))}
+          <ButtonWrapper>
+            {hasMoreUsers && (
+              <PlusButton onClick={handlePageChange}>
+                <PlusBtnSvg></PlusBtnSvg>
+              </PlusButton>
+            )}
+          </ButtonWrapper>
         </OrderTableBody>
       </OrderTableWrapper>
-      <ButtonWrapper>
-        {hasMoreUsers && (
-          <PlusButton onClick={handlePageChange}>
-            <PlusBtnSvg></PlusBtnSvg>
-          </PlusButton>
-        )}
-      </ButtonWrapper>
     </Container>
   );
 };
