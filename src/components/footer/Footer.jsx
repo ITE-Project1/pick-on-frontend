@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import stock from "../../../assets/img/stock.png";
-import stock_white from "../../../assets/img/stock_white.png";
-import list from "../../../assets/img/list.png";
-import list_white from "../../../assets/img/list_white.png";
-import users from "../../../assets/img/users.png";
-import users_white from "../../../assets/img/users_white.png";
-import my from "../../../assets/img/my.png";
-import my_white from "../../../assets/img/my_white.png";
+import stock from "../../assets/img/stock.png";
+import stock_white from "../../assets/img/stock_white.png";
+import list from "../../assets/img/list.png";
+import list_white from "../../assets/img/list_white.png";
+import users from "../../assets/img/users.png";
+import users_white from "../../assets/img/users_white.png";
+import my from "../../assets/img/my.png";
+import my_white from "../../assets/img/my_white.png";
 import { ReactComponent as HomeIcon } from "../../../assets/svg/home.svg";
 import { ReactComponent as HomeIconWhite } from "../../../assets/svg/home_white.svg";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate , useLocation} from "react-router-dom";
 
 const Footer = () => {
   const [clickedIcon, setClickedIcon] = useState("");
@@ -41,8 +41,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "stock" ? stock_white : stock}
               alt="stock"
-              width={40}
-              height={37}
+              width={31}
+              height={29}
             />
             <IconText>재고목록</IconText>
           </IconWrapper>
@@ -53,8 +53,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "list" ? list_white : list}
               alt="list"
-              width={45}
-              height={24}
+              width={35}
+              height={19}
               style={{ marginTop: "7px" }}
             />
             <IconText>주문내역</IconText>
@@ -66,8 +66,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "users" ? users_white : users}
               alt="users"
-              width={46}
-              height={42}
+              width={36}
+              height={32}
             />
             <IconText>유저관리</IconText>
           </IconWrapper>
@@ -75,7 +75,7 @@ const Footer = () => {
             onClick={() => handleIconClick("my", "/admin/my")}
             isClicked={clickedIcon === "my"}
           >
-            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={44} height={38} />
+            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
             <IconText>마이</IconText>
           </IconWrapper>
         </>
@@ -96,11 +96,12 @@ const Footer = () => {
             onClick={() => handleIconClick("my", "/user/my")}
             isClicked={clickedIcon === "my"}
           >
-            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={44} height={38} />
+            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
             <IconText>마이</IconText>
           </IconWrapper>
         </>
       )}
+
     </FooterWrapper>
   );
 };
@@ -109,7 +110,7 @@ export default Footer;
 
 const FooterWrapper = styled.div`
   width: inherit;
-  height: 87px;
+  height: 67px;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -120,19 +121,19 @@ const FooterWrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   background-color: #000000;
+  z-index: 10;
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 64px;
+  height: 48px;
   justify-content: space-between;
   cursor: pointer;
   color: ${(props) => (props.isClicked ? "#ffffff" : "#828282")};
 `;
 
 const IconText = styled.span`
-  font-size: 15px;
-  color: ${(props) => (props.isClicked ? "#ffffff" : "#828282")};
+  font-size: 13px;
 `;

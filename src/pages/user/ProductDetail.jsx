@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
@@ -13,67 +12,11 @@ const Order = () => {
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState([]);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        axios
-          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`)
-          .then((response) => {
-            if (pageNum > 1) {
-              setOrders((prevOrders) => [...prevOrders, ...response.data]);
-            } else {
-              setOrders(response.data);
-            }
-            setHasMoreOrders(response.data.length === 10);
-          });
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    fetchOrders();
-  }, [keyword, storeId, pageNum]);
-
-  const handleSearchChange = (e) => {
-    setKeyword(e.target.value);
-    updateOrders();
-  };
-
-  const handleStoreChange = (e) => {
-    setStoreId(e.target.value);
-    updateOrders();
-  };
-
-  const handlePageChange = () => {
-    setPageNum(pageNum + 1);
-  };
-
-  const updateOrders = () => {
-    setOrders([]);
-    setPageNum(1);
-  };
-
-  const handleSelectOrder = (orderId, isSelected) => {
-    setSelectedOrders((prevSelected) =>
-      isSelected ? [...prevSelected, orderId] : prevSelected.filter((id) => id !== orderId)
-    );
-  };
-
-  const handleCompleteDelivery = async () => {
-    try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
-      alert("지점 수령 완료 상태로 변경되었습니다.");
-      updateOrders();
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      alert("오류가 발생했습니다. 다시 시도해주세요.");
-    }
-  };
-
+  
   return (
     <Container>
       <Header>
-        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
+        {/* <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
         <Controls>
           <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
           <Select onChange={handleStoreChange} value={storeId}>
@@ -83,10 +26,10 @@ const Order = () => {
             <option value={4}>더현대서울점</option>
             <option value={5}>압구정본점</option>
           </Select>
-        </Controls>
+        </Controls> */}
       </Header>
       <OrderTableWrapper>
-        <OrderTableHeader>
+        {/* <OrderTableHeader>
           <HeaderItem width="5%"></HeaderItem>
           <HeaderItem width="40%">주문코드</HeaderItem>
           <HeaderItem width="10%">수량</HeaderItem>
@@ -94,9 +37,7 @@ const Order = () => {
           <HeaderItem width="20%">픽업 현황</HeaderItem>
         </OrderTableHeader>
         <OrderTableBody>
-          {orders.map((order) => (
-            <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
-          ))}
+
           <ButtonWrapper>
             {hasMoreOrders && (
               <PlusButton onClick={handlePageChange}>
@@ -104,7 +45,7 @@ const Order = () => {
               </PlusButton>
             )}
           </ButtonWrapper>
-        </OrderTableBody>
+        </OrderTableBody> */}
       </OrderTableWrapper>
     </Container>
   );
