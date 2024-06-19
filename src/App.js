@@ -3,14 +3,13 @@ import { Reset } from 'styled-reset';
 import GlobalStyles from './GlobalStyle';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Stock from './pages/admin/Stock';
 import OrderDetail from './pages/admin/OrderDetail';
 import Order from './pages/admin/Order';
 import Users from './pages/admin/Users';
 import My from './pages/admin/My';
 import Products from "./pages/admin/Products";
 import ProductList from './pages/user/ProductList';
-import Login from './pages/Login';
+import Login from './pages/common/Login';
 import ProductDetail from './pages/user/ProductDetail';
 
 
@@ -24,11 +23,11 @@ function App() {
         <Routes>
           <Route path='/' element={<Layout />}>
             <Route path='/login' element={<Login />} />
-            <Route path='/admin' element={<Stock />} />
             <Route path='/admin/order' element={<Order />} />
             <Route path='admin/order/:orderId' element={<OrderDetail />} />
             <Route path='/admin/users' element={<Users />} />
             <Route path='/admin/my' element={<My />} />
+            <Route path='/user/my' element={<My />} />
             <Route path='/admin/products' element={<Products />} />
             <Route path='/user/productList' element={<ProductList/>} />
             <Route path='/user/productDetail/:productId' element={<ProductDetail/>} />
