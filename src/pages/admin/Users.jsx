@@ -18,11 +18,11 @@ const Users = () => {
         `http://localhost:8080/admin/users?page=${pageNum}&keyword=${keyword}`
       );
       if(pageNum > 0) {
-        setUsers(prevUsers => [...prevUsers, ...response.data]);
+        setUsers(prevUsers => [...prevUsers, ...response.data.list]);
       } else {
-        setUsers(response.data);
+        setUsers(response.data.list);
       }
-      setHasMoreUsers(response.data.length === 10); // 10개씩 가져오는 것으로 가정
+      setHasMoreUsers(pageNum < response.data.totalPage - 1); // 10개씩 가져오는 것으로 가정
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
