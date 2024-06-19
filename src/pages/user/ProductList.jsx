@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "../../components/styled/ProductList.css";
 import axios from "axios";
 import styled from "styled-components";
+import { Link } from 'react-router-dom';
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
-
 
 // 정렬 옵션 컴포넌트
 function Sortby({ setSort, selectedSort, setPageNum }) {
@@ -44,10 +44,12 @@ function Sortby({ setSort, selectedSort, setPageNum }) {
 function ProductCard({ product }) {
   return (
     <Card>
-      <ImageWrapper>
-        <Image src={product.imageUrl} alt={product.name} />
-      </ImageWrapper>
-        <ProductName>{product.name}</ProductName>
+      <StyledLink to={`/user/productdetail/${product.productId}`}>
+        <ImageWrapper>
+          <Image src={product.imageUrl} alt={product.name} />
+        </ImageWrapper>
+          <ProductName>{product.name}</ProductName>
+      </StyledLink>
         <ProductPrice>{product.price.toLocaleString()}원</ProductPrice>
     </Card>
   );
@@ -293,4 +295,8 @@ const ButtonWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
 `;
-
+// 추가: Link 컴포넌트 스타일링
+const StyledLink = styled(Link)`
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit; /* 부모 요소의 색상 상속 */
+`;
