@@ -24,7 +24,7 @@ const Footer = () => {
 
   const stockClick = () => {
     setClickedIcon("stock");
-    navigate("/admin");
+    navigate("/admin/products");
   };
   const listClick = () => {
     setClickedIcon("list");
