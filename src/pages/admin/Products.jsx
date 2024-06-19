@@ -208,6 +208,7 @@ const ProductContainer = styled.div`
 `;
 
 const Image = styled.img`
+  border: 1px solid #f0f0f0;
   height: 80px;
   width: 74px; /* 이미지 너비 지정 */
   object-fit: cover;
