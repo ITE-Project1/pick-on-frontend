@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import styled from 'styled-components';
-import { ReactComponent as SearchSvg } from "../../assets/img/search.svg";
+import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 function Products() {
@@ -11,22 +11,27 @@ function Products() {
   const [storeId, setStoreId] = useState('1');
   const [pageNum, setPageNum] = useState('0');
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        axios.get(
+        const response = await axios.get(
           `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
-        ).then(response => {
-          if(pageNum > 0) {
-            setProducts(prevProducts => [...prevProducts, ...response.data.list]);
-          } else {
-            setProducts(response.data.list);
-          }
+        );
+        if(pageNum > 0) {
+          setProducts(prevProducts => [...prevProducts, ...response.data.list]);
+        } else {
+          setProducts(response.data.list);
+        }
 
-          setHasMoreProducts(pageNum < response.data.totalPage - 1);
-        })
+        setHasMoreProducts(pageNum < response.data.totalPage - 1);
       } catch (error) {
+        if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
+          setErrorMessage("원하는 상품 목록을 불러올 수 없습니다.");
+        } else {
+          setErrorMessage("상품 목록을 불러오는 중 오류가 발생했습니다.");
+        }
         console.error("Error fetching products:", error);
       }
     };
@@ -61,15 +66,18 @@ function Products() {
     setProducts([]);
   };
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const updateErrorMessage = () => {
+    setErrorMessage('');
+  }
+
   return (
     <Container>
       <Header>
-        <SearchWrapper>
-          <SearchIcon>
-            <SearchSvg />
-          </SearchIcon>
-          <SearchInput type="text" placeholder="Search" value={keyword} onChange={handleSearchChange} />
-        </SearchWrapper>
+        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
         <Controls>
           <Select onChange={handleStoreChange} value={storeId}>
             <option value={1}>천호점</option>
@@ -85,28 +93,32 @@ function Products() {
           <SortKeywords onClick={() => handleSortChange("priceHigh")}>높은 가격순</SortKeywords>
         </SortWrapper>
       </Header>
-      <ProductList>
-        {products.map((product) => (
-          <ProductContainer key={product.id}>
-            <Image alt="Product Image" src={product.imageUrl} />
-            <ProductContent>
-                <ProductCode>{product.id}</ProductCode>
+      <ProductListWrapper>
+        {products.length < 1 && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        <ProductList>
+          {products.map((product) => (
+            <ProductContainer key={product.id}>
+              <Image src={product.imageUrl} alt="Product Image" />
+              <ProductContent>
                 <ProductTitle className="text-wrapper-7">{product.name}</ProductTitle>
-            </ProductContent>
-            <ProductContent>
-              <Quantity>{product.quantity}개</Quantity>
-              <Price>{product.price}원</Price>
-            </ProductContent>
-          </ProductContainer>
-        ))}
-      </ProductList>
-      <ButtonWrapper>
-        {hasMoreProducts && (
-          <PlusButton onClick={handlePageChange}>
-            <PlusBtnSvg></PlusBtnSvg>
-          </PlusButton>
-        )}
-      </ButtonWrapper>
+                <ProductCode>{product.id}</ProductCode>
+              </ProductContent>
+              <ProductContent>
+                <Quantity>{product.quantity}개</Quantity>
+                <Price>{formatPrice(product.price)}원</Price>
+              </ProductContent>
+            </ProductContainer>
+          ))}
+
+          <ButtonWrapper>
+            {hasMoreProducts && (
+              <PlusButton onClick={handlePageChange}>
+                <PlusBtnSvg></PlusBtnSvg>
+              </PlusButton>
+            )}
+          </ButtonWrapper>
+        </ProductList>
+      </ProductListWrapper>
     </Container>
   );
 }
@@ -114,37 +126,15 @@ function Products() {
 export default Products;
 
 const Container = styled.div`
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
-`;
-
-const SearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-const SearchIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #ccc;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px 20px 10px 40px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 16px;
+  border-bottom: 2px solid #ddd;
 `;
 
 const Controls = styled.div`
@@ -152,6 +142,7 @@ const Controls = styled.div`
   justify-content: flex-end;
   width: 100%;
   max-width: 600px;
+  margin-top:15px;
 `;
 
 const Select = styled.select`
@@ -192,10 +183,20 @@ const SortKeywords = styled.button`
   }
 `;
 
+const ProductListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 283px);
+`;
+
 const ProductList = styled.div`
-  margin-top: 15px;
-  margin-left: 20px;
-  margin-right: 20px;
+  //margin-left: 20px;
+  //margin-right: 20px;
+  overflow-y: auto;
+  flex-grow: 1; /* flex-grow 속성을 사용하여 나머지 공간을 채우도록 설정 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ProductContainer = styled.div`
@@ -208,13 +209,20 @@ const ProductContainer = styled.div`
   height: 96px;
 `;
 
-const Image = styled.img`
+const ImageContainer = styled.div`
   border: 1px solid #f0f0f0;
-  height: 80px;
-  width: 74px; /* 이미지 너비 지정 */
-  object-fit: cover;
-  margin-right: 16px; /* 이미지와 다음 내용 사이 여백 */
+  width: 74px; /* 컨테이너 너비 지정 */
+  height: 80px; /* 컨테이너 높이 지정 */
+  overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+  background-size: cover; /* 이미지를 컨테이너에 맞게 크기 조정 */
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 16px; /* 컨테이너와 다음 내용 사이 여백 */
 `;
+
+const Image = ({ src, alt }) => (
+  <ImageContainer style={{ backgroundImage: `url(${src})` }} alt={alt} />
+);
 
 const ProductContent = styled.div`
   //margin-top: 10px;
@@ -239,7 +247,7 @@ const ProductTitle = styled.div`
 
 const Price = styled.div`
   color: #111111;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   align-self: flex-end; /* 오른쪽 맨 아래로 정렬 */
 `;
@@ -256,7 +264,8 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center; /* 버튼을 중앙에 배치 */
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 const PlusButton = styled.button`
@@ -264,12 +273,14 @@ const PlusButton = styled.button`
   height: 50px;
   background-color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 10%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
 
   svg {
     width: 100px; /* SVG의 너비 설정 */
@@ -291,3 +302,8 @@ const PlusButton = styled.button`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  margin: 20px 0;
+`;

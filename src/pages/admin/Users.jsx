@@ -173,12 +173,14 @@ const PlusButton = styled.button`
   height: 50px;
   background-color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 10%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
 
   svg {
     width: 100px; /* SVG의 너비 설정 */
@@ -199,4 +201,3 @@ const PlusButton = styled.button`
     transform: scale(0.95);
   }
 `;
-
