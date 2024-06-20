@@ -8,8 +8,8 @@ import users from "../../assets/img/users.png";
 import users_white from "../../assets/img/users_white.png";
 import my from "../../assets/img/my.png";
 import my_white from "../../assets/img/my_white.png";
-import { ReactComponent as HomeIcon } from ".//../../assets/svg/home.svg";
-import { ReactComponent as HomeIconWhite } from ".//../../assets/svg/home_white.svg";
+import { ReactComponent as HomeIcon } from "../../assets/svg/home.svg";
+import { ReactComponent as HomeIconWhite } from "../../assets/svg/home_white.svg";
 import { useNavigate , useLocation} from "react-router-dom";
 
 const Footer = () => {
@@ -45,78 +45,78 @@ const Footer = () => {
 
 
   return (
-    <FooterWrapper>
-      {location.pathname.startsWith("/admin") ? (
-        <>
-          <IconWrapper
-            onClick={stockClick}
-            isClicked={clickedIcon === "stock"}
-          >
-            <img
-              src={clickedIcon === "stock" ? stock_white : stock}
-              alt="stock"
-              width={31}
-              height={29}
-            />
-            <IconText>재고목록</IconText>
-          </IconWrapper>
-          <IconWrapper
-            onClick={listClick}
-            isClicked={clickedIcon === "list"}
-          >
-            <img
-              src={clickedIcon === "list" ? list_white : list}
-              alt="list"
-              width={35}
-              height={19}
-              style={{ marginTop: "7px" }}
-            />
-            <IconText>주문내역</IconText>
-          </IconWrapper>
-          <IconWrapper
-            onClick={usersClick}
-            isClicked={clickedIcon === "users"}
-          >
-            <img
-              src={clickedIcon === "users" ? users_white : users}
-              alt="users"
-              width={36}
-              height={32}
-            />
-            <IconText>유저관리</IconText>
-          </IconWrapper>
-          <IconWrapper
-            onClick={myClick}
-            isClicked={clickedIcon === "my"}
-          >
-            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
-            <IconText>마이</IconText>
-          </IconWrapper>
-        </>
-      ) : (
-        <>
-          <IconWrapper
-            onClick={homeClick}
-            isClicked={clickedIcon === "home"}
-          >
-            {clickedIcon === "home" ? (
-              <HomeIconWhite width={30} height={30} />
-            ) : (
-              <HomeIcon width={30} height={30} />
-            )}
-            <IconText>홈</IconText>
-          </IconWrapper>
-          <IconWrapper
-            onClick={myClick}
-            isClicked={clickedIcon === "my"}
-          >
-            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
-            <IconText>마이</IconText>
-          </IconWrapper>
-        </>
-      )}
+      <FooterWrapper>
+        {location.pathname.startsWith("/admin") ? (
+            <>
+              <IconWrapper
+                  onClick={stockClick}
+                  isClicked={clickedIcon === "stock"}
+              >
+                <img
+                    src={clickedIcon === "stock" ? stock_white : stock}
+                    alt="stock"
+                    width={31}
+                    height={29}
+                />
+                <IconText>재고목록</IconText>
+              </IconWrapper>
+              <IconWrapper
+                  onClick={listClick}
+                  isClicked={clickedIcon === "list"}
+              >
+                <img
+                    src={clickedIcon === "list" ? list_white : list}
+                    alt="list"
+                    width={35}
+                    height={19}
+                    style={{ marginTop: "7px" }}
+                />
+                <IconText>주문내역</IconText>
+              </IconWrapper>
+              <IconWrapper
+                  onClick={usersClick}
+                  isClicked={clickedIcon === "users"}
+              >
+                <img
+                    src={clickedIcon === "users" ? users_white : users}
+                    alt="users"
+                    width={36}
+                    height={32}
+                />
+                <IconText>유저관리</IconText>
+              </IconWrapper>
+              <IconWrapper
+                  onClick={myClick}
+                  isClicked={clickedIcon === "my"}
+              >
+                <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
+                <IconText>마이</IconText>
+              </IconWrapper>
+            </>
+        ) : (
+            <>
+              <IconWrapper
+                  onClick={homeClick}
+                  isClicked={clickedIcon === "home"}
+              >
+                {clickedIcon === "home" ? (
+                    <HomeIconWhite width={30} height={30} />
+                ) : (
+                    <HomeIcon width={30} height={30} />
+                )}
+                <IconText>홈</IconText>
+              </IconWrapper>
+              <IconWrapper
+                  onClick={myClick}
+                  isClicked={clickedIcon === "my"}
+              >
+                <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
+                <IconText>마이</IconText>
+              </IconWrapper>
+            </>
+        )}
 
-    </FooterWrapper>
+      </FooterWrapper>
   );
 };
 
