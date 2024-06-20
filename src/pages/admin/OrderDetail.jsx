@@ -44,62 +44,62 @@ const OrderDetail = () => {
   }
 
   return (
-    <ContentWrapper>
-      <TitleText>주문 상세 내역</TitleText>
+      <ContentWrapper>
+        <TitleText>주문 상세 내역</TitleText>
 
-      <OrderInfo>
-        <TextWrapper>
-          <div>주문번호</div>
-          <div>{orderDetails.orderId}</div>
-        </TextWrapper>
-        <TextWrapper>
-          <div>주문일시</div>
-          <div>{orderDetails.orderDate}</div>
-        </TextWrapper>
-        <TextWrapper>
-          <div>픽업 가능 예상 시각</div>
-          <div>{orderDetails.pickupDate}</div>
-        </TextWrapper>
-        <TextWrapper>
-          <div>발송지점</div>
-          <div>{orderDetails.fromStore}</div>
-        </TextWrapper>
-        <TextWrapper>
-          <div>픽업 현황</div>
-          <div>{orderDetails.pickupStatus}</div>
-        </TextWrapper>
-      </OrderInfo>
+        <OrderInfo>
+          <TextWrapper>
+            <div>주문번호</div>
+            <div>{orderDetails.orderId}</div>
+          </TextWrapper>
+          <TextWrapper>
+            <div>주문일시</div>
+            <div>{orderDetails.orderDate}</div>
+          </TextWrapper>
+          <TextWrapper>
+            <div>픽업 가능 예상 시각</div>
+            <div>{orderDetails.pickupDate}</div>
+          </TextWrapper>
+          <TextWrapper>
+            <div>발송지점</div>
+            <div>{orderDetails.fromStore}</div>
+          </TextWrapper>
+          <TextWrapper>
+            <div>픽업 현황</div>
+            <div>{orderDetails.pickupStatus}</div>
+          </TextWrapper>
+        </OrderInfo>
 
-      {orderDetails.pickupStatus === "픽업가능" && (
-        <ButtonWrapper>
-          <ReceiveButton onClick={receiveBtnClick}>고객 수령 완료</ReceiveButton>
-        </ButtonWrapper>
-      )}
+        {orderDetails.pickupStatus === "픽업가능" && (
+            <ButtonWrapper>
+              <ReceiveButton onClick={receiveBtnClick}>고객 수령 완료</ReceiveButton>
+            </ButtonWrapper>
+        )}
 
-      <TitleText>주문 상품 정보</TitleText>
-      <ProductInfo>
-        <div style={{ border: "1px solid #f0f0f0" }}>
-          <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
-        </div>
-        <RightColumn>
-          <TextWrapper>
-            <ProductText>{orderDetails.productName}</ProductText>
-          </TextWrapper>
-          <TextWrapper>
-            <ProductText>상품코드</ProductText>
-            <ProductText>{orderDetails.productId}</ProductText>
-          </TextWrapper>
-          <TextWrapper>
-            <ProductText>수량</ProductText>
-            <ProductText>{orderDetails.quantity}개</ProductText>
-          </TextWrapper>
-          <TextWrapper>
-            <ProductText>총 결제금액</ProductText>
-            <ProductText>{orderDetails.totalPrice}원</ProductText>
-          </TextWrapper>
-        </RightColumn>
-      </ProductInfo>
-    </ContentWrapper>
+        <TitleText>주문 상품 정보</TitleText>
+        <ProductInfo>
+          <ImageWrapper>
+            <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
+          </ImageWrapper>
+          <RightColumn>
+            <TextWrapper>
+              <ProductText>{orderDetails.productName}</ProductText>
+            </TextWrapper>
+            <TextWrapper>
+              <ProductText>상품코드</ProductText>
+              <ProductText>{orderDetails.productId}</ProductText>
+            </TextWrapper>
+            <TextWrapper>
+              <ProductText>수량</ProductText>
+              <ProductText>{orderDetails.quantity}개</ProductText>
+            </TextWrapper>
+            <TextWrapper>
+              <ProductText>총 결제금액</ProductText>
+              <ProductText>{orderDetails.totalPrice}원</ProductText>
+            </TextWrapper>
+          </RightColumn>
+        </ProductInfo>
+      </ContentWrapper>
   );
 };
 
@@ -111,6 +111,15 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px 20px 10px 20px;
+`;
+
+const ImageWrapper = styled.div`
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
 `;
 
 const TitleText = styled.div`
