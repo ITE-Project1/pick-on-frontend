@@ -139,6 +139,7 @@ const SortbyWrapper = styled.div`
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
+  padding-top: 15px;
 `;
 
 const Header = styled.div`
@@ -150,7 +151,7 @@ const Header = styled.div`
 const ProductWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 242px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
+  height: calc(100vh - 264px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
 `;
 
 const ProductBody = styled.div`
