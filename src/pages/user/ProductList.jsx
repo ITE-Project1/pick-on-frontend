@@ -91,9 +91,6 @@ export const ProductList = () => {
           </div>
         </SortbyWrapper>
       </Header>
-
-      
-
       <ProductWrapper>
         <ProductBody>
           <ProductGrid>
@@ -139,7 +136,9 @@ const SortbyWrapper = styled.div`
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 15px;
+    &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Header = styled.div`
@@ -151,7 +150,7 @@ const Header = styled.div`
 const ProductWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 264px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
+  height: calc(100vh - 247px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
 `;
 
 const ProductBody = styled.div`
@@ -174,7 +173,7 @@ const Card = styled.div`
   flex: 1 1 calc(200% - 20px);
   box-sizing: border-box;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px; //카드 사이 간격
   border-radius: 10px;
   max-width: calc(47% ); /* 2개씩 가로로 배치, 부피조정  */ 
 `;
