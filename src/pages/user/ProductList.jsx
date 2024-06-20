@@ -4,68 +4,24 @@ import axios from "axios";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
 import SearchWrapper from "../../components/common/SearchWrapper";
-import { ReactComponent as SearchSvg } from "../../assets/svg/search.svg";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
-// 정렬 옵션 컴포넌트
-function Sortby({ setSort, selectedSort, setPageNum }) {
-  const handleSortChange = (sortType) => {
-    setSort(sortType);
-    setPageNum(1);  // 페이지 번호를 1로 초기화
-  };
-
-  return (
-    <div className="sort-by">
-      <SortOption 
-        isSelected={selectedSort === 'created_at'} 
-        onClick={() => handleSortChange('created_at')}
-      >
-        최신순
-      </SortOption>
-      <SortOption 
-        isSelected={selectedSort === 'priceLow'} 
-        onClick={() => handleSortChange('priceLow')}
-      >
-        낮은 가격순
-      </SortOption>
-      <SortOption 
-        isSelected={selectedSort === 'priceHigh'} 
-        onClick={() => handleSortChange('priceHigh')}
-      >
-        높은 가격순
-      </SortOption>
-    </div>
-  );
-}
-
-
-
-// 상품 카드 컴포넌트
-function ProductCard({ product }) {
-  return (
-    <Card>
-      <StyledLink to={`/user/productdetail/${product.productId}`}>
-        <ImageWrapper>
-          <Image src={product.imageUrl} alt={product.name} />
-        </ImageWrapper>
-          <ProductName>{product.name}</ProductName>
-      </StyledLink>
-        <ProductPrice>{product.price.toLocaleString()}원</ProductPrice>
-    </Card>
-  );
-}
-
-// 상품 목록 컴포넌트
 export const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState('created_at');
   const [pageNum, setPageNum] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => { //state 변경시 다시 실행된다
+  useEffect(() => { 
     fetchProducts();
   }, [pageNum, sort, keyword]);
+
+  useEffect(() => {
+    // keyword가 변경될 때마다 페이지 맨 위로 스크롤 이동
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [keyword]);
 
   const fetchProducts = async () => {
     console.log("pageNum:",pageNum);
@@ -75,31 +31,64 @@ export const ProductList = () => {
       const response = await axios.get(url);
       console.log("Response data:", JSON.stringify(response.data, null, 2));
       if(pageNum > 1) {
-        setProducts(prevProducts => [...prevProducts, ...response.data]);
+        setProducts(prevProducts => [...prevProducts, ...response.data.list]);
       } else {
-        setProducts(response.data);
+        setProducts(response.data.list);
       }
-      setHasMoreProducts(response.data.length === 10); // 10개씩 가져오는 것으로 가정
-    
+
+      setHasMoreProducts(pageNum < response.data.totalPage);
     } catch (error) {
+      if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
+        setErrorMessage("원하는 상품 목록을 불러올 수 없습니다.");
+      } else {
+        setErrorMessage("상품 목록을 불러오는 중 오류가 발생했습니다.");
+      }
       console.error("Error fetching products:", error);
     }
   };
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
+    setPageNum(1);
+    setProducts([]); // 제품 목록 초기화
+
   };
 
   const handlePageChange = () => {
     setPageNum(pageNum + 1);
-  }
+  };
+
+  const handleSortChange = (sortType) => {
+    setSort(sortType);
+    setPageNum(1);  // 페이지 번호를 1로 초기화
+    setProducts([]); // 제품 목록 초기화
+  };
 
   return (
     <Container>
       <Header>
         <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
         <SortbyWrapper>
-          <Sortby setSort={setSort} selectedSort={sort} setPageNum={setPageNum}/>
+          <div className="sort-by">
+            <SortOption 
+              isSelected={sort === 'created_at'} 
+              onClick={() => handleSortChange('created_at')}
+            >
+              최신순
+            </SortOption>
+            <SortOption 
+              isSelected={sort === 'priceLow'} 
+              onClick={() => handleSortChange('priceLow')}
+            >
+              낮은 가격순
+            </SortOption>
+            <SortOption 
+              isSelected={sort === 'priceHigh'} 
+              onClick={() => handleSortChange('priceHigh')}
+            >
+              높은 가격순
+            </SortOption>
+          </div>
         </SortbyWrapper>
       </Header>
 
@@ -115,7 +104,7 @@ export const ProductList = () => {
           <ButtonWrapper>
             {hasMoreProducts && (
               <PlusButton onClick={handlePageChange}>
-                <PlusBtnSvg></PlusBtnSvg>
+                <PlusBtnSvg />
               </PlusButton>
             )}
           </ButtonWrapper>
@@ -129,7 +118,6 @@ export default ProductList;
 
 // 스타일 컴포넌트 정의
 
-
 const SortOption = styled.span`
   padding: 0 20px;
   cursor: pointer;
@@ -141,11 +129,11 @@ const SortOption = styled.span`
     text-decoration: underline;
   }
 `;
+
 const SortbyWrapper = styled.div`
-  // align-self: flex-end;
   margin-top : 20px;
   margin-left: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const Container = styled.div`
@@ -153,66 +141,39 @@ const Container = styled.div`
   padding-right: 20px;
 `;
 
-
-// const Header = styled.div`
-//   border : 2px solid green;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   margin-bottom: 10px;
-// `;
-
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-
-const SearchInput = styled.input`
-  width: 100%;  /* 부모 요소의 너비를 100%로 설정 */
-  padding: 10px 20px 10px 40px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 16px;
-`;
-
-const SearchIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #ccc;
-`;
-
 const ProductWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 246px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
-`
+  height: calc(100vh - 242px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
+`;
+
 const ProductBody = styled.div`
   overflow-y: auto;
   flex-grow: 1;
   &::-webkit-scrollbar {
     display: none;
   }
-`
+`;
+
 const ProductGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px; //세로 gap
   justify-content: space-between; //card 사이에 space 넣기
   width: 100%;  /* 중앙 정렬을 위해 부모 요소의 너비를 채움 */
-
 `;
 
 const Card = styled.div`
   flex: 1 1 calc(200% - 20px);
   box-sizing: border-box;
   text-align: center;
-
+  margin-bottom: 30px;
   border-radius: 10px;
   max-width: calc(47% ); /* 2개씩 가로로 배치, 부피조정  */ 
 `;
@@ -224,14 +185,13 @@ const ImageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border : 0.5px solid #f0f0f0; 
+  border : 0.5px solid #828282; 
 `;
 
 const Image = styled.img`
   width: auto;
   height: 100%;
   object-fit: contain; 
-
 `;
 
 const ProductName = styled.div`
@@ -257,9 +217,6 @@ const ProductPrice = styled.div`
   text-align: right;
 `;
 
-
-
-//더보기 버튼
 const PlusButton = styled.button`
   width: 100px;
   height: 50px;
@@ -298,8 +255,23 @@ const ButtonWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
 `;
-// 추가: Link 컴포넌트 스타일링
+
 const StyledLink = styled(Link)`
   text-decoration: none; /* 밑줄 제거 */
   color: inherit; /* 부모 요소의 색상 상속 */
 `;
+
+function ProductCard({ product }) {
+  return (
+    <Card>
+      <StyledLink to={`/user/productDetail/${product.productId}`}> {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
+        <ImageWrapper>
+          <Image src={product.imageUrl} alt={product.name} />
+        </ImageWrapper>
+        <ProductName>{product.name}</ProductName>
+      </StyledLink>
+
+      <ProductPrice>{product.price.toLocaleString()}원</ProductPrice>
+    </Card>
+  );
+}

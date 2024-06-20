@@ -95,12 +95,14 @@ const ProductDetail = () => {
               <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
                 <option value="">지점 선택</option>
                 {stores.map(store => (
-                  <option key={store.storeId} value={store.storeId}>
-                     {storeIdMap[store.storeId]} (Quantity: {store.quantity}) {store.quantity >= counter ? '바로픽업 가능' : ''}
-                  </option>
+                  <option key={store.storeId} value={store.storeId} dangerouslySetInnerHTML={renderOptionText(store, counter)} />
                 ))}
               </Select>
-        </StoreSelectorWrapper>
+            </StoreSelectorWrapper>
+
+            <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다.</Text>
+            
+            <OrderButton textColor="white" >픽업하기</OrderButton>
         </ProductInfoBody>
       </ProductInfoWrapper>
     </Container>
@@ -120,12 +122,18 @@ const Header = styled.div`
 `;
 
 const ProductInfoWrapper = styled.div`
+  // display: flex;
+  margin-left: 40px;
+  margin-right: 40px;
+  align-items: center;
+
   display: flex;
   flex-direction: column;
   height: calc(100vh - 246px);
 `;
 
 const ProductInfoBody = styled.div`
+  // border: 1px solid blue;
   overflow-y: auto;
   flex-grow: 1;
   &::-webkit-scrollbar {
@@ -134,7 +142,7 @@ const ProductInfoBody = styled.div`
 `;
 const ImageWrapper = styled.div`
   border: 1px solid #f0f0f0; 
-  width: 300px;
+  width: 100%;
   height: 400px;
   display: flex;
   justify-content: center;
@@ -143,6 +151,7 @@ const ImageWrapper = styled.div`
 `;
 
 const Image = styled.img`
+  align-items: center;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -226,28 +235,37 @@ const StoreSelectorWrapper = styled.div`
 const Select = styled.select`
   padding: 5px;
   width: 100%; 
-  height: 50px;
-  border: 1px solid #red;
+  height: 40px; /* 드롭박스 높이를 조정 */
   border-radius: 4px;
-  color: #828282;
+  color: #828282; //글자 색깔
   width: 100%; /* 부모 요소의 너비에 맞추기 */
   box-sizing: border-box; /* 패딩과 보더를 포함한 너비 계산 */
   font-size: 16px; /* 글자 크기를 키워서 드롭박스 크기를 조정 */
-  height: 50px; /* 드롭박스 높이를 조정 */
+
+  // 드롭박스 클릭시 나타나는 옵션박스의 크기 조정
+  option {
+      padding: 50px; /* 옵션의 패딩 조정 */
+      font-size: 17px; /* 옵션의 글꼴 크기 조정 */
+    }
 `;
 
-// const Select = styled.select`
-//   padding: 10px; /* 패딩을 키워서 크기를 조정 */
-//   border: 1px solid #ccc;
-//   border-radius: 4px;
-//   width: 100%; /* 부모 요소의 너비에 맞추기 */
-//   box-sizing: border-box; /* 패딩과 보더를 포함한 너비 계산 */
-//   font-size: 16px; /* 글자 크기를 키워서 드롭박스 크기를 조정 */
-//   height: 50px; /* 드롭박스 높이를 조정 */
-//   option {
-//     color: black; /* 기본 옵션 색상 */
-//   }
 
+
+const renderOptionText = (store, counter) => {
+  const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
+  const highlight = store.quantity >= counter ? ' 바로픽업 가능' : '';
+
+  return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
+};
+
+const HighlightedText = styled.span`
+  color: green;
+`;
+const Text = styled.div`
+  margin-top: 20px;
+  font-size: 16px;
+  color: #46675C;
+`
 const StoreList = styled.div`
   margin-top: 20px;
 
@@ -265,4 +283,18 @@ const StoreList = styled.div`
   }
 `;
 
+const OrderButton = styled.button`
+  margin-top: 30px;
+  color: white;
+  background-color: black;
 
+  border-radius: 30px;
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ 
+`
