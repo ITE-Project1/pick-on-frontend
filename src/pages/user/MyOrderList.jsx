@@ -40,7 +40,7 @@ function MyOrderList() {
   }, [pageNum]);
 
   const handlePageChange = () => {
-    setPageNum(prevPageNum => prevPageNum + 1);
+    setPageNum(pageNum + 1);
   };
 
   const formatPrice = (price) => {
