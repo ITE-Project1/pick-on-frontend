@@ -1,7 +1,13 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+export const GlobalStyle = createGlobalStyle`
+  .screen * {
+    padding: 0 !important; /* 상위 컴포넌트의 모든 자식 요소의 패딩을 0으로 설정 */
+  }
+`;
 
 export const My = () => {
   const navigate = useNavigate(); 

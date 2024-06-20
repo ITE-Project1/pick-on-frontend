@@ -1,35 +1,46 @@
-// 헤더 로고
-import React from "react";
-import { useLocation } from "react-router-dom";
-import styled from "styled-components";
-import logo from "../../../assets/img/logo.png"; // 로고 이미지 경로를 맞춰주세요
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { useLocation } from 'react-router-dom';
+import logo from "../../assets/img/logo.png";
 
 const Header = () => {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  const specialPages = ['/user/my', '/login', '/register']; // 특정 페이지 경로들을 배열로 정의
+  const isSpecialPage = specialPages.includes(location.pathname);
 
   return (
-      <LogoContainer isLoginPage={isLoginPage}>
-        <img className={isLoginPage ? "element" : ""} src={logo} height={39} width={145} alt="logo" />
-      </LogoContainer>
+    <HeaderWrapper isSpecialPage={isSpecialPage}>
+      <img src={logo} height={39} width={145} alt="logo" />
+    </HeaderWrapper>
   );
 };
-
 export default Header;
 
-const LogoContainer = styled.div`
+const HeaderWrapper = styled.div`
+  width: inherit;
+  height: 87px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 425px;
+  margin: 0 auto;
+
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  z-index: 10;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 128px;
-  background-color: transparent;
-  position: ${({ isLoginPage }) => (isLoginPage ? 'fixed' : 'static')};
-  top: ${({ isLoginPage }) => (isLoginPage ? '100px' : 'auto')}; /* 로그인 페이지인 경우 더 아래로 위치 */
-  left: 0;
-  right: 0;
-    z-index: 1000;
 
-  img.element {
-    object-fit: cover;
-  }
+  ${(props) =>
+    props.isSpecialPage &&
+    css`
+      border : none;
+      top : 100px;
+      position : static;
+      padding-top: 100px; /* 로고를 아래로 내리기 위해 패딩 추가 */
+    `}
 `;
