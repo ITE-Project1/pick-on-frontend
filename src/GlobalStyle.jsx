@@ -6,6 +6,10 @@ const GlobalStyles = createGlobalStyle`
   *::after {
     box-sizing: border-box;
   }
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   body {
     font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
