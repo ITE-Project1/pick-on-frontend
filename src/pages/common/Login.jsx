@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate(); // useNavigate를 함수로 호출합니다.
 
   const handleSubmit = async (e) => {
@@ -18,14 +19,19 @@ export const Login = () => {
       } else {
         navigate("/user/productlist");
       }
-      console.log(response.data);
     } catch (error) {
-      console.error("Login failed:", error);
+      console.log(error.response.data);
+      if (error.response) {
+        setErrors(error.response.data);
+      }else {
+        console.error("Login failed:", error);
+      }
+      
     }
   };
 
   const handleSignup = () => {
-    navigate("/signup");
+    navigate("/register");
   };
 
   return (
@@ -35,23 +41,24 @@ export const Login = () => {
           <LoginForm onSubmit={handleSubmit}>
             <InputContainer>
               <InputField>
-                <Label htmlFor="username">아이디</Label>
                 <Input
                     id="username"
                     type="text"
+                    placeholder="아이디 입력"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
               </InputField>
               <InputField>
-                <Label htmlFor="password">비밀번호</Label>
                 <Input
                     id="password"
                     type="password"
+                    placeholder="패스워드 입력"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
               </InputField>
+              {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
             </InputContainer>
             <OptionsContainer>
               <RememberMe>
@@ -129,6 +136,12 @@ const Input = styled.input`
   border: 1px solid #e5e5e5;
   border-radius: 3px;
   outline: none;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin-top: 0.5rem;
 `;
 
 const OptionsContainer = styled.div`
