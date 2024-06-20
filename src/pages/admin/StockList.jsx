@@ -90,9 +90,9 @@ function StockList() {
           </Select>
         </Controls>
         <SortWrapper>
-          <SortKeywords onClick={() => handleSortChange("")}>최신순</SortKeywords>
-          <SortKeywords onClick={() => handleSortChange("priceLow")}>낮은 가격순</SortKeywords>
-          <SortKeywords onClick={() => handleSortChange("priceHigh")}>높은 가격순</SortKeywords>
+          <SortKeywords isSelected={sort === ""} onClick={() => handleSortChange("")}>최신순</SortKeywords>
+          <SortKeywords isSelected={sort === "priceLow"} onClick={() => handleSortChange("priceLow")}>낮은 가격순</SortKeywords>
+          <SortKeywords isSelected={sort === "priceHigh"} onClick={() => handleSortChange("priceHigh")}>높은 가격순</SortKeywords>
         </SortWrapper>
       </Header>
       <ProductListWrapper>
@@ -160,29 +160,15 @@ const SortWrapper = styled.div`
   display: flex;
 `;
 
-const SortKeywords = styled.button`
-  justify-content: space-between;
-  color: #828282;
-  font-size: 12px;
-  font-weight: 400;
-  margin-left: 20px;
-  background: none;
-  border: none;
-  padding: 0;
+const SortKeywords = styled.span`
+  padding: 0 20px;
   cursor: pointer;
-  transition: color 0.3s, font-weight 0.3s; /* 부드러운 전환 효과 추가 */
-
+  font-size: 12px;
+  color: ${(props) => (props.isSelected ? "#46675C " : "#828282")}; // 선택된 항목의 색깔 변경
+  font-weight: ${(props) => (props.isSelected ? "bold" : "normal")}; // 선택된 항목의 글자 두껍게
+  
   &:hover {
-    color: #333; /* 호버 시 글자 색상 변경 */
-    font-weight: 700; /* 호버 시 글자 굵기 변경 */
-  }
-
-  &:focus {
-    outline: none; /* 포커스 시 테두리 제거 */
-  }
-
-  &:active {
-    color: #555; /* 클릭 시 글자 색상 변경 */
+    text-decoration: underline;
   }
 `;
 
