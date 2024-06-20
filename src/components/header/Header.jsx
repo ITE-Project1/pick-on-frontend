@@ -5,7 +5,7 @@ import logo from "../../assets/img/logo.png";
 
 const Header = () => {
   const location = useLocation();
-  const specialPages = ['/user/my', '/login', '/register']; // 특정 페이지 경로들을 배열로 정의
+  const specialPages = ['/login', '/register']; // 특정 페이지 경로들을 배열로 정의
   const isSpecialPage = specialPages.includes(location.pathname);
 
   return (

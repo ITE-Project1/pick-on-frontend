@@ -1,25 +1,53 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const Screen = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8080/user/logout', {}, { withCredentials: true });
+      if (response.status === 200) {
+        navigate('/login');
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.patch('http://localhost:8080/user/sign-out', {}, { withCredentials: true });
+      if (response.status === 200) {
+        navigate('/login');
+      } else {
+        console.error("Account deletion failed");
+      }
+    } catch (error) {
+      console.error("Account deletion error:", error);
+    }
+  };
+
   return (
-    <Group>
-      <Overlap>
-        <View>
-          <ShoppingInfo>나의 쇼핑 정보</ShoppingInfo>
-          <OrderInfo to="/order">주문 조회</OrderInfo>
-          <Rectangle />
-          <AccountInfo>나의 계정 정보</AccountInfo>
-          <DeleteAccount to="/delete-account">회원 탈퇴</DeleteAccount>
-          <Logout to="/logout">로그아웃</Logout>
-          <Rectangle2 />
-          <Rectangle3 />
-        </View>
-        <Rectangle4 />
-        <UserId>유저아이디</UserId>
-      </Overlap>
-    </Group>
+      <Group>
+        <Overlap>
+          <View>
+            <AccountInfo>나의 계정 정보</AccountInfo>
+            <DeleteAccountLink to="#" onClick={handleDeleteAccount}>회원 탈퇴</DeleteAccountLink>
+            <LogoutLink to="#" onClick={handleLogout}>로그아웃</LogoutLink>
+            <Rectangle2 />
+            <Rectangle3 />
+          </View>
+          <Rectangle4 />
+          <UserId>Admin</UserId>
+        </Overlap>
+      </Group>
   );
 };
 
@@ -40,56 +68,14 @@ const Overlap = styled.div`
 `;
 
 const View = styled.div`
-  padding-top : 2px;
+  padding-top: 2px;
   background-color: #ffffff;
   height: 854px;
   left: 0;
   overflow: hidden;
   position: absolute;
-  top: 0;
+  top: -150px; /* 위로 50px 이동 */
   width: 405px;
-`;
-
-const ShoppingInfo = styled.div`
-  color: #000000;
-  font-family: "Noto Sans-DisplaySemiBold", Helvetica;
-  font-size: 20px;
-  font-weight: 600;
-  height: 48px;
-  left: 30px;
-  letter-spacing: 0;
-  line-height: 34px;
-  position: absolute;
-  top: 249px;
-  width: 336px;
-`;
-
-const OrderInfo = styled(Link)`
-  color: #828282;
-  font-family: "Noto Sans-Medium", Helvetica;
-  font-size: 18px;
-  font-weight: 500;
-  height: 48px;
-  left: 30px;
-  letter-spacing: 0;
-  line-height: 30.6px;
-  position: absolute;
-  top: 306px;
-  width: 336px;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const Rectangle = styled.div`
-  background-color: #000000;
-  height: 4px;
-  left: 29px;
-  position: absolute;
-  top: 298px;
-  width: 425px;
 `;
 
 const AccountInfo = styled.div`
@@ -106,7 +92,7 @@ const AccountInfo = styled.div`
   width: 336px;
 `;
 
-const DeleteAccount = styled(Link)`
+const DeleteAccountLink = styled(Link)`
   color: #828282;
   font-family: "Noto Sans-Medium", Helvetica;
   font-size: 18px;
@@ -119,13 +105,15 @@ const DeleteAccount = styled(Link)`
   top: 458px;
   width: 336px;
   text-decoration: none;
+  display: flex;
+  align-items: center; /* 세로로 가운데 정렬 */
 
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const Logout = styled(Link)`
+const LogoutLink = styled(Link)`
   color: #828282;
   font-family: "Noto Sans-Medium", Helvetica;
   font-size: 18px;
@@ -138,6 +126,8 @@ const Logout = styled(Link)`
   top: 517px;
   width: 336px;
   text-decoration: none;
+  display: flex;
+  align-items: center; /* 세로로 가운데 정렬 */
 
   &:hover {
     text-decoration: underline;
