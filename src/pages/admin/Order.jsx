@@ -14,9 +14,12 @@ const Order = () => {
   const [selectedOrders, setSelectedOrders] = useState([]);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        axios
+    fetchOrders();
+  }, [keyword, storeId, pageNum]);
+
+  const fetchOrders = async () => {
+    try {
+      axios
           .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`)
           .then((response) => {
             if (pageNum > 1) {
@@ -26,36 +29,30 @@ const Order = () => {
             }
             setHasMoreOrders(response.data.length === 10);
           });
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    fetchOrders();
-  }, [keyword, storeId, pageNum]);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
-    updateOrders();
+    setOrders([]);
+    setPageNum(1);
   };
 
   const handleStoreChange = (e) => {
     setStoreId(e.target.value);
-    updateOrders();
+    setOrders([]);
+    setPageNum(1);
   };
 
   const handlePageChange = () => {
     setPageNum(pageNum + 1);
   };
 
-  const updateOrders = () => {
-    setOrders([]);
-    setPageNum(1);
-  };
-
   const handleSelectOrder = (orderId, isSelected) => {
     setSelectedOrders((prevSelected) =>
-      isSelected ? [...prevSelected, orderId] : prevSelected.filter((id) => id !== orderId)
+        isSelected ? [...prevSelected, orderId] : prevSelected.filter((id) => id !== orderId)
     );
   };
 
@@ -63,7 +60,7 @@ const Order = () => {
     try {
       await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
       alert("지점 수령 완료 상태로 변경되었습니다.");
-      updateOrders();
+      setSelectedOrders([]);
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
@@ -71,42 +68,42 @@ const Order = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
-        <Controls>
-          <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
-          <Select onChange={handleStoreChange} value={storeId}>
-            <option value={1}>천호점</option>
-            <option value={2}>목동점</option>
-            <option value={3}>무역센터점</option>
-            <option value={4}>더현대서울점</option>
-            <option value={5}>압구정본점</option>
-          </Select>
-        </Controls>
-      </Header>
-      <OrderTableWrapper>
-        <OrderTableHeader>
-          <HeaderItem width="5%"></HeaderItem>
-          <HeaderItem width="40%">주문코드</HeaderItem>
-          <HeaderItem width="10%">수량</HeaderItem>
-          <HeaderItem width="25%">발송 지점</HeaderItem>
-          <HeaderItem width="20%">픽업 현황</HeaderItem>
-        </OrderTableHeader>
-        <OrderTableBody>
-          {orders.map((order) => (
-            <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
-          ))}
-          <ButtonWrapper>
-            {hasMoreOrders && (
-              <PlusButton onClick={handlePageChange}>
-                <PlusBtnSvg></PlusBtnSvg>
-              </PlusButton>
-            )}
-          </ButtonWrapper>
-        </OrderTableBody>
-      </OrderTableWrapper>
-    </Container>
+      <Container>
+        <Header>
+          <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
+          <Controls>
+            <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
+            <Select onChange={handleStoreChange} value={storeId}>
+              <option value={1}>천호점</option>
+              <option value={2}>목동점</option>
+              <option value={3}>무역센터점</option>
+              <option value={4}>더현대서울점</option>
+              <option value={5}>압구정본점</option>
+            </Select>
+          </Controls>
+        </Header>
+        <OrderTableWrapper>
+          <OrderTableHeader>
+            <HeaderItem width="5%"></HeaderItem>
+            <HeaderItem width="40%">주문코드</HeaderItem>
+            <HeaderItem width="10%">수량</HeaderItem>
+            <HeaderItem width="25%">발송 지점</HeaderItem>
+            <HeaderItem width="20%">픽업 현황</HeaderItem>
+          </OrderTableHeader>
+          <OrderTableBody>
+            {orders.map((order) => (
+                <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
+            ))}
+            <ButtonWrapper>
+              {hasMoreOrders && (
+                  <PlusButton onClick={handlePageChange}>
+                    <PlusBtnSvg></PlusBtnSvg>
+                  </PlusButton>
+              )}
+            </ButtonWrapper>
+          </OrderTableBody>
+        </OrderTableWrapper>
+      </Container>
   );
 };
 export default Order;
