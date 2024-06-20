@@ -5,7 +5,7 @@ import logo from "../../assets/img/logo.png";
 
 const Header = () => {
   const location = useLocation();
-  const specialPages = ['/user/my', '/login', '/yetanother']; // 특정 페이지 경로들을 배열로 정의
+  const specialPages = ['/user/my', '/login', '/register']; // 특정 페이지 경로들을 배열로 정의
   const isSpecialPage = specialPages.includes(location.pathname);
 
   return (
@@ -41,6 +41,6 @@ const HeaderWrapper = styled.div`
       border : none;
       top : 100px;
       position : static;
-      padding-top: 20px; /* 로고를 아래로 내리기 위해 패딩 추가 */
+      padding-top: 100px; /* 로고를 아래로 내리기 위해 패딩 추가 */
     `}
 `;
