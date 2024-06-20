@@ -27,7 +27,9 @@ function Products() {
 
         setHasMoreProducts(pageNum < response.data.totalPage - 1);
       } catch (error) {
-        if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
+        // if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
+       if (error.response) {
+
           setErrorMessage("원하는 상품 목록을 불러올 수 없습니다.");
         } else {
           setErrorMessage("상품 목록을 불러오는 중 오류가 발생했습니다.");
