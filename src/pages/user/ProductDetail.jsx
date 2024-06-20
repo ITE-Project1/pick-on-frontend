@@ -11,7 +11,6 @@ const storeIdMap = {
   5: '압구정본점'
 };
 
-
 const ProductDetail = () => {
   const { productId } = useParams(); // URL에서 productId를 추출
   const location = useLocation(); // 현재 위치 객체를 가져옴
@@ -23,6 +22,7 @@ const ProductDetail = () => {
   const [selectedStore, setSelectedStore] = useState(''); // 선택된 지점 상태 추가
   const [loading, setLoading] = useState(true);
   const [counter, setCounter] = useState(1); 
+  const [directPickup, setDirectPickup] = useState(0); // 바로 픽업 가능 상태 추가
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,7 +60,50 @@ const ProductDetail = () => {
   };
 
   const handleStoreChange = (event) => {
-    setSelectedStore(event.target.value);
+    const selectedStoreId = event.target.value;
+    setSelectedStore(selectedStoreId);
+    const selectedStore = stores.find(store => store.storeId === parseInt(selectedStoreId));
+    if (selectedStore && selectedStore.quantity >= counter) {
+      setDirectPickup(1);
+    } else {
+      setDirectPickup(0);
+    }
+  };
+
+  const renderOptionText = (store, counter) => {
+    const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
+    const highlight = store.quantity >= counter ? ' 바로픽업 가능' : '';
+  
+    return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
+  };
+
+  const handlePickup = async () => {
+    if (!selectedStore) {
+      alert('지점을 선택해주세요.');
+      return;
+    }
+    const selectedStoreData = stores.find(store => store.storeId === parseInt(selectedStore));
+    if (!selectedStoreData) {
+      alert('유효한 지점을 선택해주세요.');
+      return;
+    }
+
+    const payload = {
+      "productId": product.productId,
+      "quantity": counter,
+      "storeId": parseInt(selectedStore),
+      "directPickup": directPickup
+    };
+    console.log('Sending payload:', payload); // payload를 출력하여 확인
+
+    try {
+      const response = await axios.post('http://localhost:8080/orders', payload);
+      console.log('Server response:', response.data);
+      alert('픽업 요청이 성공적으로 전송되었습니다.');
+    } catch (error) {
+      console.error('Error sending pickup request:', error);
+      alert('픽업 요청을 전송하는 중 오류가 발생했습니다.');
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -72,37 +115,37 @@ const ProductDetail = () => {
       <Header></Header>
       <ProductInfoWrapper>
         <ProductInfoBody>
-            <ImageWrapper>
+          <ImageWrapper>
             <Image src={product.imageUrl} alt={product.name} />
-            </ImageWrapper>
-            
-            <ProductName>
+          </ImageWrapper>
+
+          <ProductName>
             <h1>{product.name}</h1>
-            </ProductName>
-            <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
+          </ProductName>
+          <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
 
-            <ProductInfo>{product.description}
-                <Line><hr></hr></Line>
-            </ProductInfo>
-            
-            <CounterWrapper>
-                <Button onClick={handleDecrement} disabled={counter===1}>-</Button>
-                <Counter>{counter}</Counter>
-                <Button onClick={handleIncrement} disabled={counter===10}>+</Button>
-            </CounterWrapper>
+          <ProductInfo>{product.description}
+            <Line><hr /></Line>
+          </ProductInfo>
 
-            <StoreSelectorWrapper>
-              <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
-                <option value="">지점 선택</option>
-                {stores.map(store => (
-                  <option key={store.storeId} value={store.storeId} dangerouslySetInnerHTML={renderOptionText(store, counter)} />
-                ))}
-              </Select>
-            </StoreSelectorWrapper>
+          <CounterWrapper>
+            <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
+            <Counter>{counter}</Counter>
+            <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
+          </CounterWrapper>
 
-            <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다.</Text>
-            
-            <OrderButton textColor="white" >픽업하기</OrderButton>
+          <StoreSelectorWrapper>
+            <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
+              <option value="">지점 선택</option>
+              {stores.map(store => (
+                <option key={store.storeId} value={store.storeId} dangerouslySetInnerHTML={renderOptionText(store, counter)} />
+              ))}
+            </Select>
+          </StoreSelectorWrapper>
+
+          <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다.</Text>
+
+          <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
         </ProductInfoBody>
       </ProductInfoWrapper>
     </Container>
@@ -140,6 +183,7 @@ const ProductInfoBody = styled.div`
     display: none;
   }
 `;
+
 const ImageWrapper = styled.div`
   border: 1px solid #f0f0f0; 
   width: 100%;
@@ -147,7 +191,6 @@ const ImageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-//   background-color: #f0f0f0;
 `;
 
 const Image = styled.img`
@@ -164,12 +207,6 @@ const ProductName = styled.div`
   text-align: left;
   font-weight: bold;
   height: 40px;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   display: -webkit-box;
-//   -webkit-line-clamp: 2;
-//   -webkit-box-orient: vertical;
-
 `;
 
 const ProductPrice = styled.div`
@@ -182,8 +219,6 @@ const ProductPrice = styled.div`
 
 const ProductInfo = styled.div`
   margin-top: 40px;
-
-
 `;
 
 const Line = styled.div`
@@ -191,15 +226,15 @@ const Line = styled.div`
   hr {
     border: none;
     border-top: 2px solid #f0f0f0;
-}
-`
+  }
+`;
+
 const CounterWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin-top: 20px;
 `;
-
 
 const Button = styled.button`
   background-color: white;
@@ -246,26 +281,19 @@ const Select = styled.select`
   option {
       padding: 50px; /* 옵션의 패딩 조정 */
       font-size: 17px; /* 옵션의 글꼴 크기 조정 */
-    }
+  }
 `;
-
-
-
-const renderOptionText = (store, counter) => {
-  const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
-  const highlight = store.quantity >= counter ? ' 바로픽업 가능' : '';
-
-  return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
-};
 
 const HighlightedText = styled.span`
   color: green;
 `;
+
 const Text = styled.div`
   margin-top: 20px;
   font-size: 16px;
   color: #46675C;
-`
+`;
+
 const StoreList = styled.div`
   margin-top: 20px;
 
@@ -296,5 +324,4 @@ const OrderButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
- 
-`
+`;

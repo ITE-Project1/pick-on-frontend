@@ -1,13 +1,14 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
   *,
   *::before,
   *::after {
     box-sizing: border-box;
+      
   }
-  
-  &::-webkit-scrollbar {
+    
+&::-webkit-scrollbar {
     display: none;
   }
 

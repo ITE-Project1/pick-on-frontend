@@ -16,9 +16,9 @@ function StockList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
-        );
+        const url =  `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
+        const response = await axios.get(url);
+        console.log("생성된 URL:", url);
         if(pageNum > 0) {
           setProducts(prevProducts => [...prevProducts, ...response.data.list]);
         } else {
