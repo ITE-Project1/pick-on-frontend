@@ -20,9 +20,9 @@ const Footer = () => {
   useEffect(() => {
     if (location.pathname.startsWith("/admin/products")) {
       setClickedIcon("stock");
-    } else if (location.pathname.startsWith("/admin/order")) {
+    } else if (location.pathname.startsWith("/admin/orderlist")) {
       setClickedIcon("list");
-    } else if (location.pathname.startsWith("/admin/users")) {
+    } else if (location.pathname.startsWith("/admin/userlist")) {
       setClickedIcon("users");
     } else if (location.pathname.startsWith("/admin/my") || location.pathname.startsWith("/user/my")) {
       setClickedIcon("my");
@@ -33,15 +33,15 @@ const Footer = () => {
 
   const stockClick = () => {
     setClickedIcon("stock");
-    navigate("/admin/products");
+    navigate("/admin/stocklist");
   };
   const listClick = () => {
     setClickedIcon("list");
-    navigate("/admin/order");
+    navigate("/admin/orderlist");
   };
   const usersClick = () => {
     setClickedIcon("users");
-    navigate("/admin/users");
+    navigate("/admin/userlist");
   };
   const myClick = () => {
     setClickedIcon("my");
@@ -67,8 +67,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "stock" ? stock_white : stock}
               alt="stock"
-              width={31}
-              height={29}
+              width={29}
+              height={28}
             />
             <IconText>재고목록</IconText>
           </IconWrapper>
@@ -79,8 +79,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "list" ? list_white : list}
               alt="list"
-              width={35}
-              height={19}
+              width={32}
+              height={16}
               style={{ marginTop: "7px" }}
             />
             <IconText>주문내역</IconText>
@@ -92,8 +92,8 @@ const Footer = () => {
             <img
               src={clickedIcon === "users" ? users_white : users}
               alt="users"
-              width={36}
-              height={32}
+              width={35}
+              height={31}
             />
             <IconText>유저관리</IconText>
           </IconWrapper>
@@ -101,7 +101,7 @@ const Footer = () => {
             onClick={myClick}
             isClicked={clickedIcon === "my"}
           >
-            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={28} height={28} />
+            <img src={clickedIcon === "my" ? my_white : my} alt="my" width={25} height={25} />
             <IconText>마이</IconText>
           </IconWrapper>
         </>
@@ -112,9 +112,9 @@ const Footer = () => {
             isClicked={clickedIcon === "home"}
           >
             {clickedIcon === "home" ? (
-              <HomeIconWhite width={30} height={30} />
+              <HomeIconWhite width={27} height={27} />
             ) : (
-              <HomeIcon width={30} height={30} />
+              <HomeIcon width={27} height={27} />
             )}
             <IconText>홈</IconText>
           </IconWrapper>
@@ -153,12 +153,12 @@ const IconWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 48px;
+  height: 44px;
   justify-content: space-between;
   cursor: pointer;
   color: ${(props) => (props.isClicked ? "#ffffff" : "#828282")};
 `;
 
 const IconText = styled.span`
-  font-size: 13px;
+  font-size: 11px;
 `;

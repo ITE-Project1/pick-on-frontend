@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
   *,
@@ -11,6 +11,7 @@ const GlobalStyles = createGlobalStyle`
 &::-webkit-scrollbar {
     display: none;
   }
+
   body {
     font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   }

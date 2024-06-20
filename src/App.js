@@ -4,11 +4,11 @@ import GlobalStyles from './GlobalStyle';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
 import OrderDetail from './pages/admin/OrderDetail';
-import Order from './pages/admin/Order';
-import Users from './pages/admin/Users';
+import OrderList from './pages/admin/OrderList';
+import UserList from './pages/admin/UserList';
 import UserMy from './pages/user/My';
 import AdminMy from './pages/admin/My';
-import Products from "./pages/admin/Products";
+import StockList from "./pages/admin/StockList";
 import ProductList from './pages/user/ProductList';
 import Login from './pages/common/Login';
 import ProductDetail from './pages/user/ProductDetail';
@@ -26,13 +26,13 @@ function App() {
             <Route path='/user/productlist' element={<ProductList/>} />
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/admin/order' element={<Order />} />
+            <Route path='/admin/orderlist' element={<OrderList />} />
             <Route path='admin/order/:orderId' element={<OrderDetail />} />
-            <Route path='/admin/users' element={<Users />} />
+            <Route path='/admin/userlist' element={<UserList />} />
             <Route path='/admin/my' element={<AdminMy />} />
             <Route path='/user/my' element={<UserMy />} />
-            <Route path='/admin/products' element={<Products />} />
-            <Route path='/user/productDetail/:productId' element={<ProductDetail/>} />
+            <Route path='/admin/stocklist' element={<StockList />} />
+            <Route path='/user/productdetail/:productId' element={<ProductDetail/>} />
           </Route>
         </Routes>
       </Router>

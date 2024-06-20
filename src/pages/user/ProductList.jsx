@@ -2,36 +2,36 @@ import React, { useEffect, useState } from "react";
 import "../../components/styled/ProductList.css";
 import axios from "axios";
 import styled from "styled-components";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 export const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
-  const [sort, setSort] = useState('created_at');
+  const [sort, setSort] = useState("created_at");
   const [pageNum, setPageNum] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchProducts();
   }, [pageNum, sort, keyword]);
 
   useEffect(() => {
     // keyword가 변경될 때마다 페이지 맨 위로 스크롤 이동
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [keyword]);
 
   const fetchProducts = async () => {
-    console.log("pageNum:",pageNum);
+    console.log("pageNum:", pageNum);
     const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${keyword}`;
     console.log("생성된 URL:", url);
     try {
       const response = await axios.get(url);
       console.log("Response data:", JSON.stringify(response.data, null, 2));
-      if(pageNum > 1) {
-        setProducts(prevProducts => [...prevProducts, ...response.data.list]);
+      if (pageNum > 1) {
+        setProducts((prevProducts) => [...prevProducts, ...response.data.list]);
       } else {
         setProducts(response.data.list);
       }
@@ -51,7 +51,6 @@ export const ProductList = () => {
     setKeyword(e.target.value);
     setPageNum(1);
     setProducts([]); // 제품 목록 초기화
-
   };
 
   const handlePageChange = () => {
@@ -60,7 +59,7 @@ export const ProductList = () => {
 
   const handleSortChange = (sortType) => {
     setSort(sortType);
-    setPageNum(1);  // 페이지 번호를 1로 초기화
+    setPageNum(1); // 페이지 번호를 1로 초기화
     setProducts([]); // 제품 목록 초기화
   };
 
@@ -70,22 +69,13 @@ export const ProductList = () => {
         <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
         <SortbyWrapper>
           <div className="sort-by">
-            <SortOption 
-              isSelected={sort === 'created_at'} 
-              onClick={() => handleSortChange('created_at')}
-            >
+            <SortOption isSelected={sort === "created_at"} onClick={() => handleSortChange("created_at")}>
               최신순
             </SortOption>
-            <SortOption 
-              isSelected={sort === 'priceLow'} 
-              onClick={() => handleSortChange('priceLow')}
-            >
+            <SortOption isSelected={sort === "priceLow"} onClick={() => handleSortChange("priceLow")}>
               낮은 가격순
             </SortOption>
-            <SortOption 
-              isSelected={sort === 'priceHigh'} 
-              onClick={() => handleSortChange('priceHigh')}
-            >
+            <SortOption isSelected={sort === "priceHigh"} onClick={() => handleSortChange("priceHigh")}>
               높은 가격순
             </SortOption>
           </div>
@@ -94,7 +84,7 @@ export const ProductList = () => {
       <ProductWrapper>
         <ProductBody>
           <ProductGrid>
-            {products.map(product => (
+            {products.map((product) => (
               <ProductCard key={product.productId} product={product} />
             ))}
           </ProductGrid>
@@ -118,9 +108,9 @@ export default ProductList;
 const SortOption = styled.span`
   padding: 0 20px;
   cursor: pointer;
-  font-size : 12px;
-  color: ${props => (props.isSelected ? "#46675C " : "#828282")}; // 선택된 항목의 색깔 변경
-  font-weight: ${props => (props.isSelected ? "bold" : "normal")}; // 선택된 항목의 글자 두껍게
+  font-size: 12px;
+  color: ${(props) => (props.isSelected ? "#46675C " : "#828282")}; // 선택된 항목의 색깔 변경
+  font-weight: ${(props) => (props.isSelected ? "bold" : "normal")}; // 선택된 항목의 글자 두껍게
 
   &:hover {
     text-decoration: underline;
@@ -128,7 +118,7 @@ const SortOption = styled.span`
 `;
 
 const SortbyWrapper = styled.div`
-  margin-top : 20px;
+  margin-top: 20px;
   margin-left: 30px;
   margin-bottom: 20px;
 `;
@@ -136,9 +126,7 @@ const SortbyWrapper = styled.div`
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
-    &::-webkit-scrollbar {
-    display: none;
-  }
+  padding-top: 15px;
 `;
 
 const Header = styled.div`
@@ -150,7 +138,7 @@ const Header = styled.div`
 const ProductWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 247px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
+  height: calc(100vh - 264px); //브라우저 창의 전체 높이(100vh)에서 246픽셀을 뺀 값
 `;
 
 const ProductBody = styled.div`
@@ -166,7 +154,7 @@ const ProductGrid = styled.div`
   flex-wrap: wrap;
   gap: 20px; //세로 gap
   justify-content: space-between; //card 사이에 space 넣기
-  width: 100%;  /* 중앙 정렬을 위해 부모 요소의 너비를 채움 */
+  width: 100%; /* 중앙 정렬을 위해 부모 요소의 너비를 채움 */
 `;
 
 const Card = styled.div`
@@ -175,7 +163,7 @@ const Card = styled.div`
   text-align: center;
   margin-bottom: 40px; //카드 사이 간격
   border-radius: 10px;
-  max-width: calc(47% ); /* 2개씩 가로로 배치, 부피조정  */ 
+  max-width: calc(47%); /* 2개씩 가로로 배치, 부피조정  */
 `;
 
 const ImageWrapper = styled.div`
@@ -185,13 +173,13 @@ const ImageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border : 0.5px solid #828282; 
+  border: 0.5px solid #828282;
 `;
 
 const Image = styled.img`
   width: auto;
   height: 100%;
-  object-fit: contain; 
+  object-fit: contain;
 `;
 
 const ProductName = styled.div`
@@ -264,7 +252,9 @@ const StyledLink = styled(Link)`
 function ProductCard({ product }) {
   return (
     <Card>
-      <StyledLink to={`/user/productDetail/${product.productId}`}> {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
+      <StyledLink to={`/user/productDetail/${product.productId}`}>
+        {" "}
+        {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
         <ImageWrapper>
           <Image src={product.imageUrl} alt={product.name} />
         </ImageWrapper>

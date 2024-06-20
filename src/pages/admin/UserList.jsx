@@ -5,7 +5,7 @@ import SearchWrapper from "../../components/common/SearchWrapper";
 import UserItem from "./UserItem";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
-const Users = () => {
+const UserList = () => {
   const [users, setUsers] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [pageNum, setPageNum] = useState('0');
@@ -98,12 +98,12 @@ const Users = () => {
     </Container>
   );
 };
-export default Users;
+export default UserList;
 
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
-  //height: calc(100vh - 173px); /* Header와 Footer를 제외한 높이 */
+  padding-top: 15px;
 `;
 
 const Header = styled.div`
@@ -136,7 +136,7 @@ const Button = styled.button`
 const OrderTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 242px);
+  height: calc(100vh - 268px);
 `;
 
 const OrderTableHeader = styled.div`
@@ -166,6 +166,7 @@ const ButtonWrapper = styled.div`
   justify-content: center; /* 버튼을 중앙에 배치 */
   width: 100%;
   margin-top: 20px;
+  margin-bottom: 10px;
 `;
 
 const PlusButton = styled.button`

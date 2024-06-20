@@ -14,7 +14,7 @@ export const Login = () => {
       const response = await axios.post("http://localhost:8080/user/login", { username, password });
       const { role } = response.data;
       if (role === "admin") {
-        navigate("/admin/products");
+        navigate("/admin/stocklist");
       } else {
         navigate("/user/productlist");
       }
