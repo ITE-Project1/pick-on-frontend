@@ -12,9 +12,7 @@ export const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:8080/user/login", { username, password });
-      console.log(response);
       const { role } = response.data;
-      console.log(response.data);
       if (role === "admin") {
         navigate("/admin/products");
       } else {
@@ -27,7 +25,7 @@ export const Login = () => {
   };
 
   const handleSignup = () => {
-    navigate("/register");
+    navigate("/signup");
   };
 
   return (

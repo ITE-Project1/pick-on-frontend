@@ -22,7 +22,8 @@ function App() {
       <GlobalStyles />
       <Router>
         <Routes>
-          <Route path='/' element={<Layout />}>
+          <Route path='/' element={<Layout />} >
+            <Route path='/user/productlist' element={<ProductList/>} />
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
             <Route path='/admin/order' element={<Order />} />
@@ -31,7 +32,6 @@ function App() {
             <Route path='/admin/my' element={<AdminMy />} />
             <Route path='/user/my' element={<UserMy />} />
             <Route path='/admin/products' element={<Products />} />
-            <Route path='/user/productlist' element={<ProductList/>} />
             <Route path='/user/productDetail/:productId' element={<ProductDetail/>} />
           </Route>
         </Routes>

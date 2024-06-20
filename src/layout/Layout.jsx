@@ -9,7 +9,7 @@ const Layout = () => {
   const showHeader = !["/admin/my"].includes(location.pathname);
 
   return (
-    <InnerWidth>
+    <InnerWidth showHeader={showHeader}>
       {showHeader && <Header />}
       <Content>
         <Outlet />
@@ -18,6 +18,7 @@ const Layout = () => {
     </InnerWidth>
   );
 };
+
 export default Layout;
 
 const InnerWidth = styled.div`
@@ -28,7 +29,7 @@ const InnerWidth = styled.div`
   margin: 0 auto;
   border: 1px solid #ccc;
   z-index: 20;
-  padding-top: 87px; /* 헤더의 높이 */
+  padding-top: ${(props) => (props.showHeader ? '87px' : '0px')}; /* 조건에 따른 padding-top */
 `;
 
 const Content = styled.div`

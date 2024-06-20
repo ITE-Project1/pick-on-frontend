@@ -8,14 +8,28 @@ import users from "../../assets/img/users.png";
 import users_white from "../../assets/img/users_white.png";
 import my from "../../assets/img/my.png";
 import my_white from "../../assets/img/my_white.png";
-import { ReactComponent as HomeIcon } from ".//../../assets/svg/home.svg";
-import { ReactComponent as HomeIconWhite } from ".//../../assets/svg/home_white.svg";
+import { ReactComponent as HomeIcon } from "../../assets/svg/home.svg";
+import { ReactComponent as HomeIconWhite } from "../../assets/svg/home_white.svg";
 import { useNavigate , useLocation} from "react-router-dom";
 
 const Footer = () => {
-  const [clickedIcon, setClickedIcon] = useState("HomeIcon");
+  const [clickedIcon, setClickedIcon] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.startsWith("/admin/products")) {
+      setClickedIcon("stock");
+    } else if (location.pathname.startsWith("/admin/order")) {
+      setClickedIcon("list");
+    } else if (location.pathname.startsWith("/admin/users")) {
+      setClickedIcon("users");
+    } else if (location.pathname.startsWith("/admin/my") || location.pathname.startsWith("/user/my")) {
+      setClickedIcon("my");
+    } else if (location.pathname.startsWith("/user/productlist")) {
+      setClickedIcon("home");
+    }
+  }, [location.pathname]);
 
   const stockClick = () => {
     setClickedIcon("stock");
@@ -41,8 +55,6 @@ const Footer = () => {
     setClickedIcon("home");
     navigate("/user/productlist");
   };
-
-
 
   return (
     <FooterWrapper>
@@ -115,7 +127,6 @@ const Footer = () => {
           </IconWrapper>
         </>
       )}
-
     </FooterWrapper>
   );
 };
