@@ -27,7 +27,7 @@ export const Login = () => {
   };
 
   const handleSignup = () => {
-    navigate("/signup");
+    navigate("/register");
   };
 
   return (
@@ -120,7 +120,7 @@ const InputField = styled.div`
 const Label = styled.label`
   display: block;
   color: #828282;
-  font-family: "Inter-Regular", Helvetica;
+  font-family: 'Apple SD Gothic Neo', Helvetica;
   font-size: 12px;
   margin-bottom: 0.5rem;
 `;
@@ -151,14 +151,14 @@ const Checkbox = styled.input`
 
 const HelpText = styled.p`
   color: #828282;
-  font-family: "Inter-Regular", Helvetica;
+  font-family: 'Apple SD Gothic Neo', Helvetica;
   font-size: 12px;
   cursor: pointer;
 `;
 
 const AgreementText = styled.p`
   color: #8d8d8d;
-  font-family: "Inter-Regular", Helvetica;
+  font-family: 'Apple SD Gothic Neo', Helvetica;
   font-size: 12px;
   margin-top : 1rem;
   margin-bottom: 1rem;
@@ -175,7 +175,7 @@ const ButtonContainer = styled.div`
 const Button = styled.button`
   background-color: ${({ secondary }) => (secondary ? "#ffffff" : "#000000")};
   color: ${({ secondary }) => (secondary ? "#000000" : "#ffffff")};
-  font-family: "Inter-Regular", Helvetica;
+  font-family: 'Apple SD Gothic Neo', Helvetica;
   font-size: 15px;
   font-weight: 400;
   padding: 0.5rem;
