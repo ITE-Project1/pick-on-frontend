@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
-function Products() {
+function StockList() {
   let [products, setProducts] = useState([]);
   const [sort, setSort] = useState('');
   const [keyword, setKeyword] = useState('');
@@ -125,11 +125,12 @@ function Products() {
   );
 }
 
-export default Products;
+export default StockList;
 
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
+  padding-top: 15px;
 `;
 
 const Header = styled.div`
@@ -188,7 +189,7 @@ const SortKeywords = styled.button`
 const ProductListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 283px);
+  height: calc(100vh - 305px);
 `;
 
 const ProductList = styled.div`

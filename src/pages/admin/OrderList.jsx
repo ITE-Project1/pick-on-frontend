@@ -5,7 +5,7 @@ import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
-const Order = () => {
+const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [storeId, setStoreId] = useState(1);
@@ -106,13 +106,12 @@ const Order = () => {
       </Container>
   );
 };
-export default Order;
+export default OrderList;
 
 const Container = styled.div`
   padding-left: 20px;
   padding-right: 20px;
-  // height: calc(100vh - 173px); /* Header와 Footer를 제외한 높이 */
-  padding-top: 87px; /* 헤더의 높이 */
+  padding-top: 15px;
 `;
 
 const Header = styled.div`
@@ -150,7 +149,7 @@ const Select = styled.select`
 const OrderTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 242px); /* Header와 Footer, Button을 제외한 높이 */
+  height: calc(100vh - 258px); /* Header와 Footer, Button을 제외한 높이 */
 `;
 
 const OrderTableHeader = styled.div`

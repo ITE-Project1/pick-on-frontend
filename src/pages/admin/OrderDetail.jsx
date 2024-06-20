@@ -14,7 +14,7 @@ const OrderDetail = () => {
       try {
         console.log("Fetching order details...");
         const response = await axios.get(`http://localhost:8080/admin/orders/${orderId}`);
-        console.log("Order details fetched:", response.data);
+        console.log("OrderList details fetched:", response.data);
         setOrderDetails(response.data);
       } catch (error) {
         console.error("Error fetching order details:", error);
@@ -28,7 +28,7 @@ const OrderDetail = () => {
     try {
       console.log("Updating order status...");
       await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`);
-      console.log("Order status updated");
+      console.log("OrderList status updated");
       // setButtonStatus("after");
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
