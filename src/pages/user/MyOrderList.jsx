@@ -5,6 +5,7 @@ import {ReactComponent as OrderProcess1} from "../../assets/svg/orderProcess1.sv
 import {ReactComponent as OrderProcess2} from "../../assets/svg/orderProcess2.svg";
 import {ReactComponent as OrderProcess3} from "../../assets/svg/orderProcess3.svg";
 import {ReactComponent as OrderProcess4} from "../../assets/svg/orderProcess4.svg";
+import {ReactComponent as PlusBtnSvg} from "../../assets/img/plusButton.svg";
 
 const statusIcons = {
   1: <OrderProcess1/>,
@@ -42,32 +43,43 @@ function MyOrderList() {
     setPageNum(prevPageNum => prevPageNum + 1);
   };
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <Container>
       <Header>
         <TitleText>주문 및 픽업 조회</TitleText>
       </Header>
-      <ProductListWrapper>
-        <ProductList>
-          {sampleOrders.map(order => (
-            <Product key={order.orderId}>
+      <ProductList>
+        {sampleOrders.map(order => (
+          <Product key={order.orderId}>
+            <FirstLine>
+              <OrderId>{order.orderId}</OrderId>
+              <StoreInfo>{order.storeName} / {order.orderDate}</StoreInfo>
+            </FirstLine>
+            <ProductContent>
               <ProductImage alt="Product image" src={order.productImageUrl}/>
-              <StatusBar>
-                {statusIcons[order.orderStatus]}
-              </StatusBar>
               <ProductDetails>
                 <ProductBrand>{order.brandName}</ProductBrand>
-                <ProductTitle>링클 프리 반팔 크롭 나시</ProductTitle>
-                <ProductPrice>14,100원</ProductPrice>
+                <ProductTitle>{order.productName}</ProductTitle>
+                <ProductPrice>{formatPrice(order.productPrice)}원</ProductPrice>
               </ProductDetails>
-              <FirstLine>
-                <OrderId>{order.orderId}</OrderId>
-                <StoreInfo>{order.storeName} / {order.orderDate}</StoreInfo>
-              </FirstLine>
-            </Product>
-          ))}
-        </ProductList>
-      </ProductListWrapper>
+            </ProductContent>
+            <StatusBar>
+              {statusIcons[order.orderStatus]}
+            </StatusBar>
+          </Product>
+        ))}
+        <ButtonWrapper>
+          {hasMoreOrders && (
+            <PlusButton onClick={handlePageChange}>
+              <PlusBtnSvg></PlusBtnSvg>
+            </PlusButton>
+          )}
+        </ButtonWrapper>
+      </ProductList>
     </Container>
   );
 }
@@ -90,26 +102,20 @@ const Header = styled.div`
 
 const TitleText = styled.div`
   font-size: 23px;
-  padding: 15px 0px 20px 0px;
+  padding: 15px 0px 15px 0px;
 `;
 
-const ProductListWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 305px);
-`;
 
 const ProductList = styled.div`
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  flex-grow: 1; /* flex-grow 속성을 사용하여 나머지 공간을 채우도록 설정 */
-
   &::-webkit-scrollbar {
     display: none;
   }
 `;
 
 const Product = styled.div`
-  border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   position: relative;
   height: 224px;
@@ -117,8 +123,12 @@ const Product = styled.div`
   margin-top: 20px;
 `;
 
+const ProductContent = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 const ProductImage = styled.img`
-  position: absolute;
   top: 66px;
   left: 0;
   width: 74px;
@@ -128,15 +138,14 @@ const ProductImage = styled.img`
 `;
 
 const StatusBar = styled.div`
-  position: absolute;
-  top: 171px;
-  left: 3px;
+  margin-top: 30px;
   width: 382px;
   height: 36px;
 `;
 
 const ProductDetails = styled.div`
-  position: absolute;
+  margin-top: 5px;
+  margin-left: 15px;
   top: 72px;
   left: 89px;
   width: 152px;
@@ -144,18 +153,17 @@ const ProductDetails = styled.div`
 
 const ProductTitle = styled.p`
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 650;
   color: #111111;
   line-height: 17px;
   margin-top: 6px;
 `;
 
 const ProductPrice = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
-  color: #000;
   line-height: 17px;
-  margin-top: 6px;
+  margin-top: 7px;
 `;
 
 const ProductBrand = styled.div`
@@ -187,11 +195,54 @@ const StoreInfo = styled.div`
   color: #969696;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const PlusButton = styled.button`
+  width: 100px;
+  height: 50px;
+  background-color: white;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s,
+  transform 0.3s;
+
+  svg {
+    width: 100px; /* SVG의 너비 설정 */
+    height: 40px; /* SVG의 높이 설정 */
+    fill: #828282;
+    transition: fill 0.3s;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
 const sampleOrders = [
   {
     orderId: "PO_3020346273",
     orderStatus: 1,
     orderDate: "2024-06-17",
+    productName: "링클 프리 반팔 크롭 나시",
+    productPrice: 14000,
     productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
     brandName: "아르켓",
     storeName: "더현대서울점"
@@ -200,6 +251,8 @@ const sampleOrders = [
     orderId: "PO_3020346274",
     orderStatus: 2,
     orderDate: "2024-06-16",
+    productName: "링클 프리 반팔 크롭 나시",
+    productPrice: 14000,
     productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
     brandName: "자라",
     storeName: "롯데월드몰점"
@@ -208,6 +261,8 @@ const sampleOrders = [
     orderId: "PO_3020346275",
     orderStatus: 3,
     orderDate: "2024-06-15",
+    productName: "링클 프리 반팔 크롭 나시",
+    productPrice: 14000,
     productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
     brandName: "유니클로",
     storeName: "스타필드 코엑스몰점"
@@ -216,6 +271,8 @@ const sampleOrders = [
     orderId: "PO_3020346276",
     orderStatus: 4,
     orderDate: "2024-06-14",
+    productName: "링클 프리 반팔 크롭 나시",
+    productPrice: 14000,
     productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
     brandName: "무신사",
     storeName: "가로수길점"
@@ -224,8 +281,11 @@ const sampleOrders = [
     orderId: "PO_3020346277",
     orderStatus: 1,
     orderDate: "2024-06-13",
+    productName: "링클 프리 반팔 크롭 나시",
+    productPrice: 14000,
     productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
     brandName: "나이키",
     storeName: "강남점"
   }
 ];
+
