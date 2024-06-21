@@ -99,19 +99,23 @@ function StockList() {
       <ProductListWrapper>
         {products.length < 1 && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <ProductList>
-          {products.map((product) => (
-            <ProductContainer key={product.id}>
-              <Image src={product.imageUrl} alt="Product Image" />
-              <ProductContent>
-                <ProductTitle className="text-wrapper-7">{product.name}</ProductTitle>
-                <ProductCode>{product.id}</ProductCode>
-              </ProductContent>
-              <ProductContent>
-                <Quantity>{product.quantity}개</Quantity>
-                <Price>{formatPrice(product.price)}원</Price>
-              </ProductContent>
-            </ProductContainer>
-          ))}
+        {products.map((product, index) => (
+  <React.Fragment key={product.id}>
+    <ProductContainer>
+      <Image src={product.imageUrl} alt="Product Image" />
+      <ProductContent>
+        <ProductTitle className="text-wrapper-7">{product.name}</ProductTitle>
+        <ProductCode>{product.id}</ProductCode>
+      </ProductContent>
+      <ProductContent>
+        <Quantity>{product.quantity}개</Quantity>
+        <Price>{formatPrice(product.price)}원</Price>
+      </ProductContent>
+    </ProductContainer>
+    {index < products.length - 1 && <hr style={{ border: "0", borderTop: "1.5px solid #f0f0f0" }} />}
+  </React.Fragment>
+))}
+
 
           <ButtonWrapper>
             {hasMoreProducts && (
@@ -190,12 +194,10 @@ const ProductList = styled.div`
 `;
 
 const ProductContainer = styled.div`
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
   border-color: #d9d9d9;
   display: flex; /* Flexbox를 사용하여 내부 요소를 가로로 배열합니다 */
   align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 10px;
+  //margin-top: 10px;
   height: 96px;
 `;
 
