@@ -1,190 +1,190 @@
-.product-list {
-  background-color: #ffffff;
-  height: 1636px;
-  overflow: hidden;
-  position: relative;
-  width: 449px;
-}
+  .product-list {
+    background-color: #ffffff;
+    height: 1636px;
+    overflow: hidden;
+    position: relative;
+    width: 449px;
+  }
 
-.product-list .view {
-  left: 31px !important;
-  position: absolute !important;
-  top: 121px !important;
-}
+  .product-list .view {
+    left: 31px !important;
+    position: absolute !important;
+    top: 121px !important;
+  }
 
-.product-list .component-55-instance {
-  left: 142px !important;
-  position: absolute !important;
-  top: 30px !important;
-}
+  .product-list .component-55-instance {
+    left: 142px !important;
+    position: absolute !important;
+    top: 30px !important;
+  }
 
-.product-list .component-56-instance {
-  left: -1px !important;
-  position: absolute !important;
-  top: 185px !important;
-}
+  .product-list .component-56-instance {
+    left: -1px !important;
+    position: absolute !important;
+    top: 185px !important;
+  }
 
-.product-list .rectangle {
-  height: 176px;
-  left: 228px;
-  object-fit: cover;
-  position: absolute;
-  top: 222px;
-  width: 177px;
-}
+  .product-list .rectangle {
+    height: 176px;
+    left: 228px;
+    object-fit: cover;
+    position: absolute;
+    top: 222px;
+    width: 177px;
+  }
 
-.product-list .img {
-  height: 176px;
-  left: 48px;
-  object-fit: cover;
-  position: absolute;
-  top: 472px;
-  width: 177px;
-}
+  .product-list .img {
+    height: 176px;
+    left: 48px;
+    object-fit: cover;
+    position: absolute;
+    top: 472px;
+    width: 177px;
+  }
 
-.product-list .rectangle-2 {
-  height: 176px;
-  left: 228px;
-  object-fit: cover;
-  position: absolute;
-  top: 472px;
-  width: 177px;
-}
+  .product-list .rectangle-2 {
+    height: 176px;
+    left: 228px;
+    object-fit: cover;
+    position: absolute;
+    top: 472px;
+    width: 177px;
+  }
 
-.product-list .rectangle-3 {
-  height: 176px;
-  left: 48px;
-  object-fit: cover;
-  position: absolute;
-  top: 722px;
-  width: 177px;
-}
+  .product-list .rectangle-3 {
+    height: 176px;
+    left: 48px;
+    object-fit: cover;
+    position: absolute;
+    top: 722px;
+    width: 177px;
+  }
 
-.product-list .rectangle-4 {
-  height: 176px;
-  left: 228px;
-  object-fit: cover;
-  position: absolute;
-  top: 722px;
-  width: 177px;
-}
+  .product-list .rectangle-4 {
+    height: 176px;
+    left: 228px;
+    object-fit: cover;
+    position: absolute;
+    top: 722px;
+    width: 177px;
+  }
 
-.product-list .rectangle-5 {
-  height: 176px;
-  left: 48px;
-  object-fit: cover;
-  position: absolute;
-  top: 972px;
-  width: 177px;
-}
+  .product-list .rectangle-5 {
+    height: 176px;
+    left: 48px;
+    object-fit: cover;
+    position: absolute;
+    top: 972px;
+    width: 177px;
+  }
 
-.product-list .rectangle-6 {
-  height: 176px;
-  left: 228px;
-  object-fit: cover;
-  position: absolute;
-  top: 972px;
-  width: 177px;
-}
+  .product-list .rectangle-6 {
+    height: 176px;
+    left: 228px;
+    object-fit: cover;
+    position: absolute;
+    top: 972px;
+    width: 177px;
+  }
 
-.product-list .rectangle-7 {
-  height: 176px;
-  left: 228px;
-  object-fit: cover;
-  position: absolute;
-  top: 1222px;
-  width: 177px;
-}
+  .product-list .rectangle-7 {
+    height: 176px;
+    left: 228px;
+    object-fit: cover;
+    position: absolute;
+    top: 1222px;
+    width: 177px;
+  }
 
-.product-list .rectangle-8 {
-  height: 176px;
-  left: 48px;
-  object-fit: cover;
-  position: absolute;
-  top: 1222px;
-  width: 177px;
-}
+  .product-list .rectangle-8 {
+    height: 176px;
+    left: 48px;
+    object-fit: cover;
+    position: absolute;
+    top: 1222px;
+    width: 177px;
+  }
 
-.product-list .frame-instance {
-  border-color: unset !important;
-  left: 0 !important;
-  position: absolute !important;
-  top: 1549px !important;
-}
+  .product-list .frame-instance {
+    border-color: unset !important;
+    left: 0 !important;
+    position: absolute !important;
+    top: 1549px !important;
+  }
 
-.product-list .overlap {
-  height: 24px;
-  left: 192px;
-  position: absolute;
-  top: 1495px;
-  width: 108px;
-}
+  .product-list .overlap {
+    height: 24px;
+    left: 192px;
+    position: absolute;
+    top: 1495px;
+    width: 108px;
+  }
 
-.product-list .bi-plus-circle {
-  height: 24px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 24px;
-}
+  .product-list .bi-plus-circle {
+    height: 24px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 24px;
+  }
 
-.product-list .text-wrapper-5 {
-  color: #828282;
-  font-family: "Apple SD Gothic Neo-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  height: 18px;
-  left: 0;
-  letter-spacing: 0;
-  line-height: 18px;
-  position: absolute;
-  text-align: center;
-  top: 2px;
-  white-space: nowrap;
-  width: 108px;
-}
+  .product-list .text-wrapper-5 {
+    color: #828282;
+    font-family: "Apple SD Gothic Neo-Regular", Helvetica;
+    font-size: 12px;
+    font-weight: 400;
+    height: 18px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 18px;
+    position: absolute;
+    text-align: center;
+    top: 2px;
+    white-space: nowrap;
+    width: 108px;
+  }
 
-/* 정렬 - 최신순, 낮은가격순, 높은가격순 */
-.sort-by {
-  display: flex;
-  justify-content: center;
-  margin-left: -150px;
-}
+  /* 정렬 - 최신순, 낮은가격순, 높은가격순 */
+  .sort-by {
+    display: flex;
+    justify-content: center;
+    margin-left: -150px;
+  }
 
-.sort-option {
-  padding: 0 20px;
-  cursor: pointer;
-}
+  .sort-option {
+    padding: 0 20px;
+    cursor: pointer;
+  }
 
-.sort-option:hover {
-  text-decoration: underline;
-  color: #46675C
-}
+  .sort-option:hover {
+    text-decoration: underline;
+    color: #46675C
+  }
 
-.sort-by .div {
-  color: transparent;
-  font-family: "Apple SD Gothic Neo-Bold", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  height: 18px;
-  left: 0;
-  letter-spacing: 0;
-  line-height: 18px;
-  position: absolute;
-  text-align: center;
-  top: -1px;
-  width: 330px;
-}
+  .sort-by .div {
+    color: transparent;
+    font-family: "Apple SD Gothic Neo-Bold", Helvetica;
+    font-size: 12px;
+    font-weight: 400;
+    height: 18px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 18px;
+    position: absolute;
+    text-align: center;
+    top: -1px;
+    width: 330px;
+  }
 
-.sort-by .text-wrapper {
-  color: #46675c;
-  font-weight: 700;
-  text-decoration: underline;
-}
+  .sort-by .text-wrapper {
+    color: #46675c;
+    font-weight: 700;
+    text-decoration: underline;
+  }
 
-.sort-by .span {
-  color: #828282;
-  font-family: "Apple SD Gothic Neo-Regular", Helvetica;
-}
+  .sort-by .span {
+    color: #828282;
+    font-family: "Apple SD Gothic Neo-Regular", Helvetica;
+  }
 
 

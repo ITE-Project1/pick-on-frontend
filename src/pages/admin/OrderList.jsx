@@ -6,12 +6,13 @@ import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 
 const OrderList = () => {
-  const [orders, setOrders] = useState([]);
-  const [keyword, setKeyword] = useState("");
+  let [orders, setOrders] = useState([]);
+  const [keyword, setKeyword] = useState('');
   const [storeId, setStoreId] = useState(1);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -19,31 +20,35 @@ const OrderList = () => {
 
   const fetchOrders = async () => {
     try {
-      axios
-          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`, {withCredentials : true})
-          .then((response) => {
-            if (pageNum > 1) {
-              setOrders((prevOrders) => [...prevOrders, ...response.data]);
-            } else {
-              setOrders(response.data);
-            }
-            setHasMoreOrders(response.data.length === 10);
-          });
+      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`;
+      const response = await axios.get(url, {withCredentials : true});
+      console.log("생성된 URL:", url);
+      if (pageNum > 0) {
+        setOrders((prevOrders) => [...prevOrders, ...response.data.list]);
+      } else {
+        setOrders(response.data.list);
+      }
+      setHasMoreOrders(pageNum < response.data.totalPage - 1);
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      if (error.response) {
+        setErrorMessage("검색 결과가 없습니다.");
+      } else {
+        setErrorMessage("주문 목록을 불러오는 중 오류가 발생했습니다.");
+      }
+      console.error("Error fetching products:", error);
     }
   };
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
+    setPageNum(0);
     setOrders([]);
-    setPageNum(1);
   };
 
   const handleStoreChange = (e) => {
     setStoreId(e.target.value);
+    setPageNum(0);
     setOrders([]);
-    setPageNum(1);
   };
 
   const handlePageChange = () => {
@@ -91,8 +96,9 @@ const OrderList = () => {
             <HeaderItem width="20%">픽업 현황</HeaderItem>
           </OrderTableHeader>
           <OrderTableBody>
+
             {orders.map((order) => (
-                <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
+                <OrderItem key={order.orderId} order={order} onSelect={handleSelectOrder} />
             ))}
             <ButtonWrapper>
               {hasMoreOrders && (
@@ -105,7 +111,7 @@ const OrderList = () => {
         </OrderTableWrapper>
       </Container>
   );
-};
+}
 export default OrderList;
 
 const Container = styled.div`
@@ -215,4 +221,10 @@ const PlusButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  margin: 20px 0;
 `;
