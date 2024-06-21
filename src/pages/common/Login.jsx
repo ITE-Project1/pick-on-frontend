@@ -21,7 +21,8 @@ export const Login = () => {
         setAuth({
           isAuthenticated: true,
           userId: sessionData.userId,
-          role: sessionData.role
+          role: sessionData.role,
+          username: sessionData.username
         });
         if (sessionData.role === "admin") {
           navigate("/admin/stocklist");
