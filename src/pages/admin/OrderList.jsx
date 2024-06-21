@@ -63,11 +63,11 @@ const OrderList = () => {
     );
   };
 
-  const handleCompleteDelivery = async () => {
+  const handleUpdateStatus = async () => {
     try {
       await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
-      alert("지점 수령 완료 상태로 변경되었습니다.");
       setSelectedOrders([]);
+      fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
@@ -79,7 +79,7 @@ const OrderList = () => {
         <Header>
           <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
           <Controls>
-            <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
+            <Button onClick={handleUpdateStatus}>지점 수령 완료</Button>
             <Select onChange={handleStoreChange} value={storeId}>
               <option value={1}>천호점</option>
               <option value={2}>목동점</option>
