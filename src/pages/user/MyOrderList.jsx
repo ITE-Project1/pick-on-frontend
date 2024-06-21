@@ -101,12 +101,13 @@ const Header = styled.div`
 `;
 
 const TitleText = styled.div`
-  font-size: 23px;
+  font-size: 20px;
   padding: 15px 0px 15px 0px;
 `;
 
 
 const ProductList = styled.div`
+  height: calc(100vh - 228px);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
