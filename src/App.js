@@ -20,8 +20,8 @@ import ProductList from './pages/user/ProductList';
 import Login from './pages/common/Login';
 import ProductDetail from './pages/user/ProductDetail';
 import Register from './pages/common/Register';
+import MyOrderList from "./pages/user/MyOrderList";
 
-// TODO: 특정 조건을 만족하지 않는 유저의 Route 접근 제한 처리
 
 const ProtectedRoute = ({children, role}) => {
   const [auth] = useRecoilState(authState);
@@ -47,7 +47,8 @@ function App() {
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/user/productlist' element={<ProductList/>} />
-                <Route path='/user/my' element={<UserMy />} />
+                <Route path='/user/my' element={<ProtectedRoute role="general"><UserMy /></ProtectedRoute>} />
+                <Route path='/user/my/orderlist' element={<ProtectedRoute role="general"><MyOrderList /></ProtectedRoute>} />
                 <Route path='/user/productdetail/:productId' element={<ProductDetail/>} />
                 <Route path='/admin/orderlist' element={<ProtectedRoute role="admin"><OrderList /></ProtectedRoute>} />
                 <Route path='/admin/order/:orderId' element={<ProtectedRoute role="admin"><OrderDetail /></ProtectedRoute>} />
