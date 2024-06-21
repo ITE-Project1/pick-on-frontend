@@ -19,7 +19,7 @@ function StockList() {
     const fetchProducts = async () => {
       try {
         const url = `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${debouncedSearchText}`
-        const response = await axios.get(url);
+        const response = await axios.get(url, {withCredentials : true});
         console.log("생성된 URL:", url);
         if(pageNum > 0) {
           setProducts(prevProducts => [...prevProducts, ...response.data.list]);

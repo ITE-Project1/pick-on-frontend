@@ -97,7 +97,7 @@ const ProductDetail = () => {
     console.log('Sending payload:', payload); // payload를 출력하여 확인
 
     try {
-      const response = await axios.post('http://localhost:8080/orders', payload);
+      const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials : true});
       console.log('Server response:', response.data);
       alert('픽업 요청이 성공적으로 전송되었습니다.');
     } catch (error) {

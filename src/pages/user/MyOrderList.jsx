@@ -23,7 +23,7 @@ function MyOrderList() {
     const fetchOrders = async () => {
       try {
         const url = `http://localhost:8080/users/orders/list?page=${pageNum}`
-        const response = await axios.get(url);
+        const response = await axios.get(url, {withCredentials : true});
         console.log("생성된 URL:", url);
         if (pageNum > 0) {
           setOrders(prevProducts => [...prevProducts, ...response.data.list]);

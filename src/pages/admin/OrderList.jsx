@@ -20,7 +20,7 @@ const OrderList = () => {
   const fetchOrders = async () => {
     try {
       axios
-          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`)
+          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`, {withCredentials : true})
           .then((response) => {
             if (pageNum > 1) {
               setOrders((prevOrders) => [...prevOrders, ...response.data]);
@@ -58,7 +58,7 @@ const OrderList = () => {
 
   const handleCompleteDelivery = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders, {withCredentials : true});
       alert("지점 수령 완료 상태로 변경되었습니다.");
       setSelectedOrders([]);
     } catch (error) {
