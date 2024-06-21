@@ -2,18 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {authState} from "../../auth/authState";
+import {useSetRecoilState} from "recoil";
 
 export const Screen = () => {
   const navigate = useNavigate();
+  const setAuth = useSetRecoilState(authState);
 
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/user/logout', {}, { withCredentials: true });
       if (response.status === 200) {
+        setAuth({
+          isAuthenticated : false,
+          userId : null,
+          role : null
+        });
         navigate('/login');
       } else {
-        console.error("Logout failed");
+        alert('Logout failed');
       }
     } catch (error) {
       console.error("Logout error:", error);
@@ -39,7 +47,7 @@ export const Screen = () => {
         <Overlap>
           <View>
             <ShoppingInfo>나의 쇼핑 정보</ShoppingInfo>
-            <OrderInfo to="/order">주문 조회</OrderInfo>
+            <OrderInfo to="/user/my/orderlist">주문 조회</OrderInfo>
             <Rectangle />
             <AccountInfo>나의 계정 정보</AccountInfo>
             <DeleteAccountLink to="#" onClick={handleDeleteAccount}>회원 탈퇴</DeleteAccountLink>
