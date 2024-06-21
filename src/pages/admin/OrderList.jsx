@@ -4,6 +4,7 @@ import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
+import useDebounce from "../common/UseDebounce";
 
 const OrderList = () => {
   let [orders, setOrders] = useState([]);
@@ -13,14 +14,15 @@ const OrderList = () => {
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const debouncedSearchText = useDebounce(keyword, 500);
 
   useEffect(() => {
     fetchOrders();
-  }, [keyword, storeId, pageNum]);
+  }, [keyword, storeId, pageNum, debouncedSearchText]);
 
   const fetchOrders = async () => {
     try {
-      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`;
+      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${debouncedSearchText}`;
       const response = await axios.get(url);
       console.log("생성된 URL:", url);
       if (pageNum > 0) {
