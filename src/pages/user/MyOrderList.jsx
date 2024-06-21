@@ -30,6 +30,7 @@ function MyOrderList() {
         } else {
           setOrders(response.data.list);
         }
+
         setHasMoreOrders(pageNum < response.data.totalPage - 1);
       } catch (error) {
         console.error("Error fetching orders:", error);
