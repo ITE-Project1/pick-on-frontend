@@ -5,7 +5,7 @@ import axios from "axios";
 import {authState} from "../../auth/authState";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 
-export const Screen = () => {
+export const My = () => {
   const navigate = useNavigate();
   const setAuth = useSetRecoilState(authState);
   const auth = useRecoilValue(authState);
@@ -67,7 +67,7 @@ export const Screen = () => {
   );
 };
 
-export default Screen;
+export default My;
 
 const Group = styled.div`
   height: 854px;
@@ -79,7 +79,7 @@ const Group = styled.div`
 
 const Overlap = styled.div`
   height: 854px;
-  position: relative;
+  position: fixed;
   width: 425px;
 `;
 

@@ -65,7 +65,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`);
+        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`, { withCredentials: true });
         const productData = response.data[0];
         setProduct({
           productId: productData.productId,
@@ -108,12 +108,27 @@ const ProductDetail = () => {
     }
   };
 
-  const renderOptionText = (store, counter) => {
-    const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
-    const highlight = store.quantity >= counter ? ' 바로픽업 가능' : '';
+  // const renderOptionText = (store, counter) => {
+  //   const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
+  //   const highlight = store.quantity >= counter ? ' 바로 픽업 가능' : '';
   
-    return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
-  };
+  //   return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
+  // };
+
+  const HighlightText = styled.span`
+  color: green;
+  margin-left: 5px; // 위치 조정을 위한 예시
+`;
+
+const renderOptionText = (store, counter) => {
+  const isDirectPickupAvailable = store.quantity >= counter;
+  return (
+    <span>
+      {storeIdMap[store.storeId]} (Quantity: {store.quantity})
+      {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
+    </span>
+  );
+};
 
   const handlePickup = async () => {
     if (!selectedStore) {
@@ -125,7 +140,7 @@ const ProductDetail = () => {
       alert('유효한 지점을 선택해주세요.');
       return;
     }
-
+//order controller로 전달할 데이터
     const payload = {
       "productId": product.productId,
       "quantity": counter,
@@ -175,15 +190,27 @@ const ProductDetail = () => {
             <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
             </CounterWrapper>
           </CounterContainer>
-          <StoreSelectorWrapper>
+          {/* <StoreSelectorWrapper>
             <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
               <option value="">지점 선택</option>
               {stores.map(store => (
                 <option key={store.storeId} value={store.storeId}dangerouslySetInnerHTML={renderOptionText(store, counter)} />
               ))}
             </Select>
-          </StoreSelectorWrapper>
+          </StoreSelectorWrapper> */}
+          <StoreSelectorWrapper>
+  <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
+    <option value="">지점 선택</option>
+    {stores.map(store => (
+      <option key={store.storeId} value={store.storeId}>
+        {renderOptionText(store, counter)}
+      </option>
+    ))}
+  </Select>
+</StoreSelectorWrapper>
+
 <CustomDropdown></CustomDropdown>
+
           <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
 
           <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
@@ -388,15 +415,18 @@ const OrderButton = styled.button`
 
 const DropdownContainer = styled.div`
   position: relative;
-  width: 200px;
+  width: 100%;
 `;
 
 const DropdownHeader = styled.div`
+  position: relative;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: white;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const DropdownListContainer = styled.div`
@@ -424,25 +454,17 @@ const ListItem = styled.li`
 
 const Arrow = styled.div`
   position: relative;
-  width: 12px;
-  height: 12px;
-  &::before, &::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-  }
-  &::before {
-    border-bottom: 6px solid #000;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-  }
   &::after {
-    border-bottom: 6px solid #fff;
-    top: 50%;
-    left: 1px;
-    transform: translateY(-50%);
+    content: '';
+    width: 8px; /* 사이즈 */
+    height: 8px; /* 사이즈 */
+    border-top: 1.5px solid gray; /* 선 두께 */
+    border-right: 1.5px solid gray; /* 선 두께 */
+    display: inline-block;
+    transform: rotate(135deg); /* 각도 */
+    position: absolute;
+    top: 10%; /* 기본 0px 값으로 해주세요 */
+    left: 0%; /* 기본 0px 값으로 해주세요 */
+
   }
 `;
