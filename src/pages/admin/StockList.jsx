@@ -3,20 +3,22 @@ import axios from "axios";
 import styled from 'styled-components';
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
+import useDebounce from "../common/UseDebounce";
 
 function StockList() {
   let [products, setProducts] = useState([]);
   const [sort, setSort] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [storeId, setStoreId] = useState('1');
-  const [pageNum, setPageNum] = useState('0');
+  const [storeId, setStoreId] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const debouncedSearchText = useDebounce(keyword, 500);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url =  `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${keyword}`
+        const url = `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${debouncedSearchText}`
         const response = await axios.get(url);
         console.log("생성된 URL:", url);
         if(pageNum > 0) {
@@ -29,7 +31,6 @@ function StockList() {
       } catch (error) {
         // if (error.response.data.errorCode === "FIND_FAIL_PRODUCTS") {
        if (error.response) {
-
           setErrorMessage("원하는 상품 목록을 불러올 수 없습니다.");
         } else {
           setErrorMessage("상품 목록을 불러오는 중 오류가 발생했습니다.");
@@ -39,7 +40,7 @@ function StockList() {
     };
 
     fetchProducts();
-  }, [storeId, pageNum, sort, keyword]);
+  }, [storeId, pageNum, sort, debouncedSearchText]);
 
   const handleSearchChange = (e) => {
     console.log(e);
@@ -232,6 +233,11 @@ const ProductTitle = styled.div`
   font-size: 15px;
   font-weight: 400;
   margin-bottom: 8px; /* 아래 여백 추가 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 두 줄로 제한 */
+  -webkit-box-orient: vertical;
 `;
 
 const Price = styled.div`
