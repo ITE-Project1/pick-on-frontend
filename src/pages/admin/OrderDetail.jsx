@@ -39,6 +39,10 @@ const OrderDetail = () => {
     }
   };
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   if (!orderDetails) {
     return <div>Loading...</div>;
   }
@@ -95,7 +99,7 @@ const OrderDetail = () => {
             </TextWrapper>
             <TextWrapper>
               <ProductText>총 결제금액</ProductText>
-              <ProductText>{orderDetails.totalPrice}원</ProductText>
+              <ProductText>{formatPrice(orderDetails.totalPrice)}원</ProductText>
             </TextWrapper>
           </RightColumn>
         </ProductInfo>
