@@ -11,6 +11,44 @@ const storeIdMap = {
   5: '압구정본점'
 };
 
+const options = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  { value: 'option3', label: 'Option 3' },
+];
+
+const CustomDropdown = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+    setIsOpen(false);
+  };
+
+  return (
+    <DropdownContainer>
+      <DropdownHeader onClick={toggleDropdown}>
+        {selectedOption ? selectedOption.label : '옵션 선택'}
+        <Arrow />
+      </DropdownHeader>
+      {isOpen && (
+        <DropdownListContainer>
+          <DropdownList>
+            {options.map((option) => (
+              <ListItem key={option.value} onClick={() => handleOptionClick(option)}>
+                {option.label}
+              </ListItem>
+            ))}
+          </DropdownList>
+        </DropdownListContainer>
+      )}
+    </DropdownContainer>
+  );
+}
+
 const ProductDetail = () => {
   const { productId } = useParams(); // URL에서 productId를 추출
   const location = useLocation(); // 현재 위치 객체를 가져옴
@@ -36,7 +74,7 @@ const ProductDetail = () => {
           price: productData.price,
           imageUrl: productData.imageUrl,
         });
-        setStores(response.data.map(item => ({ storeId: item.storeId, quantity: item.quantity })));
+        setStores(response.data.map(item => ({ storeId: item.storeId, quantity: item.quantity })).sort((a, b) => a.storeId - b.storeId));
         setLoading(false);
       } catch (error) {
         console.error('Error fetching product details:', error);
@@ -124,26 +162,29 @@ const ProductDetail = () => {
           </ProductName>
           <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
 
-          <ProductInfo>{product.description}
+          <ProductDescription>{product.description}
             <Line><hr /></Line>
-          </ProductInfo>
-
-          <CounterWrapper>
+          </ProductDescription> 
+          <CounterContainer>
+            <CounterLabel>
+                주문수량
+              </CounterLabel>
+            <CounterWrapper>
             <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
             <Counter>{counter}</Counter>
             <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
-          </CounterWrapper>
-
+            </CounterWrapper>
+          </CounterContainer>
           <StoreSelectorWrapper>
             <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
               <option value="">지점 선택</option>
               {stores.map(store => (
-                <option key={store.storeId} value={store.storeId} dangerouslySetInnerHTML={renderOptionText(store, counter)} />
+                <option key={store.storeId} value={store.storeId}dangerouslySetInnerHTML={renderOptionText(store, counter)} />
               ))}
             </Select>
           </StoreSelectorWrapper>
-
-          <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다.</Text>
+<CustomDropdown></CustomDropdown>
+          <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
 
           <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
         </ProductInfoBody>
@@ -172,7 +213,7 @@ const ProductInfoWrapper = styled.div`
 
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 246px);
+  height: calc(100vh - 170px);
 `;
 
 const ProductInfoBody = styled.div`
@@ -202,7 +243,7 @@ const Image = styled.img`
 
 const ProductName = styled.div`
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 20px;
   color: #9E3500;
   text-align: left;
   font-weight: bold;
@@ -217,25 +258,45 @@ const ProductPrice = styled.div`
   text-align: right;
 `;
 
-const ProductInfo = styled.div`
-  margin-top: 40px;
+const ProductDescription = styled.div`
+  margin-top: 80px;
 `;
 
 const Line = styled.div`
-  margin-top: 20px;
+  margin-top: 50px;
   hr {
     border: none;
     border-top: 2px solid #f0f0f0;
   }
 `;
+const CounterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+`;
 
+const CounterLabel = styled.div`
+  margin-right: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #46675C;
+`;
 const CounterWrapper = styled.div`
   display: flex;
+  margin-left: auto;
   align-items: center;
   justify-content: flex-end;
   margin-top: 20px;
 `;
-
+const Counter = styled.div`
+  text-align: center;
+  height: 100v;
+  // margin: 0 10px;
+  font-size: 17px;
+  display: flex;
+  align-item: center;
+  padding: 15px;
+`;
 const Button = styled.button`
   background-color: white;
   color: black;
@@ -249,21 +310,15 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   &:hover {
-    background-color: ${props => (props.disabled ? 'white' : 'black')};
+    background-color: ${props => (props.disabled ? 'white' : '#46675C' )};
     color: ${props => (props.disabled ? 'black' : 'white')};
   }
 `;
 
-const Counter = styled.div`
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  height: 100v;
-  margin: 0 10px;
-  font-size: 17px;
-`;
+
 
 const StoreSelectorWrapper = styled.div`
+  
   margin-top: 20px;
 `;
 
@@ -271,7 +326,7 @@ const Select = styled.select`
   padding: 5px;
   width: 100%; 
   height: 40px; /* 드롭박스 높이를 조정 */
-  border-radius: 4px;
+  border-radius: 9px;
   color: #828282; //글자 색깔
   width: 100%; /* 부모 요소의 너비에 맞추기 */
   box-sizing: border-box; /* 패딩과 보더를 포함한 너비 계산 */
@@ -279,8 +334,11 @@ const Select = styled.select`
 
   // 드롭박스 클릭시 나타나는 옵션박스의 크기 조정
   option {
+
+      border-radius: 19px;
       padding: 50px; /* 옵션의 패딩 조정 */
       font-size: 17px; /* 옵션의 글꼴 크기 조정 */
+      
   }
 `;
 
@@ -289,8 +347,8 @@ const HighlightedText = styled.span`
 `;
 
 const Text = styled.div`
-  margin-top: 20px;
-  font-size: 16px;
+  margin-top: 10px;
+  font-size: 13px;
   color: #46675C;
 `;
 
@@ -312,7 +370,8 @@ const StoreList = styled.div`
 `;
 
 const OrderButton = styled.button`
-  margin-top: 30px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   color: white;
   background-color: black;
 
@@ -324,4 +383,66 @@ const OrderButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+
+const DropdownContainer = styled.div`
+  position: relative;
+  width: 200px;
+`;
+
+const DropdownHeader = styled.div`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+`;
+
+const DropdownListContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+`;
+
+const DropdownList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+`;
+
+const ListItem = styled.li`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+const Arrow = styled.div`
+  position: relative;
+  width: 12px;
+  height: 12px;
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+  }
+  &::before {
+    border-bottom: 6px solid #000;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+  &::after {
+    border-bottom: 6px solid #fff;
+    top: 50%;
+    left: 1px;
+    transform: translateY(-50%);
+  }
 `;
