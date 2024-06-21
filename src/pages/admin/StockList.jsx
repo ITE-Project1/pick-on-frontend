@@ -233,6 +233,11 @@ const ProductTitle = styled.div`
   font-size: 15px;
   font-weight: 400;
   margin-bottom: 8px; /* 아래 여백 추가 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 두 줄로 제한 */
+  -webkit-box-orient: vertical;
 `;
 
 const Price = styled.div`
