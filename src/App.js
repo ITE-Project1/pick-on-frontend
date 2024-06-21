@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { Reset } from 'styled-reset';
 import GlobalStyles from './GlobalStyle';
-import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate
 } from 'react-router-dom';
-import {RecoilRoot, useRecoilState} from "recoil";
+import {useRecoilState} from "recoil";
 import { authState } from './auth/authState'
 import Layout from './layout/Layout';
 import OrderDetail from './pages/admin/OrderDetail';
@@ -50,9 +49,9 @@ function App() {
                 <Route path='/user/productlist' element={<ProductList/>} />
                 <Route path='/user/my' element={<UserMy />} />
                 <Route path='/user/productdetail/:productId' element={<ProductDetail/>} />
-                <Route path='/admin/orderlist' element={<OrderList />} />
-                <Route path='/admin/order/:orderId' element={<OrderDetail />} />
-                <Route path='/admin/userlist' element={<UserList />} />
+                <Route path='/admin/orderlist' element={<ProtectedRoute role="admin"><OrderList /></ProtectedRoute>} />
+                <Route path='/admin/order/:orderId' element={<ProtectedRoute role="admin"><OrderDetail /></ProtectedRoute>} />
+                <Route path='/admin/userlist' element={<ProtectedRoute role="admin"><UserList /></ProtectedRoute>} />
                 <Route path='/admin/my' element={<ProtectedRoute role="admin"><AdminMy /></ProtectedRoute>} />
                 <Route path='/admin/stocklist' element={<ProtectedRoute role="admin"><StockList /></ProtectedRoute>} />
               </Route>
