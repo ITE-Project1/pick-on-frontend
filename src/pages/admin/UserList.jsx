@@ -15,7 +15,7 @@ const UserList = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/admin/users?page=${pageNum}&keyword=${keyword}`
+        `http://localhost:8080/admin/users?page=${pageNum}&keyword=${keyword}`, {withCredentials : true}
       );
       if(pageNum > 0) {
         setUsers(prevUsers => [...prevUsers, ...response.data.list]);
@@ -42,7 +42,7 @@ const UserList = () => {
 
   const handleUpdateUserStatus = async () => {
     try {
-      await axios.patch(`http://localhost:8080/admin/users`, selectedUsers.map(user => user.username));
+      await axios.patch(`http://localhost:8080/admin/users`, selectedUsers.map(user => user.username), {withCredentials : true});
       setSelectedUsers([]);
       fetchUsers();
     } catch (error) {
