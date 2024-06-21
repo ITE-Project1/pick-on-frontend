@@ -55,7 +55,7 @@ export const Screen = () => {
         <Overlap>
           <View>
             <ShoppingInfo>나의 쇼핑 정보</ShoppingInfo>
-            <OrderInfo to="/user/my/orderlist">주문 조회</OrderInfo>
+            <OrderInfo to="/user/orderlist">주문 조회</OrderInfo>
             <Rectangle />
             <AccountInfo>나의 계정 정보</AccountInfo>
             <DeleteAccountLink to="#" onClick={handleDeleteAccount}>회원 탈퇴</DeleteAccountLink>
