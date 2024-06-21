@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -14,45 +14,69 @@ const storeIdMap = {
 //드롭박스 컴포넌트
 const CustomDropdown = ({ stores, counter, selectedStore, handleStoreChange }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openDirection, setOpenDirection] = useState('down');
+  const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleOptionClick = (storeId) => {
     handleStoreChange(storeId);
     setIsOpen(false);
   };
-//드롭박스 내 텍스트
+
+  const adjustDropdownDirection = () => {
+    const dropdownRect = dropdownRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    if (dropdownRect.bottom + 200 > viewportHeight) {
+      setOpenDirection('up');
+    } else {
+      setOpenDirection('down');
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      adjustDropdownDirection();
+    }
+  }, [isOpen]);
+
+  //드롭박스 내 텍스트
+  // 드롭박스 내 텍스트
   const renderOptionText = (store, counter) => {
     const isDirectPickupAvailable = store.quantity >= counter;
     return (
-      <span>
-        {storeIdMap[store.storeId]} (Quantity: {store.quantity})
-        {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
-      </span>
+        <OptionTextContainer>
+          <span>{storeIdMap[store.storeId]} (Quantity: {store.quantity})</span>
+          {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
+        </OptionTextContainer>
     );
   };
 
+
   return (
-    <DropdownContainer>
-      <DropdownHeader onClick={toggleDropdown}>
-        {selectedStore ? storeIdMap[selectedStore] : '지점 선택'}
-        <Arrow />
-      </DropdownHeader>
-      {isOpen && (
-        <DropdownListContainer>
-        <DropdownList>
-          {stores.map((store, index) => (
-            <React.Fragment key={store.storeId}>
-              <ListItem onClick={() => handleOptionClick(store.storeId)}>
-                {renderOptionText(store, counter)}
-              </ListItem>
-              {index < stores.length - 1 && <Divider />} {/* 마지막 항목 뒤에는 선이 표시되지 않도록 */}
-            </React.Fragment>
-          ))}
-        </DropdownList>
-      </DropdownListContainer>
-      )}
-    </DropdownContainer>
+      <DropdownContainer ref={dropdownRef}>
+        <DropdownHeader onClick={toggleDropdown}>
+          {selectedStore ? storeIdMap[selectedStore] : '지점 선택'}
+          <Arrow />
+        </DropdownHeader>
+        {isOpen && (
+            <DropdownListContainer direction={openDirection}>
+              <DropdownList>
+                {stores.map((store, index) => (
+                    <React.Fragment key={store.storeId}>
+                      <ListItem onClick={() => handleOptionClick(store.storeId)}>
+                        {renderOptionText(store, counter)}
+                      </ListItem>
+                      {index < stores.length - 1 && <Divider />} {/* 마지막 항목 뒤에는 선이 표시되지 않도록 */}
+                    </React.Fragment>
+                ))}
+              </DropdownList>
+            </DropdownListContainer>
+        )}
+      </DropdownContainer>
   );
 };
 
@@ -66,7 +90,7 @@ const ProductDetail = () => {
   const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState('');
   const [loading, setLoading] = useState(true);
-  const [counter, setCounter] = useState(1); 
+  const [counter, setCounter] = useState(1);
   const [directPickup, setDirectPickup] = useState(0);
 
   useEffect(() => {
@@ -150,44 +174,44 @@ const ProductDetail = () => {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <Container>
-      <Header></Header>
-      <ProductInfoWrapper>
-        <ProductInfoBody>
-          <ImageWrapper>
-            <Image src={product.imageUrl} alt={product.name} />
-          </ImageWrapper>
+      <Container>
+        <Header></Header>
+        <ProductInfoWrapper>
+          <ProductInfoBody>
+            <ImageWrapper>
+              <Image src={product.imageUrl} alt={product.name} />
+            </ImageWrapper>
 
-          <ProductName>
-            <h1>{product.name}</h1>
-          </ProductName>
-          <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
+            <ProductName>
+              <h1>{product.name}</h1>
+            </ProductName>
+            <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
 
-          <ProductDescription>{product.description}
-            <Line><hr /></Line>
-          </ProductDescription> 
-          <CounterContainer>
-            <CounterLabel>
-              주문수량
-            </CounterLabel>
-            <CounterWrapper>
-              <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
-              <Counter>{counter}</Counter>
-              <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
-            </CounterWrapper>
-          </CounterContainer>
-          <CustomDropdown 
-            stores={stores} 
-            counter={counter} 
-            selectedStore={selectedStore} 
-            handleStoreChange={handleStoreChange} 
-          />
-          <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
+            <ProductDescription>{product.description}
+              <Line><hr /></Line>
+            </ProductDescription>
+            <CounterContainer>
+              <CounterLabel>
+                주문수량
+              </CounterLabel>
+              <CounterWrapper>
+                <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
+                <Counter>{counter}</Counter>
+                <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
+              </CounterWrapper>
+            </CounterContainer>
+            <CustomDropdown
+                stores={stores}
+                counter={counter}
+                selectedStore={selectedStore}
+                handleStoreChange={handleStoreChange}
+            />
+            <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
 
-          <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
-        </ProductInfoBody>
-      </ProductInfoWrapper>
-    </Container>
+            <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
+          </ProductInfoBody>
+        </ProductInfoWrapper>
+      </Container>
   );
 };
 
@@ -315,32 +339,12 @@ const Button = styled.button`
   }
 `;
 
-const HighlightText = styled.span`
-  color: green;
-  margin-left: 5px;
-`;
-
 const Text = styled.div`
   margin-top: 10px;
   font-size: 13px;
   color: #46675C;
 `;
 
-const OrderButton = styled.button`
-  margin-top: 50px;
-  margin-bottom: 50px;
-  color: white;
-  background-color: black;
-
-  border-radius: 30px;
-  width: 100%;
-  height: 50px;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 
 //드롭박스
@@ -377,10 +381,13 @@ const Arrow = styled.div`
     margin-bottom: 5px;
   }
 `;
+
 const DropdownListContainer = styled.div`
   position: absolute;
   width: 100%;
   z-index: 1000;
+  top: ${({ direction }) => (direction === 'up' ? 'auto' : '100%')};
+  bottom: ${({ direction }) => (direction === 'up' ? '100%' : 'auto')};
 `;
 
 const DropdownList = styled.ul`
@@ -390,17 +397,52 @@ const DropdownList = styled.ul`
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: white;
-  border-bottom: 6px solid #000;
 `;
+
 const Divider = styled.hr`
   border: none;
   border-top: 1px solid #f0f0f0; /* 파란색 선으로 설정 */
   margin: 0;
 `;
+
+
 const ListItem = styled.li`
   padding: 10px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center; /* 세로 정렬 */
   &:hover {
     background-color: #f0f0f0;
   }
+`;
+
+const HighlightText = styled.span`
+  color: green;
+  margin-left: 10px; /* 왼쪽 여백 추가 */
+`;
+
+//'바로 픽업 가능' 오른쪽 정렬
+const OptionTextContainer = styled.div`
+  display: flex;
+  justify-content: space-between; //flex box 내의 컨텐츠 사이 거리 주기
+  width: 100%;
+`;
+
+
+
+const OrderButton = styled.button`
+  margin-top: 50px;
+  margin-bottom: 90px;
+  color: white;
+  background-color: black;
+
+  border-radius: 30px;
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
