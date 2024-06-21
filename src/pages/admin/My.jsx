@@ -79,7 +79,7 @@ const Group = styled.div`
 
 const Overlap = styled.div`
   height: 854px;
-  position: relative;
+  position: fixed;
   width: 425px;
 `;
 

@@ -28,7 +28,7 @@ export const ProductList = () => {
     const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${keyword}`;
     console.log("생성된 URL:", url);
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, { withCredentials: true });
       console.log("Response data:", JSON.stringify(response.data, null, 2));
       if (pageNum > 1) {
         setProducts((prevProducts) => [...prevProducts, ...response.data.list]);

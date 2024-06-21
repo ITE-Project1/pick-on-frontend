@@ -27,7 +27,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`);
+        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`, { withCredentials: true });
         const productData = response.data[0];
         setProduct({
           productId: productData.productId,
