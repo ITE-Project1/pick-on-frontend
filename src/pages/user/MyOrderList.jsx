@@ -16,13 +16,13 @@ const statusIcons = {
 
 function MyOrderList() {
   const [orders, setOrders] = useState([]);
-  const [pageNum, setPageNum] = useState('0');
+  const [pageNum, setPageNum] = useState(0);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const url = `http://localhost:8080/users/orders/list?page=${pageNum}`
+        const url = `http://localhost:8080/orders?page=${pageNum}`;
         const response = await axios.get(url, {withCredentials : true});
         console.log("생성된 URL:", url);
         if (pageNum > 0) {
@@ -48,39 +48,58 @@ function MyOrderList() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(-2);
+    const month = (`0${date.getMonth() + 1}`).slice(-2);
+    const day = (`0${date.getDate()}`).slice(-2);
+    return `${year}.${month}.${day}`;
+  };
+
   return (
     <Container>
       <Header>
         <TitleText>주문 및 픽업 조회</TitleText>
       </Header>
-      <ProductList>
-        {sampleOrders.map(order => (
-          <Product key={order.orderId}>
-            <FirstLine>
-              <OrderId>{order.orderId}</OrderId>
-              <StoreInfo>{order.storeName} / {order.orderDate}</StoreInfo>
-            </FirstLine>
-            <ProductContent>
-              <ProductImage alt="Product image" src={order.productImageUrl}/>
-              <ProductDetails>
-                <ProductBrand>{order.brandName}</ProductBrand>
-                <ProductTitle>{order.productName}</ProductTitle>
-                <ProductPrice>{formatPrice(order.productPrice)}원</ProductPrice>
-              </ProductDetails>
-            </ProductContent>
-            <StatusBar>
-              {statusIcons[order.orderStatus]}
-            </StatusBar>
-          </Product>
-        ))}
-        <ButtonWrapper>
-          {hasMoreOrders && (
-            <PlusButton onClick={handlePageChange}>
-              <PlusBtnSvg></PlusBtnSvg>
-            </PlusButton>
-          )}
-        </ButtonWrapper>
-      </ProductList>
+      <Underbar></Underbar>
+      <ContentWrapper>
+        <ProductList>
+          {orders.map(order => (
+            <Product key={order.orderId}>
+              <PickUp>
+                <PickUpDateText>
+                  픽업 예상 날짜
+                </PickUpDateText>
+                <PickUpDate>
+                  {formatDate(order.pickupDate)}
+                </PickUpDate>
+              </PickUp>
+              <FirstLine>
+                <OrderId>{order.orderId}</OrderId>
+                <StoreInfo>{order.storeName} / {formatDate(order.orderDate)}</StoreInfo>
+              </FirstLine>
+              <ProductContent>
+                <ProductImage alt="Product image" src={order.productImg}/>
+                <ProductDetails>
+                  <ProductBrand>{order.brandName}</ProductBrand>
+                  <ProductTitle>{order.productName}</ProductTitle>
+                  <ProductPrice>{formatPrice(order.totalPrice)}원</ProductPrice>
+                </ProductDetails>
+              </ProductContent>
+              <StatusBar>
+                {statusIcons[order.pickupStatus]}
+              </StatusBar>
+            </Product>
+          ))}
+          <ButtonWrapper>
+            {hasMoreOrders && (
+              <PlusButton onClick={handlePageChange}>
+                <PlusBtnSvg></PlusBtnSvg>
+              </PlusButton>
+            )}
+          </ButtonWrapper>
+        </ProductList>
+      </ContentWrapper>
     </Container>
   );
 }
@@ -88,17 +107,28 @@ function MyOrderList() {
 export default MyOrderList;
 
 const Container = styled.div`
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 15px;
 `;
 
 const Header = styled.div`
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
-  border-bottom: 2px solid #ddd;
+  margin-top: 5px;
+  background-color: #fff;
+`;
+
+const Underbar = styled.div`
+  width: inherit;
+  height: 12px;
+  max-width: 425px;
+  position: fixed;
+  margin: 0 auto;
+  top: 60px; /* 헤더 높이만큼 아래에 위치 */
+  left: 0;
+  right: 0;
+  z-index: 9; /* 헤더보다 뒤에 있도록 설정 */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0)); /* 아래로 갈수록 연한 회색 */
 `;
 
 const TitleText = styled.div`
@@ -106,9 +136,14 @@ const TitleText = styled.div`
   padding: 15px 0px 15px 0px;
 `;
 
+const ContentWrapper = styled.div`
+  margin-top: 10px;
+  background-color: #828282;
+`;
 
 const ProductList = styled.div`
-  height: calc(100vh - 228px);
+  background-color: #F0F0F0;
+  height: calc(100vh - 118px);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -118,15 +153,49 @@ const ProductList = styled.div`
 `;
 
 const Product = styled.div`
-  border-bottom: 1px solid #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
   position: relative;
-  height: 224px;
-  width: 385px;
-  margin-top: 20px;
+  height: 270px;
+  width: auto;
+  margin-bottom: 10px;
+`;
+
+const PickUp = styled.div`
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 20px;
+`;
+
+const PickUpDateText = styled.div`
+  color: #969696;
+  font-size: 12px;
+  margin-right: 5px;
+`;
+
+const PickUpDate = styled.div`
+  color: #000000;
+  font-weight: 700;
+  font-size: 17px;
+`;
+
+const FirstLine = styled.div`
+  margin-left: 20px;
+  display: flex;
+  text-align: end;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 377px;
+  height: 29px;
 `;
 
 const ProductContent = styled.div`
+  margin-left: 20px;
   display: flex;
+  justify-content: left;
   flex-direction: row;
 `;
 
@@ -140,9 +209,11 @@ const ProductImage = styled.img`
 `;
 
 const StatusBar = styled.div`
-  margin-top: 30px;
+  margin-left: 20px;
+  margin-top: 20px;
   width: 382px;
   height: 36px;
+  margin-bottom: 10px;
 `;
 
 const ProductDetails = styled.div`
@@ -150,7 +221,7 @@ const ProductDetails = styled.div`
   margin-left: 15px;
   top: 72px;
   left: 89px;
-  width: 152px;
+  width: 300px;
 `;
 
 const ProductTitle = styled.p`
@@ -159,6 +230,11 @@ const ProductTitle = styled.p`
   color: #111111;
   line-height: 17px;
   margin-top: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* 두 줄로 제한 */
+  -webkit-box-orient: vertical;
 `;
 
 const ProductPrice = styled.div`
@@ -173,14 +249,6 @@ const ProductBrand = styled.div`
   font-weight: 600;
   color: #969696;
   line-height: 17px;
-`;
-
-const FirstLine = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
-  width: 377px;
-  height: 29px;
 `;
 
 const OrderId = styled.div`
@@ -208,7 +276,6 @@ const ButtonWrapper = styled.div`
 const PlusButton = styled.button`
   width: 100px;
   height: 50px;
-  background-color: white;
   border: none;
   border-radius: 10%;
   cursor: pointer;
@@ -237,57 +304,4 @@ const PlusButton = styled.button`
     transform: scale(0.95);
   }
 `;
-
-const sampleOrders = [
-  {
-    orderId: "PO_3020346273",
-    orderStatus: 1,
-    orderDate: "2024-06-17",
-    productName: "링클 프리 반팔 크롭 나시",
-    productPrice: 14000,
-    productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
-    brandName: "아르켓",
-    storeName: "더현대서울점"
-  },
-  {
-    orderId: "PO_3020346274",
-    orderStatus: 2,
-    orderDate: "2024-06-16",
-    productName: "링클 프리 반팔 크롭 나시",
-    productPrice: 14000,
-    productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
-    brandName: "자라",
-    storeName: "롯데월드몰점"
-  },
-  {
-    orderId: "PO_3020346275",
-    orderStatus: 3,
-    orderDate: "2024-06-15",
-    productName: "링클 프리 반팔 크롭 나시",
-    productPrice: 14000,
-    productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
-    brandName: "유니클로",
-    storeName: "스타필드 코엑스몰점"
-  },
-  {
-    orderId: "PO_3020346276",
-    orderStatus: 4,
-    orderDate: "2024-06-14",
-    productName: "링클 프리 반팔 크롭 나시",
-    productPrice: 14000,
-    productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
-    brandName: "무신사",
-    storeName: "가로수길점"
-  },
-  {
-    orderId: "PO_3020346277",
-    orderStatus: 1,
-    orderDate: "2024-06-13",
-    productName: "링클 프리 반팔 크롭 나시",
-    productPrice: 14000,
-    productImageUrl: "https://image.thehyundai.com/static/5/3/3/33/A1/40A1333352_1_300.jpg",
-    brandName: "나이키",
-    storeName: "강남점"
-  }
-];
 

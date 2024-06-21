@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams, useLocation} from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import OrderModal from "./OrderModal";
 
 const storeIdMap = {
   1: '천호점',
@@ -11,68 +12,75 @@ const storeIdMap = {
   5: '압구정본점'
 };
 
-//드롭박스 컴포넌트
-const CustomDropdown = ({ stores, counter, selectedStore, handleStoreChange }) => {
+const options = [
+  {value: 'option1', label: 'Option 1'},
+  {value: 'option2', label: 'Option 2'},
+  {value: 'option3', label: 'Option 3'},
+];
+
+const orderResponse = {
+  orderId: '123141234143',
+  orderDate: '2024-06-24 14:32:14',
+  pickupDate: '2024-06-24 15:32:14',
+  toStore: '천호점',
+  productName: '지오다노 반팔티',
+  quantity: '2',
+  totalPrice: 56000,
+  //account: 가상계좌번호 생성 함수로 생성
+}
+
+
+const CustomDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleOptionClick = (storeId) => {
-    handleStoreChange(storeId);
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
     setIsOpen(false);
-  };
-//드롭박스 내 텍스트
-  const renderOptionText = (store, counter) => {
-    const isDirectPickupAvailable = store.quantity >= counter;
-    return (
-      <span>
-        {storeIdMap[store.storeId]} (Quantity: {store.quantity})
-        {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
-      </span>
-    );
   };
 
   return (
     <DropdownContainer>
       <DropdownHeader onClick={toggleDropdown}>
-        {selectedStore ? storeIdMap[selectedStore] : '지점 선택'}
-        <Arrow />
+        {selectedOption ? selectedOption.label : '옵션 선택'}
+        <Arrow/>
       </DropdownHeader>
       {isOpen && (
         <DropdownListContainer>
-        <DropdownList>
-          {stores.map((store, index) => (
-            <React.Fragment key={store.storeId}>
-              <ListItem onClick={() => handleOptionClick(store.storeId)}>
-                {renderOptionText(store, counter)}
+          <DropdownList>
+            {options.map((option) => (
+              <ListItem key={option.value} onClick={() => handleOptionClick(option)}>
+                {option.label}
               </ListItem>
-              {index < stores.length - 1 && <Divider />} {/* 마지막 항목 뒤에는 선이 표시되지 않도록 */}
-            </React.Fragment>
-          ))}
-        </DropdownList>
-      </DropdownListContainer>
+            ))}
+          </DropdownList>
+        </DropdownListContainer>
       )}
     </DropdownContainer>
   );
-};
+}
 
 const ProductDetail = () => {
-  const { productId } = useParams();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const pageNum = searchParams.get('page');
+  const {productId} = useParams(); // URL에서 productId를 추출
+  const location = useLocation(); // 현재 위치 객체를 가져옴
+  const searchParams = new URLSearchParams(location.search); // 쿼리 파라미터를 파싱
+  const pageNum = searchParams.get('page'); // 쿼리 파라미터에서 page 값을 가져옴
 
   const [product, setProduct] = useState(null);
   const [stores, setStores] = useState([]);
-  const [selectedStore, setSelectedStore] = useState('');
+  const [selectedStore, setSelectedStore] = useState(''); // 선택된 지점 상태 추가
   const [loading, setLoading] = useState(true);
-  const [counter, setCounter] = useState(1); 
-  const [directPickup, setDirectPickup] = useState(0);
+  const [counter, setCounter] = useState(1);
+  const [directPickup, setDirectPickup] = useState(0); // 바로 픽업 가능 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+  const [orderResponse, setOrderResponse] = useState(null); // 주문 응답 상태 추가
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`, { withCredentials: true });
+        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`, {withCredentials: true});
         const productData = response.data[0];
         setProduct({
           productId: productData.productId,
@@ -81,7 +89,10 @@ const ProductDetail = () => {
           price: productData.price,
           imageUrl: productData.imageUrl,
         });
-        setStores(response.data.map(item => ({ storeId: item.storeId, quantity: item.quantity })).sort((a, b) => a.storeId - b.storeId));
+        setStores(response.data.map(item => ({
+          storeId: item.storeId,
+          quantity: item.quantity
+        })).sort((a, b) => a.storeId - b.storeId));
         setLoading(false);
       } catch (error) {
         console.error('Error fetching product details:', error);
@@ -104,16 +115,37 @@ const ProductDetail = () => {
     }
   };
 
-  const handleStoreChange = (storeId) => {
-    setSelectedStore(storeId);
-    const selectedStore = stores.find(store => store.storeId === storeId);
+  const handleStoreChange = (event) => {
+    const selectedStoreId = event.target.value;
+    setSelectedStore(selectedStoreId);
+    const selectedStore = stores.find(store => store.storeId === parseInt(selectedStoreId));
     if (selectedStore && selectedStore.quantity >= counter) {
-      console.log("counter:",counter);
-      console.log("store quantity:",selectedStore.quantity);
       setDirectPickup(1);
     } else {
       setDirectPickup(0);
     }
+  };
+
+  // const renderOptionText = (store, counter) => {
+  //   const text = `${storeIdMap[store.storeId]} (Quantity: ${store.quantity})`;
+  //   const highlight = store.quantity >= counter ? ' 바로 픽업 가능' : '';
+
+  //   return { __html: `${text}${highlight ? `<span style="color: green;">${highlight}</span>` : ''}` };
+  // };
+
+  const HighlightText = styled.span`
+    color: green;
+    margin-left: 5px; // 위치 조정을 위한 예시
+  `;
+
+  const renderOptionText = (store, counter) => {
+    const isDirectPickupAvailable = store.quantity >= counter;
+    return (
+      <span>
+      {storeIdMap[store.storeId]} (Quantity: {store.quantity})
+        {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
+    </span>
+    );
   };
 
   const handlePickup = async () => {
@@ -121,23 +153,35 @@ const ProductDetail = () => {
       alert('지점을 선택해주세요.');
       return;
     }
-    const selectedStoreData = stores.find(store => store.storeId === selectedStore);
+    const selectedStoreData = stores.find(store => store.storeId === parseInt(selectedStore));
     if (!selectedStoreData) {
       alert('유효한 지점을 선택해주세요.');
       return;
     }
-
+//order controller로 전달할 데이터
     const payload = {
-      productId: product.productId,
-      quantity: counter,
-      storeId: selectedStore,
-      directPickup: directPickup
+      "productId": product.productId,
+      "quantity": counter,
+      "storeId": parseInt(selectedStore),
+      "directPickup": directPickup
     };
-    console.log('Sending payload:', payload);
+    console.log('Sending payload:', payload); // payload를 출력하여 확인
 
     try {
-      const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials : true});
-      console.log('Server response:', response.data);
+      const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials: true});
+      setOrderResponse({
+        orderId: '123141234143',
+        orderDate: '2024-06-24 14:32:14',
+        pickupDate: '2024-06-24 15:32:14',
+        toStore: '천호점',
+        productName: '지오다노 반팔티',
+        quantity: '2',
+        totalPrice: 56000,
+        account: '가상계좌번호 생성 함수로 생성'
+      });
+      setIsModalOpen(true);
+      console.log("=============");
+      console.log('Server response:', response);
       alert('픽업 요청이 성공적으로 전송되었습니다.');
     } catch (error) {
       console.error('Error sending pickup request:', error);
@@ -155,7 +199,7 @@ const ProductDetail = () => {
       <ProductInfoWrapper>
         <ProductInfoBody>
           <ImageWrapper>
-            <Image src={product.imageUrl} alt={product.name} />
+            <Image src={product.imageUrl} alt={product.name}/>
           </ImageWrapper>
 
           <ProductName>
@@ -164,8 +208,10 @@ const ProductDetail = () => {
           <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
 
           <ProductDescription>{product.description}
-            <Line><hr /></Line>
-          </ProductDescription> 
+            <Line>
+              <hr/>
+            </Line>
+          </ProductDescription>
           <CounterContainer>
             <CounterLabel>
               주문수량
@@ -176,17 +222,40 @@ const ProductDetail = () => {
               <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
             </CounterWrapper>
           </CounterContainer>
-          <CustomDropdown 
-            stores={stores} 
-            counter={counter} 
-            selectedStore={selectedStore} 
-            handleStoreChange={handleStoreChange} 
-          />
+          {/* <StoreSelectorWrapper>
+            <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
+              <option value="">지점 선택</option>
+              {stores.map(store => (
+                <option key={store.storeId} value={store.storeId}dangerouslySetInnerHTML={renderOptionText(store, counter)} />
+              ))}
+            </Select>
+          </StoreSelectorWrapper> */}
+          <StoreSelectorWrapper>
+            <Select id="store-select" value={selectedStore} onChange={handleStoreChange}>
+              <option value="">지점 선택</option>
+              {stores.map(store => (
+                <option key={store.storeId} value={store.storeId}>
+                  {renderOptionText(store, counter)}
+                </option>
+              ))}
+            </Select>
+          </StoreSelectorWrapper>
+
+          <CustomDropdown></CustomDropdown>
+
           <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
 
           <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
         </ProductInfoBody>
       </ProductInfoWrapper>
+
+      {orderResponse && (
+        <OrderModal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          orderResponse={orderResponse}
+        />
+      )}
     </Container>
   );
 };
@@ -204,6 +273,7 @@ const Header = styled.div`
 `;
 
 const ProductInfoWrapper = styled.div`
+  // display: flex;
   margin-left: 40px;
   margin-right: 40px;
   align-items: center;
@@ -214,15 +284,17 @@ const ProductInfoWrapper = styled.div`
 `;
 
 const ProductInfoBody = styled.div`
+  // border: 1px solid blue;
   overflow-y: auto;
   flex-grow: 1;
+
   &::-webkit-scrollbar {
     display: none;
   }
 `;
 
 const ImageWrapper = styled.div`
-  border: 1px solid #f0f0f0; 
+  border: 1px solid #f0f0f0;
   width: 100%;
   height: 400px;
   display: flex;
@@ -260,14 +332,13 @@ const ProductDescription = styled.div`
 
 const Line = styled.div`
   margin-top: 50px;
+
   hr {
     border: none;
     border-top: 2px solid #f0f0f0;
   }
 `;
-
 const CounterContainer = styled.div`
-
   display: flex;
   align-items: center;
   margin-top: 20px;
@@ -279,7 +350,6 @@ const CounterLabel = styled.div`
   font-weight: bold;
   color: #46675C;
 `;
-
 const CounterWrapper = styled.div`
   display: flex;
   margin-left: auto;
@@ -287,16 +357,15 @@ const CounterWrapper = styled.div`
   justify-content: flex-end;
   margin-top: 20px;
 `;
-
 const Counter = styled.div`
   text-align: center;
-  height: 100v;
+  height: 100 v;
+  // margin: 0 10px;
   font-size: 17px;
   display: flex;
-  align-items: center;
+  align-item: center;
   padding: 15px;
 `;
-
 const Button = styled.button`
   background-color: white;
   color: black;
@@ -309,21 +378,64 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
   &:hover {
-    background-color: ${props => (props.disabled ? 'white' : '#46675C' )};
+    background-color: ${props => (props.disabled ? 'white' : '#46675C')};
     color: ${props => (props.disabled ? 'black' : 'white')};
   }
 `;
 
-const HighlightText = styled.span`
+
+const StoreSelectorWrapper = styled.div`
+
+  margin-top: 20px;
+`;
+
+const Select = styled.select`
+  padding: 5px;
+  width: 100%;
+  height: 40px; /* 드롭박스 높이를 조정 */
+  border-radius: 9px;
+  color: #828282; //글자 색깔
+  width: 100%; /* 부모 요소의 너비에 맞추기 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 너비 계산 */
+  font-size: 16px; /* 글자 크기를 키워서 드롭박스 크기를 조정 */
+
+  // 드롭박스 클릭시 나타나는 옵션박스의 크기 조정
+  option {
+
+    border-radius: 19px;
+    padding: 50px; /* 옵션의 패딩 조정 */
+    font-size: 17px; /* 옵션의 글꼴 크기 조정 */
+
+  }
+`;
+
+const HighlightedText = styled.span`
   color: green;
-  margin-left: 5px;
 `;
 
 const Text = styled.div`
   margin-top: 10px;
   font-size: 13px;
   color: #46675C;
+`;
+
+const StoreList = styled.div`
+  margin-top: 20px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 5px 0;
+    }
+  }
 `;
 
 const OrderButton = styled.button`
@@ -343,16 +455,12 @@ const OrderButton = styled.button`
 `;
 
 
-//드롭박스
 const DropdownContainer = styled.div`
-  margin-top: 20px;
   position: relative;
   width: 100%;
-  margin-right: 50px;
 `;
 
 const DropdownHeader = styled.div`
-  color: #828282;
   position: relative;
   padding: 10px;
   border: 1px solid #ccc;
@@ -361,22 +469,8 @@ const DropdownHeader = styled.div`
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* 추가하여 세로 정렬 */
 `;
 
-const Arrow = styled.div`
-  &::after {
-    content: '';
-    width: 8px; /* 사이즈 */
-    height: 8px; /* 사이즈 */
-    border-top: 1.5px solid gray; /* 선 두께 */
-    border-right: 1.5px solid gray; /* 선 두께 */
-    display: inline-block;
-    transform: rotate(135deg); /* 각도 */
-    margin-right: 10px; /* 화살표와 텍스트 사이에 여유 공간 추가 */
-    margin-bottom: 5px;
-  }
-`;
 const DropdownListContainer = styled.div`
   position: absolute;
   width: 100%;
@@ -390,17 +484,31 @@ const DropdownList = styled.ul`
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: white;
-  border-bottom: 6px solid #000;
 `;
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #f0f0f0; /* 파란색 선으로 설정 */
-  margin: 0;
-`;
+
 const ListItem = styled.li`
   padding: 10px;
   cursor: pointer;
+
   &:hover {
     background-color: #f0f0f0;
+  }
+`;
+
+const Arrow = styled.div`
+  position: relative;
+
+  &::after {
+    content: '';
+    width: 8px; /* 사이즈 */
+    height: 8px; /* 사이즈 */
+    border-top: 1.5px solid gray; /* 선 두께 */
+    border-right: 1.5px solid gray; /* 선 두께 */
+    display: inline-block;
+    transform: rotate(135deg); /* 각도 */
+    position: absolute;
+    top: 10%; /* 기본 0px 값으로 해주세요 */
+    left: 0%; /* 기본 0px 값으로 해주세요 */
+
   }
 `;
