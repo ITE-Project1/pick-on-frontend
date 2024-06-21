@@ -4,6 +4,6 @@ import axios from 'axios';
 
 export const authState = atom({
     key: 'authState',
-    default: { isAuthenticated: false, user: null, role: null, username: null },
+    default: { isAuthenticated: false, userId: null, role: null, username: null },
 });
 

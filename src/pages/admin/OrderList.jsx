@@ -4,53 +4,46 @@ import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
-import useDebounce from "../common/UseDebounce";
 
 const OrderList = () => {
-  let [orders, setOrders] = useState([]);
-  const [keyword, setKeyword] = useState('');
+  const [orders, setOrders] = useState([]);
+  const [keyword, setKeyword] = useState("");
   const [storeId, setStoreId] = useState(1);
-  const [pageNum, setPageNum] = useState(0);
+  const [pageNum, setPageNum] = useState(1);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const debouncedSearchText = useDebounce(keyword, 500);
 
   useEffect(() => {
     fetchOrders();
-  }, [keyword, storeId, pageNum, debouncedSearchText]);
+  }, [keyword, storeId, pageNum]);
 
   const fetchOrders = async () => {
     try {
-      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${debouncedSearchText}`;
-      const response = await axios.get(url);
-      console.log("생성된 URL:", url);
-      if (pageNum > 0) {
-        setOrders((prevOrders) => [...prevOrders, ...response.data.list]);
-      } else {
-        setOrders(response.data.list);
-      }
-      setHasMoreOrders(pageNum < response.data.totalPage - 1);
+      axios
+          .get(`http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`, {withCredentials : true})
+          .then((response) => {
+            if (pageNum > 1) {
+              setOrders((prevOrders) => [...prevOrders, ...response.data]);
+            } else {
+              setOrders(response.data);
+            }
+            setHasMoreOrders(response.data.length === 10);
+          });
     } catch (error) {
-      if (error.response) {
-        setErrorMessage("검색 결과가 없습니다.");
-      } else {
-        setErrorMessage("주문 목록을 불러오는 중 오류가 발생했습니다.");
-      }
-      console.error("Error fetching products:", error);
+      console.error("Error fetching orders:", error);
     }
   };
 
   const handleSearchChange = (e) => {
     setKeyword(e.target.value);
-    setPageNum(0);
     setOrders([]);
+    setPageNum(1);
   };
 
   const handleStoreChange = (e) => {
     setStoreId(e.target.value);
-    setPageNum(0);
     setOrders([]);
+    setPageNum(1);
   };
 
   const handlePageChange = () => {
@@ -63,11 +56,11 @@ const OrderList = () => {
     );
   };
 
-  const handleUpdateStatus = async () => {
+  const handleCompleteDelivery = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders, {withCredentials : true});
+      alert("지점 수령 완료 상태로 변경되었습니다.");
       setSelectedOrders([]);
-      fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
@@ -79,7 +72,7 @@ const OrderList = () => {
         <Header>
           <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
           <Controls>
-            <Button onClick={handleUpdateStatus}>지점 수령 완료</Button>
+            <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
             <Select onChange={handleStoreChange} value={storeId}>
               <option value={1}>천호점</option>
               <option value={2}>목동점</option>
@@ -98,9 +91,8 @@ const OrderList = () => {
             <HeaderItem width="20%">픽업 현황</HeaderItem>
           </OrderTableHeader>
           <OrderTableBody>
-
             {orders.map((order) => (
-                <OrderItem key={order.orderId} order={order} onSelect={handleSelectOrder} />
+                <OrderItem key={order.id} order={order} onSelect={handleSelectOrder} />
             ))}
             <ButtonWrapper>
               {hasMoreOrders && (
@@ -113,7 +105,7 @@ const OrderList = () => {
         </OrderTableWrapper>
       </Container>
   );
-}
+};
 export default OrderList;
 
 const Container = styled.div`
@@ -223,10 +215,4 @@ const PlusButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
-`;
-
-const ErrorMessage = styled.div`
-  color: red;
-  text-align: center;
-  margin: 20px 0;
 `;
