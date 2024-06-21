@@ -48,7 +48,7 @@ function App() {
                 <Route path='/login' element={<Login />} />
                 <Route path='/user/productlist' element={<ProductList/>} />
                 <Route path='/user/my' element={<ProtectedRoute role="general"><UserMy /></ProtectedRoute>} />
-                <Route path='/user/my/orderlist' element={<ProtectedRoute role="general"><MyOrderList /></ProtectedRoute>} />
+                <Route path='/user/orderlist' element={<ProtectedRoute role="general"><MyOrderList /></ProtectedRoute>} />
                 <Route path='/user/productdetail/:productId' element={<ProductDetail/>} />
                 <Route path='/admin/orderlist' element={<ProtectedRoute role="admin"><OrderList /></ProtectedRoute>} />
                 <Route path='/admin/order/:orderId' element={<ProtectedRoute role="admin"><OrderDetail /></ProtectedRoute>} />

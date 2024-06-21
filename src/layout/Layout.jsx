@@ -6,7 +6,7 @@ import Footer from "../components/footer/Footer";
 
 const Layout = () => {
   const location = useLocation();
-  const showHeader = !["/admin/my", "/user/my"].includes(location.pathname);
+  const showHeader = !["/admin/my", "/user/my", "/user/orderlist"].includes(location.pathname);
 
   return (
     <InnerWidth showHeader={showHeader}>
