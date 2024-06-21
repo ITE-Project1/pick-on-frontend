@@ -2,31 +2,40 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { authState } from "../../auth/authState";
+import {useSetRecoilState} from "recoil";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate(); // useNavigate를 함수로 호출합니다.
+  const setAuth = useSetRecoilState(authState);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/user/login", { username, password });
-      const { role } = response.data;
-      if (role === "admin") {
-        navigate("/admin/stocklist");
-      } else {
-        navigate("/user/productlist");
+      const response = await axios.post('http://localhost:8080/user/login', { username, password }, { withCredentials: true });
+      if (response.status === 200) {
+        const sessionData = response.data;
+        setAuth({
+          isAuthenticated: true,
+          userId: sessionData.userId,
+          role: sessionData.role
+        });
+        if (sessionData.role === "admin") {
+          navigate("/admin/stocklist");
+        } else {
+          navigate("/user/productlist");
+        }
       }
     } catch (error) {
-      console.log(error.response.data);
       if (error.response) {
         setErrors(error.response.data);
       }else {
         console.error("Login failed:", error);
       }
-      
+      setErrors(error.response.data);
     }
   };
 
