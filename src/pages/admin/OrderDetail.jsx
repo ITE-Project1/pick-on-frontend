@@ -188,7 +188,7 @@ const TitleText = styled.div`
   font-size: 20px;
   font-weight: 500;
   color: #000000;
-  padding: 30px 0px 15px 0px;
+  padding: 50px 0px 15px 0px;
   width: 100%;
   text-align: left;
 `;
@@ -242,7 +242,6 @@ const ButtonWrapper = styled.div`
   justify-content: flex-end;
   cursor: pointer;
   margin-top: 25px;
-  margin-bottom: 30px;
 `;
 
 const ReceiveButton = styled.div`
