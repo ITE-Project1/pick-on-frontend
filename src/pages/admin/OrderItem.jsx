@@ -41,7 +41,7 @@ const TableRow = styled.div`
   border-bottom: 1px solid #ddd;
   padding: 20px 2px;
   font-size: 12px;
-
+  cursor: pointer;
   &:hover {
     background-color: #f1f1f1;
   }

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
+import useDebounce from "../common/UseDebounce";
 
 const OrderList = () => {
   let [orders, setOrders] = useState([]);
@@ -13,15 +14,16 @@ const OrderList = () => {
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const debouncedSearchText = useDebounce(keyword, 500);
 
   useEffect(() => {
     fetchOrders();
-  }, [keyword, storeId, pageNum]);
+  }, [keyword, storeId, pageNum, debouncedSearchText]);
 
   const fetchOrders = async () => {
     try {
-      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${keyword}`;
-      const response = await axios.get(url, {withCredentials : true});
+      const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${debouncedSearchText}`;
+      const response = await axios.get(url);
       console.log("생성된 URL:", url);
       if (pageNum > 0) {
         setOrders((prevOrders) => [...prevOrders, ...response.data.list]);
@@ -61,11 +63,11 @@ const OrderList = () => {
     );
   };
 
-  const handleCompleteDelivery = async () => {
+  const handleUpdateStatus = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders, {withCredentials : true});
-      alert("지점 수령 완료 상태로 변경되었습니다.");
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
       setSelectedOrders([]);
+      fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
@@ -77,7 +79,7 @@ const OrderList = () => {
         <Header>
           <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
           <Controls>
-            <Button onClick={handleCompleteDelivery}>지점 수령 완료</Button>
+            <Button onClick={handleUpdateStatus}>지점 수령 완료</Button>
             <Select onChange={handleStoreChange} value={storeId}>
               <option value={1}>천호점</option>
               <option value={2}>목동점</option>
