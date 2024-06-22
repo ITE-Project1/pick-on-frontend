@@ -114,9 +114,8 @@ const LoginContainer = styled.div`
 const Title = styled.h1`
   font-family: 'Apple SD Gothic Neo', sans-serif;
   font-size: 20px;
-  margin-bottom: 1rem;
+  margin-bottom: 5rem;
   color: #000000;
-  margin-bottom: 2rem;
 `;
 
 const LoginForm = styled.form`
