@@ -96,7 +96,7 @@ const View = styled.div`
 
 const AccountInfo = styled.div`
   color: #000000;
-  font-family: "Noto Sans-DisplaySemiBold", Helvetica;
+  font-family: "Apple SD Gothic Neo", Helvetica;
   font-size: 20px;
   font-weight: 600;
   height: 48px;
@@ -110,7 +110,7 @@ const AccountInfo = styled.div`
 
 const DeleteAccountLink = styled(Link)`
   color: #828282;
-  font-family: "Noto Sans-Medium", Helvetica;
+  font-family: "Apple SD Gothic Neo", Helvetica;
   font-size: 18px;
   font-weight: 500;
   height: 48px;
@@ -131,7 +131,7 @@ const DeleteAccountLink = styled(Link)`
 
 const LogoutLink = styled(Link)`
   color: #828282;
-  font-family: "Noto Sans-Medium", Helvetica;
+  font-family: "Apple SD Gothic Neo", Helvetica;
   font-size: 18px;
   font-weight: 500;
   height: 48px;
@@ -179,7 +179,7 @@ const Rectangle4 = styled.div`
 
 const UserId = styled.div`
   color: #ffffff;
-  font-family: "Noto Sans-DisplayBold", Helvetica;
+  font-family: "Apple SD Gothic Neo", Helvetica;
   font-size: 32px;
   font-weight: 700;
   height: 48px;

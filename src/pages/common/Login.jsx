@@ -189,7 +189,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  font-family: 'Apple SD Gothic Neo', sans-serif
+  font-family: 'Apple SD Gothic Neo', sans-serif;
   font-size : 11px;
 `;
 
