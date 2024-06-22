@@ -24,18 +24,29 @@ const OrderDetail = () => {
     fetchOrderDetails();
   }, [orderId]);
 
-  const receiveBtnClick = async () => {
+  const storeReceiveBtnClick = async () => {
     try {
-      console.log("Updating order status...");
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId]);
+      setOrderDetails((prevDetails) => ({
+        ...prevDetails,
+        pickupStatus: "픽업가능",
+      }));
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const customerReceiveBtnClick = async () => {
+    try {
       await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`);
-      console.log("OrderList status updated");
-      // setButtonStatus("after");
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업완료",
       }));
     } catch (error) {
       console.error("Error updating order status:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -50,7 +61,6 @@ const OrderDetail = () => {
   return (
       <ContentWrapper>
         <TitleText>주문 상세 내역</TitleText>
-
         <OrderInfo>
           <TextWrapper>
             <div>주문번호</div>
@@ -73,13 +83,16 @@ const OrderDetail = () => {
             <div>{orderDetails.pickupStatus}</div>
           </TextWrapper>
         </OrderInfo>
-
-        {orderDetails.pickupStatus === "픽업가능" && (
+        {orderDetails.pickupStatus === "배송중" && (
             <ButtonWrapper>
-              <ReceiveButton onClick={receiveBtnClick}>고객 수령 완료</ReceiveButton>
+              <ReceiveButton onClick={storeReceiveBtnClick}>지점 수령 완료</ReceiveButton>
             </ButtonWrapper>
         )}
-
+        {orderDetails.pickupStatus === "픽업가능" && (
+            <ButtonWrapper>
+              <ReceiveButton onClick={customerReceiveBtnClick}>고객 수령 완료</ReceiveButton>
+            </ButtonWrapper>
+        )}
         <TitleText>주문 상품 정보</TitleText>
         <ProductInfo>
           <ImageWrapper>

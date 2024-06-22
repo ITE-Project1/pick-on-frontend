@@ -14,6 +14,10 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
   }
 `;
 
