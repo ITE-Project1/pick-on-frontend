@@ -8,13 +8,16 @@ import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
 import useDebounce from "../common/UseDebounce";
 
 
+
 function ProductCard({ product }) {
   return (
     <Card>
-      <StyledLink to={`/user/productDetail/${product.productId}`}>
-        {" "}
+      <StyledLink to={{
+        pathname: `/user/productDetail/${product.productId}`,
+      }}
+      >
         {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
-        
+
         <ImageWrapper>
           <Image src={product.imageUrl} alt={product.name} />
         </ImageWrapper>
@@ -242,7 +245,7 @@ const PlusButton = styled.button`
   height: 50px;
   background-color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 10%;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -273,7 +276,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center; /* 버튼을 중앙에 배치 */
   width: 100%;
-  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const StyledLink = styled(Link)`
