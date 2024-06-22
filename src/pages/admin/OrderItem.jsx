@@ -58,7 +58,7 @@ const TableData = styled.div`
 
 const StatusData = styled(TableData)`
   color: ${(props) =>
-    props.status === "배송중" ? 'green' :
-        props.status === "픽업가능" ? 'orange' :
+    props.status === "배송중" ? '#E9A800' :
+        props.status === "픽업가능" ? 'green' :
             'black'};
 `;
