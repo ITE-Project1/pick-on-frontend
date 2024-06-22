@@ -8,10 +8,10 @@ import {ReactComponent as OrderProcess4} from "../../assets/svg/orderProcess4.sv
 import {ReactComponent as PlusBtnSvg} from "../../assets/img/plusButton.svg";
 
 const statusIcons = {
-  1: <OrderProcess1/>,
-  2: <OrderProcess2/>,
-  3: <OrderProcess3/>,
-  4: <OrderProcess4/>,
+  0: <OrderProcess1/>,
+  1: <OrderProcess2/>,
+  2: <OrderProcess3/>,
+  3: <OrderProcess4/>,
 };
 
 function MyOrderList() {
