@@ -5,7 +5,7 @@ import axios from "axios";
 import {authState} from "../../auth/authState";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 
-export const Screen = () => {
+export const My = () => {
   const navigate = useNavigate();
   const setAuth = useSetRecoilState(authState);
   const auth = useRecoilValue(authState);
@@ -55,7 +55,7 @@ export const Screen = () => {
         <Overlap>
           <View>
             <ShoppingInfo>나의 쇼핑 정보</ShoppingInfo>
-            <OrderInfo to="/user/my/orderlist">주문 조회</OrderInfo>
+            <OrderInfo to="/user/orderlist">주문 조회</OrderInfo>
             <Rectangle />
             <AccountInfo>나의 계정 정보</AccountInfo>
             <DeleteAccountLink to="#" onClick={handleDeleteAccount}>회원 탈퇴</DeleteAccountLink>
@@ -70,7 +70,7 @@ export const Screen = () => {
   );
 };
 
-export default Screen;
+export default My;
 
 const Group = styled.div`
   height: 854px;
@@ -82,7 +82,7 @@ const Group = styled.div`
 
 const Overlap = styled.div`
   height: 854px;
-  position: relative;
+  position: fixed;
   width: 425px;
 `;
 

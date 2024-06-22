@@ -13,7 +13,7 @@ const OrderDetail = () => {
     const fetchOrderDetails = async () => {
       try {
         console.log("Fetching order details...");
-        const response = await axios.get(`http://localhost:8080/admin/orders/${orderId}`);
+        const response = await axios.get(`http://localhost:8080/admin/orders/${orderId}`, {withCredentials : true});
         console.log("OrderList details fetched:", response.data);
         setOrderDetails(response.data);
       } catch (error) {

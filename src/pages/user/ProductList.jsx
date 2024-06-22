@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from "react";
-import "../../components/styled/ProductList.css";
+// import "../../components/styled/ProductList.css";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
+import useDebounce from "../common/UseDebounce";
+
+
+function ProductCard({ product }) {
+  return (
+    <Card>
+      <StyledLink to={`/user/productDetail/${product.productId}`}>
+        {" "}
+        {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
+        
+        <ImageWrapper>
+          <Image src={product.imageUrl} alt={product.name} />
+        </ImageWrapper>
+        <ProductBrand>{product.brandName}</ProductBrand>
+        <ProductName>{product.name}</ProductName>
+      </StyledLink>
+      
+      <ProductPrice>{product.price.toLocaleString()}원</ProductPrice>
+    </Card>
+  );
+}
 
 export const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -13,10 +34,11 @@ export const ProductList = () => {
   const [pageNum, setPageNum] = useState(1);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const debouncedSearchText = useDebounce(keyword, 500);
 
   useEffect(() => {
     fetchProducts();
-  }, [pageNum, sort, keyword]);
+  }, [pageNum, sort, debouncedSearchText]);
 
   useEffect(() => {
     // keyword가 변경될 때마다 페이지 맨 위로 스크롤 이동
@@ -25,10 +47,10 @@ export const ProductList = () => {
 
   const fetchProducts = async () => {
     console.log("pageNum:", pageNum);
-    const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${keyword}`;
+    const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${debouncedSearchText}`;
     console.log("생성된 URL:", url);
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, { withCredentials: true });
       console.log("Response data:", JSON.stringify(response.data, null, 2));
       if (pageNum > 1) {
         setProducts((prevProducts) => [...prevProducts, ...response.data.list]);
@@ -106,7 +128,7 @@ export default ProductList;
 // 스타일 컴포넌트 정의
 
 const SortOption = styled.span`
-  padding: 0 20px;
+  margin-right: 40px;
   cursor: pointer;
   font-size: 12px;
   color: ${(props) => (props.isSelected ? "#46675C " : "#828282")}; // 선택된 항목의 색깔 변경
@@ -121,6 +143,9 @@ const SortbyWrapper = styled.div`
   margin-top: 20px;
   margin-left: 30px;
   margin-bottom: 20px;
+  align-items: center;
+  margin-left: 0; /* 화면 왼쪽에 붙게 설정 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
 `;
 
 const Container = styled.div`
@@ -132,7 +157,7 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const ProductWrapper = styled.div`
@@ -183,7 +208,7 @@ const Image = styled.img`
 `;
 
 const ProductName = styled.div`
-  margin-top: 10px;
+  margin-top: 6px;
   font-size: 14px;
   color: #828282;
   text-align: left;
@@ -196,6 +221,13 @@ const ProductName = styled.div`
   -webkit-line-clamp: 2; /* 두 줄로 제한 */
   -webkit-box-orient: vertical;
 `;
+
+const ProductBrand = styled.div`
+  font-size: 14px;
+  color: #9E3500;
+  text-align: left;
+  margin-top: 10px;
+`
 
 const ProductPrice = styled.div`
   margin-top: 5px;
@@ -249,19 +281,22 @@ const StyledLink = styled(Link)`
   color: inherit; /* 부모 요소의 색상 상속 */
 `;
 
-function ProductCard({ product }) {
-  return (
-    <Card>
-      <StyledLink to={`/user/productDetail/${product.productId}`}>
-        {" "}
-        {/* 이미지와 상품명 클릭시 productDetail 페이지로 넘어간다. */}
-        <ImageWrapper>
-          <Image src={product.imageUrl} alt={product.name} />
-        </ImageWrapper>
-        <ProductName>{product.name}</ProductName>
-      </StyledLink>
 
-      <ProductPrice>{product.price.toLocaleString()}원</ProductPrice>
-    </Card>
-  );
-}
+
+const SortBy = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-left: -150px;
+`;
+
+const TextWrapper = styled.span`
+  color: #46675c;
+  font-weight: 700;
+  text-decoration: underline;
+`;
+
+const Span = styled.span`
+  color: #828282;
+  font-family: "Apple SD Gothic Neo-Regular", Helvetica;
+`;
+
