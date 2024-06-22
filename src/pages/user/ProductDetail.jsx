@@ -18,18 +18,6 @@ const options = [
   {value: 'option3', label: 'Option 3'},
 ];
 
-const orderResponse = {
-  orderId: '123141234143',
-  orderDate: '2024-06-24 14:32:14',
-  pickupDate: '2024-06-24 15:32:14',
-  toStore: '천호점',
-  productName: '지오다노 반팔티',
-  quantity: '2',
-  totalPrice: 56000,
-  //account: 가상계좌번호 생성 함수로 생성
-}
-
-
 const CustomDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -158,7 +146,8 @@ const ProductDetail = () => {
       alert('유효한 지점을 선택해주세요.');
       return;
     }
-//order controller로 전달할 데이터
+
+    //order controller로 전달할 데이터
     const payload = {
       "productId": product.productId,
       "quantity": counter,
@@ -169,20 +158,10 @@ const ProductDetail = () => {
 
     try {
       const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials: true});
-      setOrderResponse({
-        orderId: '123141234143',
-        orderDate: '2024-06-24 14:32:14',
-        pickupDate: '2024-06-24 15:32:14',
-        toStore: '천호점',
-        productName: '지오다노 반팔티',
-        quantity: '2',
-        totalPrice: 56000,
-        account: '가상계좌번호 생성 함수로 생성'
-      });
+      setOrderResponse(response.data);
       setIsModalOpen(true);
-      console.log("=============");
       console.log('Server response:', response);
-      alert('픽업 요청이 성공적으로 전송되었습니다.');
+      // alert('픽업 요청이 성공적으로 전송되었습니다.');
     } catch (error) {
       console.error('Error sending pickup request:', error);
       alert('픽업 요청을 전송하는 중 오류가 발생했습니다.');
@@ -248,7 +227,6 @@ const ProductDetail = () => {
           <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
         </ProductInfoBody>
       </ProductInfoWrapper>
-
       {orderResponse && (
         <OrderModal
           isOpen={isModalOpen}
