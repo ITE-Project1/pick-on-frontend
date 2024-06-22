@@ -106,9 +106,8 @@ const RegisterContainer = styled.div`
 const Title = styled.h1`
   font-family: 'Apple SD Gothic Neo', sans-serif;
   font-size: 20px;
-  margin-bottom: 1rem;
   color: #000000;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 `;
 
 const RegisterForm = styled.form`
@@ -123,14 +122,6 @@ const InputContainer = styled.div`
 
 const InputField = styled.div`
   margin-bottom: 1rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  color: #828282;
-  font-family: 'Apple SD Gothic Neo', Helvetica;
-  font-size: 12px;
-  margin-bottom: 0.5rem;
 `;
 
 const Input = styled.input`
@@ -151,8 +142,8 @@ const MemberCheck = styled.p`
   color: #8d8d8d;
   font-family: 'Apple SD Gothic Neo', Helvetica;
   font-size: 12px;
-  margin-top : 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  text-align:center;
 
   a {
     color: #8d8d8d;

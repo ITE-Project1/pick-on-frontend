@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { authState } from "../../auth/authState";
 import {useSetRecoilState} from "recoil";
+import error from "eslint-plugin-react/lib/util/error";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -32,11 +33,11 @@ export const Login = () => {
       }
     } catch (error) {
       if (error.response) {
+        console.log(error.response);
         setErrors(error.response.data);
       }else {
         console.error("Login failed:", error);
       }
-      setErrors(error.response.data);
     }
   };
 
