@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import OrderModal from "./OrderModal";
 
 const storeIdMap =   {
   1: '천호점',
@@ -57,26 +58,26 @@ const CustomDropdown = ({ stores, counter, selectedStore, handleStoreChange }) =
 
 
   return (
-      <DropdownContainer ref={dropdownRef}>
-        <DropdownHeader onClick={toggleDropdown}>
-          {selectedStore ? storeIdMap[selectedStore] : '지점 선택'}
-          <Arrow />
-        </DropdownHeader>
-        {isOpen && (
-            <DropdownListContainer direction={openDirection}>
-              <DropdownList>
-                {stores.map((store, index) => (
-                    <React.Fragment key={store.storeId}>
-                      <ListItem onClick={() => handleOptionClick(store.storeId)}>
-                        {renderOptionText(store, counter)}
-                      </ListItem>
-                      {index < stores.length - 1 && <Divider />} {/* 마지막 항목 뒤에는 선이 표시되지 않도록 */}
-                    </React.Fragment>
-                ))}
-              </DropdownList>
-            </DropdownListContainer>
-        )}
-      </DropdownContainer>
+    <DropdownContainer ref={dropdownRef}>
+      <DropdownHeader onClick={toggleDropdown}>
+        {selectedStore ? storeIdMap[selectedStore] : '지점 선택'}
+        <Arrow />
+      </DropdownHeader>
+      {isOpen && (
+        <DropdownListContainer direction={openDirection}>
+          <DropdownList>
+            {stores.map((store, index) => (
+              <React.Fragment key={store.storeId}>
+                <ListItem onClick={() => handleOptionClick(store.storeId)}>
+                  {renderOptionText(store, counter)}
+                </ListItem>
+                {index < stores.length - 1 && <Divider />} {/* 마지막 항목 뒤에는 선이 표시되지 않도록 */}
+              </React.Fragment>
+            ))}
+          </DropdownList>
+        </DropdownListContainer>
+      )}
+    </DropdownContainer>
   );
 };
 
@@ -92,6 +93,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [counter, setCounter] = useState(1);
   const [directPickup, setDirectPickup] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+  const [orderResponse, setOrderResponse] = useState(null); // 주문 응답 상태 추가
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -164,7 +167,8 @@ const ProductDetail = () => {
     try {
       const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials : true});
       console.log('Server response:', response.data);
-      alert('픽업 요청이 성공적으로 전송되었습니다.');
+      setOrderResponse(response.data);
+      setIsModalOpen(true);
     } catch (error) {
       console.error('Error sending pickup request:', error);
       alert('로그인 해주세요');
@@ -190,32 +194,38 @@ const ProductDetail = () => {
               <h1>{product.name}</h1>
             </ProductName>
             <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
+          <ProductDescription>{product.description}
+            <Line><hr /></Line>
+          </ProductDescription>
+          <CounterContainer>
+            <CounterLabel>
+              주문수량
+            </CounterLabel>
+            <CounterWrapper>
+              <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
+              <Counter>{counter}</Counter>
+              <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
+            </CounterWrapper>
+          </CounterContainer>
+          <CustomDropdown
+            stores={stores}
+            counter={counter}
+            selectedStore={selectedStore}
+            handleStoreChange={handleStoreChange}
+          />
+          <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
 
-            <ProductDescription>{product.description}
-              <Line><hr /></Line>
-            </ProductDescription>
-            <CounterContainer>
-              <CounterLabel>
-                주문수량
-              </CounterLabel>
-              <CounterWrapper>
-                <Button onClick={handleDecrement} disabled={counter === 1}>-</Button>
-                <Counter>{counter}</Counter>
-                <Button onClick={handleIncrement} disabled={counter === 10}>+</Button>
-              </CounterWrapper>
-            </CounterContainer>
-            <CustomDropdown
-                stores={stores}
-                counter={counter}
-                selectedStore={selectedStore}
-                handleStoreChange={handleStoreChange}
-            />
-            <Text>바로 픽업이 가능하지 않은 지점의 경우 최대 2-3일 정도 소요될 수 있습니다</Text>
-
-            <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
-          </ProductInfoBody>
-        </ProductInfoWrapper>
-      </Container>
+          <OrderButton textColor="white" onClick={handlePickup}>픽업하기</OrderButton>
+        </ProductInfoBody>
+      </ProductInfoWrapper>
+      {orderResponse && (
+        <OrderModal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          orderResponse={orderResponse}
+        />
+      )}
+    </Container>
   );
 };
 
