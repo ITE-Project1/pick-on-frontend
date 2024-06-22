@@ -4,7 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import OrderModal from "./OrderModal";
 
-const storeIdMap = {
+const storeIdMap =   {
   1: '천호점',
   2: '목동점',
   3: '무역센터점',
@@ -49,10 +49,10 @@ const CustomDropdown = ({ stores, counter, selectedStore, handleStoreChange }) =
   const renderOptionText = (store, counter) => {
     const isDirectPickupAvailable = store.quantity >= counter;
     return (
-      <OptionTextContainer>
-        <span>{storeIdMap[store.storeId]} (Quantity: {store.quantity})</span>
-        {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
-      </OptionTextContainer>
+        <OptionTextContainer>
+          <span>{storeIdMap[store.storeId]} (수량: {store.quantity})</span>
+          {isDirectPickupAvailable && <HighlightText>바로 픽업 가능</HighlightText>}
+        </OptionTextContainer>
     );
   };
 
@@ -107,7 +107,9 @@ const ProductDetail = () => {
           description: productData.description,
           price: productData.price,
           imageUrl: productData.imageUrl,
+          brandName: productData.brandName
         });
+
         setStores(response.data.map(item => ({ storeId: item.storeId, quantity: item.quantity })).sort((a, b) => a.storeId - b.storeId));
         setLoading(false);
       } catch (error) {
@@ -169,7 +171,7 @@ const ProductDetail = () => {
       setIsModalOpen(true);
     } catch (error) {
       console.error('Error sending pickup request:', error);
-      alert('픽업 요청을 전송하는 중 오류가 발생했습니다.');
+      alert('로그인 해주세요');
     }
   };
 
@@ -178,19 +180,20 @@ const ProductDetail = () => {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <Container>
-      <Header></Header>
-      <ProductInfoWrapper>
-        <ProductInfoBody>
-          <ImageWrapper>
-            <Image src={product.imageUrl} alt={product.name} />
-          </ImageWrapper>
-
-          <ProductName>
-            <h1>{product.name}</h1>
-          </ProductName>
-          <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
-
+      <Container>
+        <Header></Header>
+        <ProductInfoWrapper>
+          <ProductInfoBody>
+            <ImageWrapper>
+              <Image src={product.imageUrl} alt={product.name} />
+            </ImageWrapper>
+            <ProductBrand>
+              {product.brandName}
+            </ProductBrand>
+            <ProductName>
+              <h1>{product.name}</h1>
+            </ProductName>
+            <ProductPrice>{product.price?.toLocaleString()}원</ProductPrice>
           <ProductDescription>{product.description}
             <Line><hr /></Line>
           </ProductDescription>
@@ -271,7 +274,13 @@ const Image = styled.img`
   max-height: 100%;
   object-fit: contain;
 `;
-
+const ProductBrand = styled.div`
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 1rem;
+  color: #828282;
+  margin-bottom: 15px;
+`
 const ProductName = styled.div`
   margin-top: 20px;
   font-size: 20px;
@@ -290,7 +299,7 @@ const ProductPrice = styled.div`
 `;
 
 const ProductDescription = styled.div`
-  margin-top: 80px;
+  margin-top: 40px;
 `;
 
 const Line = styled.div`
@@ -325,7 +334,7 @@ const CounterWrapper = styled.div`
 
 const Counter = styled.div`
   text-align: center;
-  height: 100v;
+  height: 100%;
   font-size: 17px;
   display: flex;
   align-items: center;
