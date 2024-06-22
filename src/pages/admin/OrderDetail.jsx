@@ -26,7 +26,7 @@ const OrderDetail = () => {
 
   const storeReceiveBtnClick = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId]);
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId], {withCredentials : true});
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업가능",
@@ -39,7 +39,7 @@ const OrderDetail = () => {
 
   const customerReceiveBtnClick = async () => {
     try {
-      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`);
+      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`, {}, {withCredentials : true});
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업완료",
@@ -103,7 +103,7 @@ const OrderDetail = () => {
           <Rectangle />
           <ProductInfo>
             <ImageWrapper>
-              <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
+              <img src={orderDetails.productImg} alt="prodcutImg" width={120} height={120} />
             </ImageWrapper>
             <RightColumn>
               <TextWrapper>
@@ -188,7 +188,7 @@ const TitleText = styled.div`
   font-size: 20px;
   font-weight: 500;
   color: #000000;
-  padding: 30px 0px 15px 0px;
+  padding: 50px 0px 15px 0px;
   width: 100%;
   text-align: left;
 `;
@@ -242,7 +242,6 @@ const ButtonWrapper = styled.div`
   justify-content: flex-end;
   cursor: pointer;
   margin-top: 25px;
-  margin-bottom: 30px;
 `;
 
 const ReceiveButton = styled.div`
