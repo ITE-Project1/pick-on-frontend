@@ -103,7 +103,7 @@ const OrderDetail = () => {
           <Rectangle />
           <ProductInfo>
             <ImageWrapper>
-              <img src={orderDetails.prodcutImg} alt="prodcutImg" width={120} height={120} />
+              <img src={orderDetails.productImg} alt="prodcutImg" width={120} height={120} />
             </ImageWrapper>
             <RightColumn>
               <TextWrapper>
