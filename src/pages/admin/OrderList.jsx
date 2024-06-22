@@ -26,9 +26,9 @@ const OrderList = () => {
       const response = await axios.get(url);
       console.log("생성된 URL:", url);
       if (pageNum > 0) {
-        setOrders((prevOrders) => [...prevOrders, ...response.data.list]);
+        setOrders((prevOrders) => [...prevOrders, ...response.data.list.map((order, index) => ({ ...order, originalIndex: prevOrders.length + index }))]);
       } else {
-        setOrders(response.data.list);
+        setOrders(response.data.list.map((order, index) => ({ ...order, originalIndex: index })));
       }
       setHasMoreOrders(pageNum < response.data.totalPage - 1);
     } catch (error) {
@@ -61,13 +61,34 @@ const OrderList = () => {
     setSelectedOrders((prevSelected) =>
         isSelected ? [...prevSelected, orderId] : prevSelected.filter((id) => id !== orderId)
     );
+
+    // 주문 리스트 재정렬
+    setOrders((prevOrders) => {
+      const orderIndex = prevOrders.findIndex(order => order.orderId === orderId);
+      const selectedOrder = prevOrders[orderIndex];
+
+      if (isSelected) {
+        // 선택된 주문을 상단으로 이동
+        const newOrders = [...prevOrders];
+        newOrders.splice(orderIndex, 1); // 선택된 주문을 제거
+        return [selectedOrder, ...newOrders]; // 상단으로 이동
+      } else {
+        // 선택이 해제된 주문을 원래 위치로 복원
+        const newOrders = prevOrders.filter(order => order.orderId !== orderId);
+        newOrders.splice(selectedOrder.originalIndex, 0, selectedOrder); // 원래 위치에 추가
+        return newOrders;
+      }
+    });
   };
 
   const handleUpdateStatus = async () => {
     try {
       await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
       setSelectedOrders([]);
+      setPageNum(0);
+      setOrders([]);
       fetchOrders();
+      // window.location.reload();
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
@@ -105,7 +126,7 @@ const OrderList = () => {
             <ButtonWrapper>
               {hasMoreOrders && (
                   <PlusButton onClick={handlePageChange}>
-                    <PlusBtnSvg></PlusBtnSvg>
+                    <PlusBtnSvg />
                   </PlusButton>
               )}
             </ButtonWrapper>
@@ -201,9 +222,7 @@ const PlusButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  transition:
-    background-color 0.3s,
-    transform 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
 
   svg {
     width: 100px; /* SVG의 너비 설정 */
