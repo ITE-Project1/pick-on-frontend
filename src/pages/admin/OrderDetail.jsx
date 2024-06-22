@@ -26,7 +26,7 @@ const OrderDetail = () => {
 
   const storeReceiveBtnClick = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId]);
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId], {withCredentials : true});
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업가능",
@@ -39,7 +39,7 @@ const OrderDetail = () => {
 
   const customerReceiveBtnClick = async () => {
     try {
-      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`);
+      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`, {}, {withCredentials : true});
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업완료",

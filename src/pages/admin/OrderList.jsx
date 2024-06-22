@@ -4,6 +4,7 @@ import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
+import { ReactComponent as RefreshBtnSvg} from "../../assets/svg/refresh.svg";
 import useDebounce from "../common/UseDebounce";
 
 const OrderList = () => {
@@ -23,7 +24,7 @@ const OrderList = () => {
   const fetchOrders = async () => {
     try {
       const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${debouncedSearchText}`;
-      const response = await axios.get(url);
+      const response = await axios.get(url, {withCredentials : true});
       console.log("생성된 URL:", url);
       if (pageNum > 0) {
         setOrders((prevOrders) => [...prevOrders, ...response.data.list.map((order, index) => ({ ...order, originalIndex: prevOrders.length + index }))]);
@@ -83,7 +84,7 @@ const OrderList = () => {
 
   const handleUpdateStatus = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders, {withCredentials : true});
       setSelectedOrders([]);
       setPageNum(0);
       setOrders([]);
@@ -95,12 +96,23 @@ const OrderList = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setPageNum(0);
+    setOrders([]);
+    fetchOrders();
+  };
+
   return (
       <Container>
         <Header>
           <SearchWrapper keyword={keyword} handleSearchChange={handleSearchChange} />
           <Controls>
-            <Button onClick={handleUpdateStatus}>지점 수령 완료</Button>
+            <TopButtonWrapper>
+              <Button onClick={handleRefresh}>
+                <RefreshBtnSvg />
+              </Button>
+              <Button onClick={handleUpdateStatus}>지점 수령 완료</Button>
+            </TopButtonWrapper>
             <Select onChange={handleStoreChange} value={storeId}>
               <option value={1}>천호점</option>
               <option value={2}>목동점</option>
@@ -157,8 +169,15 @@ const Controls = styled.div`
   padding-top: 15px;
 `;
 
+const TopButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const Button = styled.button`
-  padding: 5px 15px;
+  height: 30px;
+  padding: 5px 10px;
+  margin-right: 5px;
   border: 1px solid #cccccc;
   border-radius: 8px;
   background-color: #fff;
