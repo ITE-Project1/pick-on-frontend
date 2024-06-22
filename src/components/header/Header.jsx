@@ -11,7 +11,7 @@ const Header = () => {
   return (
       <>
         <HeaderWrapper isSpecialPage={isSpecialPage}>
-          <img src={logo} height={39} width={145} alt="logo" />
+          <img src={logo} height={70} width={210} alt="logo" />
         </HeaderWrapper>
           {!isSpecialPage && <Underbar />}
       </>
