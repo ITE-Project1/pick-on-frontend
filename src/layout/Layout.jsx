@@ -6,7 +6,14 @@ import Footer from "../components/footer/Footer";
 
 const Layout = () => {
   const location = useLocation();
-  const showHeader = !["/admin/my", "/user/my", "/user/orderlist"].includes(location.pathname);
+    const excludedPaths = [
+        /^\/admin\/my$/,
+        /^\/user\/my$/,
+        /^\/user\/orderlist$/,
+        /^\/admin\/order\/[^/]+$/ // '/admin/order/' 뒤에 어떤 값이 오더라도 매칭
+    ];
+
+    const showHeader = !excludedPaths.some((path) => path.test(location.pathname));
 
   return (
     <InnerWidth showHeader={showHeader}>
