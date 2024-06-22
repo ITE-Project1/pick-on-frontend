@@ -25,11 +25,11 @@ import MyOrderList from "./pages/user/MyOrderList";
 
 const ProtectedRoute = ({children, role}) => {
   const [auth] = useRecoilState(authState);
-  if (!auth.isAuthenticated) {
-    return <Navigate to="/login" />
-  }
+  // if (!auth.isAuthenticated) {
+  //   return <Navigate to="/login" />
+  // }
   if (auth.role !== role) {
-    return <Navigate to="/" />
+    return <Navigate to="/login" />
   }
   return children;
 };
