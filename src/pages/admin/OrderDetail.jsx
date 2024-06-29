@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
-import axios from "axios";
+import axios from "../../auth/axiosConfig";
 
 // 주문 상세 페이지
 const OrderDetail = () => {
@@ -26,7 +26,7 @@ const OrderDetail = () => {
 
   const storeReceiveBtnClick = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId], {withCredentials : true});
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", [orderDetails.orderId]);
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업가능",
@@ -39,7 +39,7 @@ const OrderDetail = () => {
 
   const customerReceiveBtnClick = async () => {
     try {
-      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`, {}, {withCredentials : true});
+      await axios.patch(`http://localhost:8080/admin/orders/${orderId}/status/completed`, {});
       setOrderDetails((prevDetails) => ({
         ...prevDetails,
         pickupStatus: "픽업완료",

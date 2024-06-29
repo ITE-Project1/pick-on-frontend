@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../../auth/axiosConfig";
 import styled from 'styled-components';
 
 const storeIdMap =   {
@@ -96,7 +96,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`, { withCredentials: true });
+        const response = await axios.get(`http://localhost:8080/products/detail/${productId}`);
         const productData = response.data[0];
         setProduct({
           productId: productData.productId,
@@ -162,7 +162,7 @@ const ProductDetail = () => {
     console.log('Sending payload:', payload);
 
     try {
-      const response = await axios.post('http://localhost:8080/orders', payload, {withCredentials : true});
+      const response = await axios.post('http://localhost:8080/orders', payload);
       console.log('Server response:', response.data);
       alert('픽업 요청이 성공적으로 전송되었습니다.');
     } catch (error) {

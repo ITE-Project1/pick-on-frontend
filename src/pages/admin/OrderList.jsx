@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../auth/axiosConfig";
 import styled from "styled-components";
 import OrderItem from "./OrderItem";
 import SearchWrapper from "../../components/common/SearchWrapper";
@@ -24,7 +24,7 @@ const OrderList = () => {
   const fetchOrders = async () => {
     try {
       const url = `http://localhost:8080/admin/orders?storeId=${storeId}&page=${pageNum}&keyword=${debouncedSearchText}`;
-      const response = await axios.get(url, {withCredentials : true});
+      const response = await axios.get(url);
       console.log("생성된 URL:", url);
       if (pageNum > 0) {
         setOrders((prevOrders) => [...prevOrders, ...response.data.list.map((order, index) => ({ ...order, originalIndex: prevOrders.length + index }))]);
@@ -84,7 +84,7 @@ const OrderList = () => {
 
   const handleUpdateStatus = async () => {
     try {
-      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders, {withCredentials : true});
+      await axios.patch("http://localhost:8080/admin/orders/status/pickupready", selectedOrders);
       setSelectedOrders([]);
       setPageNum(0);
       setOrders([]);

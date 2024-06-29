@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import "../../components/styled/ProductList.css";
-import axios from "axios";
+import axios from "../../auth/axiosConfig";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import SearchWrapper from "../../components/common/SearchWrapper";
@@ -53,7 +53,7 @@ export const ProductList = () => {
     const url = `http://localhost:8080/products/list?page=${pageNum}&sort=${sort}&keyword=${debouncedSearchText}`;
     console.log("생성된 URL:", url);
     try {
-      const response = await axios.get(url, { withCredentials: true });
+      const response = await axios.get(url);
       console.log("Response data:", JSON.stringify(response.data, null, 2));
       if (pageNum > 1) {
         setProducts((prevProducts) => [...prevProducts, ...response.data.list]);
