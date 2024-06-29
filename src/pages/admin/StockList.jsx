@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import axios from "axios";
+import axios from "../../auth/axiosConfig";
 import styled from 'styled-components';
 import SearchWrapper from "../../components/common/SearchWrapper";
 import { ReactComponent as PlusBtnSvg } from "../../assets/img/plusButton.svg";
@@ -18,8 +18,9 @@ function StockList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        console.log("요청 시작 ....");
         const url = `http://localhost:8080/admin/products?storeId=${storeId}&page=${pageNum}&sort=${sort}&keyword=${debouncedSearchText}`
-        const response = await axios.get(url, {withCredentials : true});
+        const response = await axios.get(url);
         console.log("생성된 URL:", url);
         if(pageNum > 0) {
           setProducts(prevProducts => [...prevProducts, ...response.data.list]);
