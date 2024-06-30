@@ -8,9 +8,9 @@ import {ReactComponent as OrderProcess4} from "../../assets/svg/orderProcess4.sv
 import {ReactComponent as PlusBtnSvg} from "../../assets/img/plusButton.svg";
 
 const statusIcons = {
-  0: <OrderProcess1/>,
-  1: <OrderProcess2/>,
-  2: <OrderProcess3/>,
+  2: <OrderProcess1/>,
+  0: <OrderProcess2/>,
+  1: <OrderProcess3/>,
   3: <OrderProcess4/>,
 };
 

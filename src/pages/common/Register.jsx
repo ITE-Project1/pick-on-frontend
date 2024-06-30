@@ -15,7 +15,7 @@ export const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:8080/user/register", { name, username, password, phone_number });
-      alert('회원가입 완료! 다시 로그인해주세요');
+      // alert('회원가입 완료! 다시 로그인해주세요');
       navigate("/login");
     } catch (error) {
       if (error.response && error.response.status === 400) {
