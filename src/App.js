@@ -7,8 +7,6 @@ import {
   Route,
   Navigate
 } from 'react-router-dom';
-import {useRecoilState} from "recoil";
-import { authState } from './auth/authState'
 import Layout from './layout/Layout';
 import OrderDetail from './pages/admin/OrderDetail';
 import OrderList from './pages/admin/OrderList';
@@ -21,21 +19,32 @@ import Login from './pages/common/Login';
 import ProductDetail from './pages/user/ProductDetail';
 import Register from './pages/common/Register';
 import MyOrderList from "./pages/user/MyOrderList";
-
+import {jwtDecode} from 'jwt-decode';
 
 const ProtectedRoute = ({children, role}) => {
-  const [auth] = useRecoilState(authState);
-  // if (!auth.isAuthenticated) {
-  //   return <Navigate to="/login" />
-  // }
-  if (auth.role !== role) {
+
+  try {
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    if (!decodedToken.auth) {
+      return <Navigate to="/login" />
+    }
+
+    if (decodedToken.auth !== role) {
+      alert('접근 권한이 없습니다.');
+      setTimeout(() => {
+        window.history.back();
+      }, 2000);
+      return ;
+    }
+  } catch(error) {
     return <Navigate to="/login" />
   }
+
   return children;
 };
 
 function App() {
-  const [auth, setAuth] = useRecoilState(authState);
   return (
         <React.Fragment>
           <Reset />
@@ -47,14 +56,14 @@ function App() {
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/user/productlist' element={<ProductList/>} />
-                <Route path='/user/my' element={<ProtectedRoute role="general"><UserMy /></ProtectedRoute>} />
-                <Route path='/user/orderlist' element={<ProtectedRoute role="general"><MyOrderList /></ProtectedRoute>} />
+                <Route path='/user/my' element={<ProtectedRoute role="ROLE_general"><UserMy /></ProtectedRoute>} />
+                <Route path='/user/orderlist' element={<ProtectedRoute role="ROLE_general"><MyOrderList /></ProtectedRoute>} />
                 <Route path='/user/productdetail/:productId' element={<ProductDetail/>} />
-                <Route path='/admin/orderlist' element={<ProtectedRoute role="admin"><OrderList /></ProtectedRoute>} />
-                <Route path='/admin/order/:orderId' element={<ProtectedRoute role="admin"><OrderDetail /></ProtectedRoute>} />
-                <Route path='/admin/userlist' element={<ProtectedRoute role="admin"><UserList /></ProtectedRoute>} />
-                <Route path='/admin/my' element={<ProtectedRoute role="admin"><AdminMy /></ProtectedRoute>} />
-                <Route path='/admin/stocklist' element={<ProtectedRoute role="admin"><StockList /></ProtectedRoute>} />
+                <Route path='/admin/orderlist' element={<ProtectedRoute role="ROLE_admin"><OrderList /></ProtectedRoute>} />
+                <Route path='/admin/order/:orderId' element={<ProtectedRoute role="ROLE_admin"><OrderDetail /></ProtectedRoute>} />
+                <Route path='/admin/userlist' element={<ProtectedRoute role="ROLE_admin"><UserList /></ProtectedRoute>} />
+                <Route path='/admin/my' element={<ProtectedRoute role="ROLE_admin"><AdminMy /></ProtectedRoute>} />
+                <Route path='/admin/stocklist' element={<ProtectedRoute role="ROLE_admin"><StockList /></ProtectedRoute>} />
               </Route>
             </Routes>
           </Router>

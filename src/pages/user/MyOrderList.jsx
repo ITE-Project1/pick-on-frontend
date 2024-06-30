@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import axios from "axios";
+import axios from "../../auth/axiosConfig";
 import styled from 'styled-components';
 import {ReactComponent as OrderProcess1} from "../../assets/svg/orderProcess1.svg";
 import {ReactComponent as OrderProcess2} from "../../assets/svg/orderProcess2.svg";
@@ -23,7 +23,7 @@ function MyOrderList() {
     const fetchOrders = async () => {
       try {
         const url = `http://localhost:8080/orders?page=${pageNum}`;
-        const response = await axios.get(url, {withCredentials : true});
+        const response = await axios.get(url);
         console.log("생성된 URL:", url);
         if (pageNum > 0) {
           setOrders(prevProducts => [...prevProducts, ...response.data.list]);

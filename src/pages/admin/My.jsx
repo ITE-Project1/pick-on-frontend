@@ -1,27 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import {authState} from "../../auth/authState";
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import axios from "../../auth/axiosConfig";
+import {jwtDecode} from "jwt-decode";
 
 export const My = () => {
   const navigate = useNavigate();
-  const setAuth = useSetRecoilState(authState);
-  const auth = useRecoilValue(authState);
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode(token);
 
   const handleLogout = async (e) => {
 
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8080/user/logout', {}, { withCredentials: true });
+      const response = await axios.post('http://localhost:8080/user/logout', {});
       if (response.status === 200) {
-        setAuth({
-          isAuthenticated: false,
-          userId : null,
-          role : null
-        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         navigate('/login');
       } else {
         alert('Logout failed');
@@ -36,11 +32,7 @@ export const My = () => {
     try {
       const response = await axios.patch('http://localhost:8080/user/sign-out', {}, { withCredentials: true });
       if (response.status === 200) {
-        setAuth({
-          isAuthenticated: false,
-          userId : null,
-          role : null
-        });
+        localStorage.removeItem('token');
         navigate('/login');
       } else {
         console.error("Account deletion failed");
@@ -61,7 +53,7 @@ export const My = () => {
             <Rectangle3 />
           </View>
           <Rectangle4 />
-          <UserId>{auth.username}</UserId>
+          <UserId>{decodedToken.sub}</UserId>
         </Overlap>
       </Group>
   );
